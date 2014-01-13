@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP7008" table="MP7008">
+        <id name="MP7008_SEQ" type="java.lang.String">
+            <column name="MP7008_SEQ" />
+            <generator class="assigned" />
+        </id>
+        <property name="MP7008_PLAN_SEQ" type="java.lang.String">
+            <column name="MP7008_PLAN_SEQ" length="30" not-null="false" />
+        </property>
+        <property name="MP7008_EMPLOYEE_NUM" type="java.lang.String">
+            <column name="MP7008_EMPLOYEE_NUM" length="10" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,206 @@
+[
+    { attributes: { id : "SYS001" }, state: "closed", data: "Human Resources Management System", children :
+        [
+            { attributes: { id : "F0001" }, state : "open", data: "Employee Management", children :
+                [
+                    { attributes: { id : "F0001001" }, state : "closed", data: "Add New Employee", children :
+                        [
+                            { attributes: { id : "F0001001_OPT_SAVE" }, state : "closed", data: "Save" },
+                            { attributes: { id : "F0001001_OPT_CANCEL" }, state : "closed", data: "Cancel" }
+                        ]
+                    },
+                    { attributes: { id : "F0001002" }, state : "closed", data: "Temporary Employee Management", children :
+                        [
+                            { attributes: { id : "F0001002_OPT_APPROVAL" }, state : "closed", data: "Approve" }
+                        ]
+                    },
+                    { attributes: { id : "F0001003" }, state : "closed", data: "Employee Information Management" , children :
+                        [
+                            { attributes: { id : "F0001003_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0001003_OPT_EDIT" }, state : "closed", data: "Edit" },
+                            { attributes: { id : "F0001003_OPT_VIEW" }, state : "closed", data: "View" },
+                            { attributes: { id : "F0001003_OPT_ADVANCE_SEARCH" }, state : "closed", data: "Advance Search" },
+                            { attributes: { id : "F0001003_OPT_ALL" }, state : "closed", data: "All" }
+                        ]
+                    },
+                    { attributes: { id : "F0001004" }, state : "closed", data: "Employee Telephone List" , children :
+                        [
+                            { attributes: { id : "F0001001_OPT_SEARCH" }, state : "closed", data: "Save" },
+                            { attributes: { id : "F0001001_OPT_PDF" }, state : "closed", data: "Cancel" }
+                        ]
+                    },
+                    { attributes: { id : "F0001005" }, state : "closed", data: "Personal Information" },
+                    { attributes: { id : "F0001006" }, state : "closed", data: "Headcount Report" },
+                    { attributes: { id : "F0001007" }, state : "closed", data: "Document Management" , children :
+                        [
+                            { attributes: { id : "F0001007_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0001007_OPT_ADD" }, state : "closed", data: "Add" },
+                            { attributes: { id : "F0001007_OPT_EDIT" }, state : "closed", data: "Edit" },
+                            { attributes: { id : "F0001007_OPT_DELETE" }, state : "closed", data: "Delete" }
+                        ]
+                    },
+                    { attributes: { id : "F0001008" }, state : "closed", data: "Interview Management" , children :
+                        [
+                            { attributes: { id : "F0001008_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0001008_OPT_ADD" }, state : "closed", data: "Add" },
+                            { attributes: { id : "F0001008_OPT_EDIT" }, state : "closed", data: "Edit" },
+                            { attributes: { id : "F0001008_OPT_DELETE" }, state : "closed", data: "Delete" }
+                        ]
+                    },
+                    { attributes: { id : "F0001009" }, state : "closed", data: "Departmental Transfers" , children :
+                        [
+                            { attributes: { id : "F0001009_OPT_SAVE" }, state : "closed", data: "Save" },
+                            { attributes: { id : "F0001009_OPT_CANCEL" }, state : "closed", data: "Cancel" }
+                        ]
+                    }
+                ]
+            },
+            { attributes: { id : "F0002" }, data: "Attendance Management", state : "closed" , children :
+                [
+                    { attributes: { id : "F0002001" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0002001_OPT_SAVE" }, state : "closed", data: "Save" },
+                            { attributes: { id : "F0002001_OPT_CANCEL" }, state : "closed", data: "Cancel" }
+                        ]
+                    },
+                    { attributes: { id : "F0002002" }, state : "closed", data: "Leave Application Management", children :
+                        [
+                            { attributes: { id : "F0002002_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0002002_OPT_APPROVAL" }, state : "closed", data: "Approve" },
+                            { attributes: { id : "F0002002_OPT_DELETE" }, state : "closed", data: "Delete" },
+                            { attributes: { id : "F0002002_OPT_EDIT" }, state : "closed", data: "Edit" },
+                            { attributes: { id : "F0002002_OPT_VIEW" }, state : "closed", data: "View" },
+                            { attributes: { id : "F0002002_OPT_PERSONAL" }, state : "closed", data: "Personal Authority" },
+                            { attributes: { id : "F0002002_OPT_DEPARTMENT" }, state : "closed", data: "Department Authority" },
+                            { attributes: { id : "F0002002_OPT_ALL" }, state : "closed", data: "All Authority" }
+                        ]
+                    },
+                    { attributes: { id : "F0002003" }, state : "closed", data: "Personal Vacation Management" , children :
+                        [
+                            { attributes: { id : "F0002003_OPT_EDIT" }, state : "closed", data: "Edit" },
+                            { attributes: { id : "F0002003_OPT_PERSONAL" }, state : "closed", data: "Personal Authority" },
+                            { attributes: { id : "F0002003_OPT_DEPARTMENT" }, state : "closed", data: "Department Authority" },
+                            { attributes: { id : "F0002003_OPT_ALL" }, state : "closed", data: "All Authority" }
+                        ]
+                    },
+                    { attributes: { id : "F0002004" }, state : "closed", data: "Attendance Records Management" , children :
+                        [
+                            { attributes: { id : "F0002004_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0002004_OPT_APPROVAL" }, state : "closed", data: "Approve" },
+                            { attributes: { id : "F0002004_OPT_PDF" }, state : "closed", data: "Create PDF Document & Download" },
+                            { attributes: { id : "F0002004_OPT_PERSONAL" }, state : "closed", data: "Personal Authority" },
+                            { attributes: { id : "F0002004_OPT_DEPARTMENT" }, state : "closed", data: "Department Authority" },
+                            { attributes: { id : "F0002004_OPT_ALL" }, state : "closed", data: "All Authority" }
+                        ]
+                    },
+                    { attributes: { id : "F0002005" }, state : "closed", data: "Attendance Records Report" , children :
+                        [
+                            { attributes: { id : "F0002005_OPT_SEARCH" }, state : "closed", data: "Search" }
+                        ]
+                    },
+                    { attributes: { id : "F0002006" }, state : "closed", data: "Overseas Business Application" , children :
+                        [
+                            { attributes: { id : "F0002006_OPT_SAVE" }, state : "closed", data: "Save" },
+                            { attributes: { id : "F0002006_OPT_CANCEL" }, state : "closed", data: "Cancel" }
+                        ]
+                    },
+                    { attributes: { id : "F0002007" }, state : "closed", data: "Overseas Business Management" , children :
+                        [
+                            { attributes: { id : "F0002007_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0002007_OPT_VIEW" }, state : "closed", data: "View" },
+                            { attributes: { id : "F0002007_OPT_EDIT" }, state : "closed", data: "Edit" },
+                            { attributes: { id : "F0002007_OPT_DELETE" }, state : "closed", data: "Delete" },
+                            { attributes: { id : "F0002007_OPT_APPROVAL" }, state : "closed", data: "Approve" }
+                        ]
+                    }
+                ]
+            },
+            { attributes: { id : "F0003" }, data: "System Management", state : "closed" , children :
+                [
+                    { attributes: { id : "F0003001" }, state : "closed", data: "Add New Bulletin", children :
+                        [
+                            { attributes: { id : "F0003001_OPT_SAVE" }, state : "closed", data: "Save" },
+                            { attributes: { id : "F0003001_OPT_CANCEL" }, state : "closed", data: "Cancel" }
+                        ]
+                    },
+                    { attributes: { id : "F0003002" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003002_OPT_EDIT" }, state : "closed", data: "Edit" },
+                            { attributes: { id : "F0003002_OPT_DELETE" }, state : "closed", data: "Delete" },
+                            { attributes: { id : "F0003002_OPT_PERSONAL" }, state : "closed", data: "Personal Authority" },
+                            { attributes: { id : "F0003002_OPT_DEPARTMENT" }, state : "closed", data: "Department Authority" },
+                            { attributes: { id : "F0003002_OPT_ALL" }, state : "closed", data: "All Authority" }
+                        ]
+                    },
+                    { attributes: { id : "F0003003" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003003_OPT_SAVE" }, state : "closed", data: "Save" },
+                            { attributes: { id : "F0003003_OPT_CANCEL" }, state : "closed", data: "Cancel" }
+                        ]
+                    },
+                    { attributes: { id : "F0003004" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003004_OPT_ADD" }, state : "closed", data: "Add" },
+                            { attributes: { id : "F0003004_OPT_EDIT" }, state : "closed", data: "Edit" },
+                            { attributes: { id : "F0003004_OPT_DELETE" }, state : "closed", data: "Delete" }
+                        ]
+                    },
+                    { attributes: { id : "F0003005" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003005_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0003005_OPT_RESET" }, state : "closed", data: "Reset Password" }
+                        ]
+                    },
+                    { attributes: { id : "F0003006" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003006_OPT_SAVE" }, state : "closed", data: "Save" },
+                            { attributes: { id : "F0003006_OPT_CANCEL" }, state : "closed", data: "Cancel" }
+                        ]
+                    },
+                    { attributes: { id : "F0003007" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003007_OPT_SAVE" }, state : "closed", data: "Save" }
+                        ]
+                    },
+                    { attributes: { id : "F0003008" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003008_OPT_SAVE" }, state : "closed", data: "Save" }
+                        ]
+                    },
+                    { attributes: { id : "F0003009" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003009_OPT_SAVE" }, state : "closed", data: "Save" }
+                        ]
+                    },
+                    { attributes: { id : "F0003010" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003010_OPT_ADD" }, state : "closed", data: "Add" },
+                        ]
+                    },
+                    { attributes: { id : "F0003011" }, state : "closed", data: "Leave Application", children :
+                        [
+                            { attributes: { id : "F0003011_OPT_SEARCH" }, state : "closed", data: "Search" }
+                        ]
+                    }
+                ]
+            },
+            { attributes: { id : "F0004" }, data: "IT Servoce Management", state : "closed"},
+            { attributes: { id : "F0005" }, data: "Report Management", state : "closed" , children :
+                [
+                    { attributes: { id : "F0005001" }, state : "closed", data: "Departmental Transfers", children :
+                        [
+                            { attributes: { id : "F0005001_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0005001_OPT_PDF" }, state : "closed", data: "Create PDF Document & Download" }
+                        ]
+                    },
+                    { attributes: { id : "F0005002" }, state : "closed", data: "Employee Dimission Report", children :
+                        [
+                            { attributes: { id : "F0005002_OPT_SEARCH" }, state : "closed", data: "Search" },
+                            { attributes: { id : "F0005002_OPT_PDF" }, state : "closed", data: "Create PDF Document & Download" }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.AC0001" table="AC0001">
+        <id name="AC0001_SYS_NUM" type="java.lang.String">
+            <column name="AC0001_SYS_NUM" />
+            <generator class="assigned" />
+        </id>
+        <property name="AC0001_SYS_NAME" type="java.lang.String">
+            <column name="AC0001_SYS_NAME" length="150" not-null="false" />
+        </property>
+        <property name="AC0001_STATUS" type="java.lang.String">
+            <column name="AC0001_STATUS" length="5" not-null="false" />
+        </property>
+        <property name="AC0001_PARENT_NUM" type="java.lang.String">
+            <column name="AC0001_PARENT_NUM" length="30" not-null="false" />
+        </property>
+        <property name="AC0001_ORDER_NUM" type="java.lang.Integer">
+            <column name="AC0001_ORDER_NUM" not-null="false" />
+        </property>
+        <property name="AC0001_DES" type="java.lang.String">
+            <column name="AC0001_DES" length="2000" not-null="false" />
+        </property>
+        <property name="AC0001_COMMENT" type="java.lang.String">
+            <column name="AC0001_COMMENT" length="2000" not-null="false" />
+        </property>
+        <property name="AC0001_CREATE_USER" type="java.lang.String">
+            <column name="AC0001_CREATE_USER" length="10" not-null="false" />
+        </property>
+        <property name="AC0001_CREATE_DATE" type="java.lang.String">
+            <column name="AC0001_CREATE_DATE" length="30" not-null="false" />
+        </property>
+        <property name="AC0001_EDIT_USER" type="java.lang.String">
+            <column name="AC0001_EDIT_USER" length="10" not-null="false" />
+        </property>
+        <property name="AC0001_EDIT_DATE" type="java.lang.String">
+            <column name="AC0001_EDIT_DATE" length="30" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

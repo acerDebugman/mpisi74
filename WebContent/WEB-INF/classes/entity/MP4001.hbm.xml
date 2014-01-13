@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP4001" table="MP4001">
+        <id name="MP4001_NUM" type="java.lang.String">
+            <column name="MP4001_NUM" />
+            <generator class="assigned" />
+        </id>
+        <property name="MP4001_NAME" type="java.lang.String">
+            <column name="MP4001_NAME" length="500" not-null="false" />
+        </property>
+        <property name="MP4001_PARENT_TYPE" type="java.lang.String">
+            <column name="MP4001_PARENT_TYPE" length="10" not-null="false" />
+        </property>
+        <property name="MP4001_STATUS" type="java.lang.String">
+            <column name="MP4001_STATUS" length="5" not-null="false" />
+        </property>
+        <property name="MP4001_RELATED_DEPARTMENT" type="java.lang.String">
+            <column name="MP4001_RELATED_DEPARTMENT" length="10" not-null="false" />
+        </property>
+        <property name="MP4001_DES" type="java.lang.String">
+            <column name="MP4001_DES" length="2000" not-null="false" />
+        </property>
+        <property name="MP4001_TYPE" type="java.lang.String">
+            <column name="MP4001_TYPE" length="10" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

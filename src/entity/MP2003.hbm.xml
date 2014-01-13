@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP2003" table="MP2003">
+        <composite-id>
+            <key-property name="MP2003_EMPLOYEE_NUM" column="MP2003_EMPLOYEE_NUM" type="java.lang.String"/>
+            <key-property name="MP2003_DATETIME" column="MP2003_DATETIME" type="java.lang.String"/>
+        </composite-id>
+        <property name="MP2003_START_TIME" type="java.lang.String">
+            <column name="MP2003_START_TIME" length="30" not-null="false" />
+        </property>
+        <property name="MP2003_FINISH_TIME" type="java.lang.String">
+            <column name="MP2003_FINISH_TIME" length="30" not-null="false" />
+        </property>
+        <property name="MP2003_START_TIME_E" type="java.lang.String">
+            <column name="MP2003_START_TIME_E" length="30" not-null="false" />
+        </property>
+        <property name="MP2003_FINISH_TIME_E" type="java.lang.String">
+            <column name="MP2003_FINISH_TIME_E" length="30" not-null="false" />
+        </property>
+        <property name="MP2003_START_TIME_DOOR" type="java.lang.String">
+            <column name="MP2003_START_TIME_DOOR" length="30" not-null="false" />
+        </property>
+        <property name="MP2003_FINISH_TIME_DOOR" type="java.lang.String">
+            <column name="MP2003_FINISH_TIME_DOOR" length="30" not-null="false" />
+        </property>
+        <property name="MP2003_DES" type="java.lang.String">
+            <column name="MP2003_DES" length="200" not-null="false" />
+        </property>
+        <property name="MP2003_COMMENT" type="java.lang.String">
+            <column name="MP2003_COMMENT" length="200" not-null="false" />
+        </property>
+        <property name="MP2003_STATUS" type="java.lang.String">
+            <column name="MP2003_STATUS" length="10" not-null="false" />
+        </property>
+        <property name="MP2003_EDIT_USER" type="java.lang.String">
+            <column name="MP2003_EDIT_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP2003_EDIT_DATETIME" type="java.lang.String">
+            <column name="MP2003_EDIT_DATETIME" length="30" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

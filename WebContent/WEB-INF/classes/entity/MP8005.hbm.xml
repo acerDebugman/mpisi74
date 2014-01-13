@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP8005" table="MP8005">
+        <id name="MP8005_SEQ" type="java.lang.String">
+            <column name="MP8005_SEQ" />
+            <generator class="assigned" />
+        </id>
+        <property name="MP8005_EMPLOYEE_NUM" type="java.lang.String">
+            <column name="MP8005_EMPLOYEE_NUM" length="10" not-null="false" />
+        </property>
+        <property name="MP8005_JOB_TITLE" type="java.lang.String">
+            <column name="MP8005_JOB_TITLE" length="10" not-null="false" />
+        </property>
+        <property name="MP8005_DEPARTMENT" type="java.lang.String">
+            <column name="MP8005_DEPARTMENT" length="10" not-null="false" />
+        </property>
+        <property name="MP8005_MANAGER" type="java.lang.String">
+            <column name="MP8005_MANAGER" length="10" not-null="false" />
+        </property>
+        <property name="MP8005_REVIEW_PERIOD" type="java.lang.String">
+            <column name="MP8005_REVIEW_PERIOD" length="10" not-null="false" />
+        </property>
+        <property name="MP8005_SCORES" type="java.lang.String">
+            <column name="MP8005_SCORES" length="5" not-null="false" />
+        </property>
+        <property name="MP8005_COMMENT" type="java.lang.String">
+            <column name="MP8005_COMMENT" length="4000" not-null="false" />
+        </property>
+        <property name="MP8005_STATUS" type="java.lang.String">
+            <column name="MP8005_STATUS" length="2" not-null="false" />
+        </property>
+        <property name="MP8005_APPRAISER" type="java.lang.String">
+            <column name="MP8005_APPRAISER" length="10" not-null="false" />
+        </property>
+        <property name="MP8005_APPRAISER_DESIGNATION" type="java.lang.String">
+            <column name="MP8005_APPRAISER_DESIGNATION" length="30" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>
+

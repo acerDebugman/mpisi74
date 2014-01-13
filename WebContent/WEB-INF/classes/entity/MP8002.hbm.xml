@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP8002" table="MP8002">
+        <id name="MP8002_SEQ" type="java.lang.String">
+            <column name="MP8002_SEQ" />
+            <generator class="assigned" />
+        </id>
+        <property name="MP8002_TITLE" type="java.lang.String">
+            <column name="MP8002_TITLE" length="1000" not-null="false" />
+        </property>
+        <property name="MP8002_DEPARTMENT_NUM" type="java.lang.String">
+            <column name="MP8002_DEPARTMENT_NUM" length="4" not-null="false" />
+        </property>
+        <property name="MP8002_YEAR" type="java.lang.String">
+            <column name="MP8002_YEAR" length="4" not-null="false" />
+        </property>
+        <property name="MP8002_MONTH" type="java.lang.String">
+            <column name="MP8002_MONTH" length="2" not-null="false" />
+        </property>
+        <property name="MP8002_COMMENT" type="java.lang.String">
+            <column name="MP8002_COMMENT" length="4000" not-null="false" />
+        </property>
+        <property name="MP8002_CREATOR" type="java.lang.String">
+            <column name="MP8002_CREATOR" length="10" not-null="false" />
+        </property>
+        <property name="MP8002_STATUS" type="java.lang.String">
+            <column name="MP8002_STATUS" length="2" not-null="false" />
+        </property>
+        <property name="MP8002_EXECUTE_STATUS" type="java.lang.String">
+            <column name="MP8002_EXECUTE_STATUS" length="2" not-null="false" />
+        </property>
+        <property name="MP8002_FINISH_STATUS" type="java.lang.String">
+            <column name="MP8002_FINISH_STATUS" length="2" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>
+

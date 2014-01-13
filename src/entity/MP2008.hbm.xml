@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP2008" table="MP2008">
+        <id name="MP2008_NUM" type="java.lang.String">
+            <column name="MP2008_NUM" />
+            <generator class="assigned" />
+        </id>
+        <property name="MP2008_EMPLOYEE_NUM" type="java.lang.String">
+            <column name="MP2008_EMPLOYEE_NUM" length="20" not-null="false" />
+        </property>
+        <property name="MP2008_DEPARTMENT" type="java.lang.String">
+            <column name="MP2008_DEPARTMENT" length="10" not-null="false" />
+        </property>
+        <property name="MP2008_DATE" type="java.lang.String">
+            <column name="MP2008_DATE" length="20" not-null="false" />
+        </property>
+        <property name="MP2008_HOURS" type="java.lang.String">
+            <column name="MP2008_HOURS" length="10" not-null="false" />
+        </property>
+        <property name="MP2008_HOURS_TOTAL" type="java.lang.Integer">
+            <column name="MP2008_HOURS_TOTAL" not-null="false" />
+        </property>
+        <property name="MP2008_FROM_DATETIME" type="java.lang.String">
+            <column name="MP2008_FROM_DATETIME" length="2" not-null="false" />
+        </property>
+        <property name="MP2008_TO_DATETIME" type="java.lang.String">
+            <column name="MP2008_TO_DATETIME" length="2" not-null="false" />
+        </property>
+        <property name="MP2008_FROM_MINUTE" type="java.lang.String">
+            <column name="MP2008_FROM_MINUTE" length="2" not-null="false" />
+        </property>
+        <property name="MP2008_TO_MINUTE" type="java.lang.String">
+            <column name="MP2008_TO_MINUTE" length="2" not-null="false" />
+        </property>
+        <property name="MP2008_REASON" type="java.lang.String">
+            <column name="MP2008_REASON" length="4000" not-null="false" />
+        </property>
+        <property name="MP2008_APP_STATUS" type="java.lang.String">
+            <column name="MP2008_APP_STATUS" length="2" not-null="false" />
+        </property>
+        <property name="MP2008_DATA_STATUS" type="java.lang.String">
+            <column name="MP2008_DATA_STATUS" length="2" not-null="false" />
+        </property>
+        <property name="MP2008_COMMENT" type="java.lang.String">
+            <column name="MP2008_COMMENT" length="4000" not-null="false" />
+        </property>
+        <property name="MP2008_RATING" type="java.lang.String">
+            <column name="MP2008_RATING" length="10" not-null="false" />
+        </property>
+        <property name="MP2008_CREATE_USER" type="java.lang.String">
+            <column name="MP2008_CREATE_USER" length="6" not-null="false" />
+        </property>
+        <property name="MP2008_CREATE_DATETIME" type="java.lang.String">
+            <column name="MP2008_CREATE_DATETIME" length="30" not-null="false" />
+        </property>
+        <property name="MP2008_EDIT_USER" type="java.lang.String">
+            <column name="MP2008_EDIT_USER" length="6" not-null="false" />
+        </property>
+        <property name="MP2008_EDIT_DATETIME" type="java.lang.String">
+            <column name="MP2008_EDIT_DATETIME" length="30" not-null="false" />
+        </property>
+        <property name="MP2008_APPROVAL_USER" type="java.lang.String">
+            <column name="MP2008_APPROVAL_USER" length="6" not-null="false" />
+        </property>
+        <property name="MP2008_APPROVAL_DATETIME" type="java.lang.String">
+            <column name="MP2008_APPROVAL_DATETIME" length="30" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>
+

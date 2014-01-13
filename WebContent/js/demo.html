@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jquery</title>
+    <style type="text/css">
+    html {	background: #1d1d1d; }
+    body {
+    margin: 0; padding: 0;
+    font: 10px normal Verdana, Arial, Helvetica, sans-serif;
+    background: #1d1d1d;
+    }
+    h1 {
+    font: 4.7em normal Georgia, 'Arial', Times, serif;
+    color: #fff;
+    margin: 0;
+    text-align: center;
+    padding: 5px 0;
+    }
+    h1 small{
+    font: 0.2em normal Verdana, Arial, Helvetica, sans-serif;
+    text-transform:uppercase;
+    letter-spacing: 1.4em;
+    display: block;
+    color: #ccc;
+    }
+    .container {
+    width: 960px;
+    margin:0px auto;
+    overflow: hidden;
+    }
+    img {border: none;}
+    ul#topnav {
+    background: url(a_bg.gif) repeat-x;
+    margin: 10px 0 20px;
+    padding: 0;
+    list-style: none;
+    font-size: 1.1em;
+    clear: both;
+    float: left;
+    width:100%;
+    }
+    ul#topnav li{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    float: left;
+    height:40px;
+    }
+    ul#topnav a, ul#topnav span {
+    padding: 10px 20px;
+    float: left;
+    text-decoration: none;
+    color: #fff;
+    text-transform: uppercase;
+    clear: both;
+    height: 20px;
+    line-height: 20px;
+    background: #1d1d1d;
+    }
+    ul#topnav a {	color: #7bc441; }
+    ul#topnav span {
+    display: none;
+    }
+    ul#topnav.v2 span{
+    background: url(test.png) repeat-x left top;
+    }
+    ul#topnav.v2 a{
+    color: #555;
+    background: url(test.png) repeat-x left bottom;
+    }
+    </style>
+    <script type="text/javascript" src="jquery-1.6.2.min"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+    $("#topnav li").prepend("<span></span>");
+    $("#topnav li").each(function() {
+    var linkText = $(this).find("a").html();
+    $(this).find("span").show().html(linkText);
+    });
+    $("#topnav li").hover(function() {
+    $(this).find("span").stop().animate({
+    marginTop: "-40" //??  www.16sucai.com
+    }, 250);
+    } , function() {
+    $(this).find("span").stop().animate({
+    marginTop: "0"
+    }, 250);
+    });
+    });
+    </script>
+    </head>
+    <body>
+    <div class="container">
+    <ul id="topnav" class="v2">
+    <li><span>aa</span><a href="/">aa1</a></li>
+    <li><span>bb</span><a href="#">bb1</a></li>
+    <li><span>cc</span><a href="#">cc1</a></li>
+    <li><span>dd</span><a href="#">dd1</a></li>
+    <li><span>ee</span><a href="#">ee1</a></li>
+    <li><span>ff</span><a href="#">ff1</a></li>
+    <li><span>gg</span><a href="#">gg1</a></li>
+    <li><span>hh</span><a href="#">hh1</a></li>
+    <li><span>ii</span><a href="#">ii1</a></li>
+    </ul>
+    </div>
+    </body>
+    </html>

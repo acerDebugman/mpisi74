@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.AC0011" table="AC0011">
+        <composite-id>
+            <key-property name="AC0011_EMPLOYEE_NUM" type="java.lang.String">
+                <column name="AC0011_EMPLOYEE_NUM" length="10" not-null="false" />
+            </key-property>
+            <key-property name="AC0011_FUN_NUM" type="java.lang.String">
+                <column name="AC0011_FUN_NUM" length="30" not-null="false" />
+            </key-property>
+            <key-property name="AC0011_SYS_NUM" type="java.lang.String">
+                <column name="AC0011_SYS_NUM" length="30" not-null="false" />
+            </key-property>
+        </composite-id>
+    </class>
+</hibernate-mapping>

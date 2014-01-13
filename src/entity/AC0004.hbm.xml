@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.AC0004" table="AC0004">
+        <id name="AC0004_NUM" type="java.lang.Integer">
+            <column name="AC0004_NUM" />
+            <generator class="native" />
+        </id>
+        <property name="AC0004_FUN_NUM" type="java.lang.String">
+            <column name="AC0004_FUN_NUM" length="30" not-null="false" />
+        </property>
+        <property name="AC0004_OPT_NUM" type="java.lang.String">
+            <column name="AC0004_OPT_NUM" length="30" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

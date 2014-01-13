@@ -1,0 +1,1356 @@
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+<include file="struts-default.xml" />
+    
+<!-- 将action托管给spring -->
+<constant name="struts.objectFactory" value="spring"></constant>
+<!-- 设置临时文件上传路径 -->
+<constant name="struts.multipart.saveDir" value="/tmp"/>
+<constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+	
+<package name="default" extends="struts-default" >
+	
+<!-- 定义一个拦截器 -->
+    <interceptors>
+        <interceptor name="sessionout" class="interceptor.SessionIterceptor"></interceptor>
+        <!-- 拦截器栈 -->
+        <interceptor-stack name="sessioncheck">
+            <interceptor-ref name="sessionout"/>
+            <interceptor-ref name="defaultStack" />
+        </interceptor-stack>
+    </interceptors>
+
+<!-- 定义全局Result -->
+    <global-results>
+        <!-- 当返回login视图名时，转入/login.jsp页面 -->
+        <result name="relogin" type="redirect">/jump.jsp</result>
+        <result name="error">/error.jsp</result>
+        <result name="noAuthority">/authority.jsp</result>
+    </global-results>
+    
+        <action name ="fileUpload" class ="fileUploadBean" method="fileUpload" >
+            <interceptor-ref name="fileUploadStack"/>
+            <result name="success" >ShowUpload.jsp</result>
+            <result name="input" >main.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action >
+
+<!-- 登陆Action -->
+		<action name="login" class="loginMngBean" method="loginInit">
+		    <result name="success" >login.jsp</result>
+		</action>
+		<action name="logout" class="loginMngBean" method="logout">
+		    <result name="success" >login.jsp</result>
+		</action>
+		<action name="loginCheck" class="loginMngBean" method="login">
+		    <result name="myorder" type="redirectAction">${prePage}</result>
+		    <result name="changePw" type="redirectAction">changePassword.action</result>
+		    <result name="success" type="redirectAction">navigationPageInit.action</result>
+			<result name="input" >login.jsp</result>
+		</action>
+		<action name="changePassword" class="loginMngBean" method="changePassword">
+		    <result name="success" >changePassword.jsp</result>
+		    <result name="input" >login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="navigationPageInit" class="loginMngBean" method="navigationPageInit">
+		    <result name="success" >navigationPage.jsp</result>
+		    <result name="input" >login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="savePassword" class="loginMngBean" method="savePassword">
+		    <result name="success" >jump.jsp</result>
+		    <result name="input" >changePassword.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="loadHrMenu" class="loginMngBean" method="loadHrMenu">
+		    <result name="success" >leftTwo.jsp</result>
+		    <result name="input" >login.jsp</result>
+		</action>
+		<action name="loadPmsMenu" class="loginMngBean" method="loadPmsMenu">
+		    <result name="success" >leftPms.jsp</result>
+		    <result name="input" >login.jsp</result>
+		</action>
+		<action name="loginHistoryInit" class="loginMngBean" method="loginHistoryInit">
+		    <result name="success" >loginHistoryMng.jsp</result>
+		    <result name="input" >login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="loginHistoryInfoSearch" class="loginMngBean" method="loginHistoryInfoSearch">
+		    <result name="success" >loginHistoryMng.jsp</result>
+		    <result name="input" >login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="loginHistoryDetailList" class="loginMngBean" method="loginHistoryDetailList">
+		    <result name="success" >loginHistoryDetail.jsp</result>
+		    <result name="input" >login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mainPageInit" class="loginMngBean" method="mainPageInit">
+		    <result name="success" >main.jsp</result>
+		    <result name="input" >login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+<!-- 登陆Action -->
+
+<!-- 公告栏Action -->
+		<action name="addBulletin" class="bulletinMngBean" method="addBulletinInfo">
+			<result name="success" type="redirect">bulletinList.action</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="editBulletin" class="bulletinMngBean" method="editBulletinInfo">
+			<result name="success" type="redirect">bulletinList.action</result>
+			<result name="sessionClear" type="redirect">login.action</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="bulletinList" class="bulletinMngBean" method="bulletinList">
+			<result name="success" >bulletinView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="initBulletin" class="bulletinMngBean" method="initBulletin">
+			<result name="success" >bulletinAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="delBulletin" class="bulletinMngBean" method="delBulletin">
+			<result name="success" type="redirect">bulletinList.action</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+<!-- 公告栏Action -->
+
+<!-- 员工基本信息管理Action -->
+        <action name="DocumentMngInit" class="employeeMngBean" method="DocumentMngInit">
+            <result name="success">documentMng.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="documentListSearch" class="employeeMngBean" method="documentListSearch">
+            <result name="success">documentMng.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+		<action name="documentDetailList" class="employeeMngBean" method="documentDetailList">
+			<result name="success" >documentDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="deleteDocumentInfo" class="employeeMngBean" method="deleteDocumentInfo">
+			<result name="success">documentDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="DocumentInfoInit" class="employeeMngBean" method="DocumentInfoInit">
+			<result name="success">documentEdit.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="documentInfoSave" class="employeeMngBean" method="documentInfoSave">
+			<result name="success" type="redirect">DocumentInfoInit.action</result>
+			<result name="input" >documentEdit.jsp</result>
+		</action>
+		<action name="uploadDocument" class="employeeMngBean" method="uploadDocument"></action>
+
+
+		<action name="serviceMailSetting" class="employeeMngBean" method="serviceMailSetting">
+			<result name="success" type="redirect">bulletinList.action</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+
+
+        <action name="InterviewMngInit" class="employeeMngBean" method="headcountInit">
+            <result name="success">interviewMng.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="interviewListSearch" class="employeeMngBean" method="interviewListSearch">
+            <result name="success">interviewMng.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+		<action name="interviewDetailList" class="employeeMngBean" method="interviewDetailList">
+			<result name="success" >interviewDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="deleteInterviewInfo" class="employeeMngBean" method="deleteInterviewInfo">
+			<result name="success">interviewDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="interviewInfoInit" class="employeeMngBean" method="interviewInfoInit">
+			<result name="success">interviewEdit.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="interviewInfoSave" class="employeeMngBean" method="interviewInfoSave"></action>
+        <action name="uploadCV" class="employeeMngBean" method="uploadCV"></action>
+        
+        <action name="headcountInit" class="employeeMngBean" method="headcountInit">
+            <result name="success">headCount.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="resetPasswordInit" class="employeeMngBean" method="resetPasswordInit">
+            <result name="success">resetPassword.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="resetPassword" class="employeeMngBean" method="resetPassword">
+            <result name="success">resetPassword.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="employeePasswordSearch" class="employeeMngBean" method="employeePasswordSearch">
+            <result name="success">resetPassword.jsp</result>
+            <result name="input">resetPassword.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+		<action name="positionSearch" class="employeeMngBean" method="positionSearch">
+			<result name="success" >positionShow.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="departmentEmployeeSearch" class="employeeMngBean" method="departmentEmployeeSearch">
+			<result name="success" >employeeShow.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="uploadPic" class="employeeMngBean" method="uploadPic">
+			<result name="success" >pictureDisplay.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="uploadFile" class="employeeMngBean" method="uploadFile"></action>
+		<action name="showImage" class="employeeMngBean" method="showImage"></action>
+		<action name="employeeDetailList" class="employeeMngBean" method="employeeDetailList">
+			<result name="success" >employeeDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeAddInit" class="employeeMngBean" method="employeeAddInit">
+			<result name="success" >employeeCreate.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeEditInit" class="employeeMngBean" method="employeeEditInit">
+			<result name="success" >employeeEdit.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="educationInfoAdd" class="employeeMngBean" method="educationInfoAdd">
+			<result name="success" >educationList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="educationInfoDel" class="employeeMngBean" method="educationInfoDel">
+			<result name="success" >educationList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workInfoAdd" class="employeeMngBean" method="workInfoAdd">
+			<result name="success" >workList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workInfoDel" class="employeeMngBean" method="workInfoDel">
+			<result name="success" >workList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeAdd" class="employeeMngBean" method="employeeAdd">
+			<result name="success" >employeeCreate.jsp</result>
+			<result name="input" >employeeCreate.jsp</result>
+			<result name="validFail" >employeeCreate.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeEducationInit" class="employeeMngBean" method="employeeEducationInit">
+			<result name="success" >employeeEducationAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeEducationAdd" class="employeeMngBean" method="employeeEducationAdd">
+			<result name="success" >employeeEducationAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeEducationEdit" class="employeeMngBean" method="employeeEducationEdit">
+			<result name="success" >employeeEducationAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeEducationSearch" class="employeeMngBean" method="employeeEducationSearch">
+			<result name="success" >educationList.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeExperienceInit" class="employeeMngBean" method="employeeExperienceInit">
+			<result name="success" >employeeExperienceAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeExperienceAdd" class="employeeMngBean" method="employeeExperienceAdd">
+			<result name="success" >employeeExperienceAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeExperienceEdit" class="employeeMngBean" method="employeeExperienceEdit">
+			<result name="success" >employeeExperienceAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeExperienceSearch" class="employeeMngBean" method="employeeExperienceSearch">
+			<result name="success" >workList.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="employeeContactInit" class="employeeMngBean" method="employeeContactInit">
+			<result name="success" >employeeContactAdd.jsp</result>
+			<result name="input" >employeeContactAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeContactAdd" class="employeeMngBean" method="employeeContactAdd">
+			<result name="success" >employeeContactAdd.jsp</result>
+			<result name="input" >employeeContactAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeContactEdit" class="employeeMngBean" method="employeeContactEdit">
+			<result name="success" >employeeContactAdd.jsp</result>
+			<result name="input" >employeeContactAdd.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeContactSearch" class="employeeMngBean" method="employeeContactSearch">
+			<result name="success" >contactList.jsp</result>
+			<result name="input" >contactList.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="contactInfoDel" class="employeeMngBean" method="contactInfoDel">
+			<result name="success" >contactList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="telephoneListInit" class="employeeMngBean" method="telephoneListInit">
+			<result name="success" >telephoneList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeTelephoneSearch" class="employeeMngBean" method="employeeTelephoneSearch">
+			<result name="success" >telephoneList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>		
+		
+		<action name="changeDepartmentInit" class="employeeMngBean" method="changeDepartmentInit">
+			<result name="success" >changeDepartment.jsp</result>
+		</action>
+
+		<action name="employeeEdit" class="employeeMngBean" >
+			<result name="success" type="redirect">employeeList.action</result>
+			<result name="input" >employeeEdit.jsp</result>
+			<result name="department" >changeDepartment.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeList" class="employeeMngBean" method="employeeList">
+			<result name="success" >employeeView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="tmpEmployeeView" class="employeeMngBean" method="tmpEmployeeView">
+			<result name="success" >tempEmployeeView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="tmpEmployeeApproval" class="employeeMngBean" method="tmpEmployeeApproval">
+            <result name="success" >tempEmployeeDetail.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+
+		<action name="employeeSearch" class="employeeMngBean" method="employeeSearch">
+			<result name="search" >employeeView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeDisplay" class="employeeMngBean" method="employeeDisplay">
+			<result name="success" >personalInfoView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="changeDepartment" class="employeeMngBean" method="changeDepartment">
+			<result name="success">kpi.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="departmentalTransfersReportInit" class="employeeMngBean" method="departmentalTransfersReportInit">
+			<result name="success">departmentalTransfersReport.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="departmentalTransfersSearch" class="employeeMngBean" method="departmentalTransfersSearch">
+			<result name="success">departmentalTransfersReport.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>		
+		<action name="trunoverReportInit" class="employeeMngBean" method="trunoverReportInit">
+			<result name="success">trunoverReport.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="turnoverSearch" class="employeeMngBean" method="turnoverSearch">
+			<result name="success">trunoverReport.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+        <action name="employeeSelectInit" class="employeeMngBean" method="employeeSelectInit">
+            <result name="success">employeeSelect.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="employeeSelectRefresh" class="employeeMngBean" method="employeeSelectRefresh">
+            <result name="success">employeeSelectDetail.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="employeeSelectInit2" class="employeeMngBean" method="employeeSelectInit2">
+            <result name="success">employeeSelect2.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="employeeSelectRefresh2" class="employeeMngBean" method="employeeSelectRefresh2">
+            <result name="success">employeeSelectDetail2.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="employeeSelectSave2" class="employeeMngBean" method="employeeSelectSave2">
+            <result name="success">employeeSelect2.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        
+        
+<!-- 员工基本信息管理Action -->
+	
+<!-- 出勤管理Action -->
+		<action name="leaveSubmit" class="applyLeaveMngBean" >
+		    <result name="success" type="redirect">applyLeaveDis.action</result>
+			<result name="approve" >applyLeave.jsp</result>
+			<result name="input" type="redirect">applyLeaveDis.action</result>
+			<result name="fail" type="redirect">applyLeaveInit.action?type=add</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="editLeaveApply" class="applyLeaveMngBean" method="editLeaveApply">
+			<result name="success" type="redirect">applyLeaveDis.action</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+
+		<action name="applyLeaveDis" class="applyLeaveMngBean" method="applyLeaveDis">
+			<result name="success">applyLeaveDis.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="loadActingPerson" class="applyLeaveMngBean" method="loadActingPerson">
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="applyLeaveInit" class="applyLeaveMngBean" method="applyLeaveInit">
+			<result name="add">applyLeave.jsp</result>
+			<result name="edit">applyLeaveEdit.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="deleteLeaveInfo" class="applyLeaveMngBean" method="deleteLeaveInfo">
+			<result name="success">leaveDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="refreshLeaveInfo" class="applyLeaveMngBean" method="refreshLeaveInfo">
+			<result name="success">leaveDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+
+
+		<action name="applyLeaveListInit" class="applyLeaveMngBean" method="applyLeaveListInit">
+			<result name="success">applyLeaveView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="applyLeaveListSearch" class="applyLeaveMngBean" method="applyLeaveListSearch">
+			<result name="success">applyLeaveView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="leaveDetailList" class="applyLeaveMngBean" method="leaveDetailList">
+			<result name="success" >leaveDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="vacationDataList" class="applyLeaveMngBean" method="vacationDataList">
+			<result name="success" >vacationView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="vacationDataListPageClick" class="applyLeaveMngBean" method="vacationDataListPageClick">
+			<result name="success" >vacationViewDetail.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workingHourRecordsListInit" class="applyLeaveMngBean" method="workingHourRecordsListInit">
+			<result name="success">workingHourRecordsList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workRecordList" class="applyLeaveMngBean" method="workRecordList">
+			<result name="success" >workRecordDetail.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workingRecordsListSearch" class="applyLeaveMngBean" method="workingRecordsListSearch">
+			<result name="success">workingHourRecordsList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workTimeConfirm" class="applyLeaveMngBean" method="workTimeConfirm">
+		    <result name="success">workRecordDetail.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workTimeConfirmInit" class="applyLeaveMngBean" method="workTimeConfirmInit">
+		    <result name="success">workTimeConfirm.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workTimeConfirmSave" class="applyLeaveMngBean" method="workTimeConfirmSave">
+		    <result name="success">workTimeConfirm.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="loadMajorDays" class="applyLeaveMngBean" method="loadMajorDays">
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+
+		<action name="leaveApplyReportInit" class="applyLeaveMngBean" method="leaveApplyReportInit">
+			<result name="success">applyLeaveReport2.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="leaveApplyReportSearch" class="applyLeaveMngBean" method="leaveApplyReportSearch">
+			<result name="success">applyLeaveReport2.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="vacationSave" class="applyLeaveMngBean" method="vacationSave">
+			<result name="success">vacationAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="vacationAddInit" class="applyLeaveMngBean" method="vacationAddInit">
+			<result name="success">vacationAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="majorInfoAdd" class="applyLeaveMngBean" method="majorInfoAdd">
+			<result name="success">vacationDetailAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="majorInfoDel" class="applyLeaveMngBean" method="majorInfoDel">
+			<result name="success">vacationDetailAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+
+		 <action name="leaveMngInit" class="applyLeaveMngBean" method="leaveMngInit">
+		    <result name="success">LeaveMng.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="leaveInfoSearch" class="applyLeaveMngBean" method="leaveInfoSearch">
+		    <result name="success">LeaveMng.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="leaveAdd" class="applyLeaveMngBean" method="leaveAdd">
+		    <result name="success">AddLeave.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		 <action name="leaveInfoDel" class="applyLeaveMngBean" method="leaveInfoDel">
+		    <result name="success">leaveDetailInfo.jsp</result>
+		    <result name="input">login.jsp</result>
+		</action>
+		<action name="leaveInfoAddInit" class="applyLeaveMngBean" method="leaveInfoAddInit">
+		    <result name="success">AddLeave.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="leaveInfoRefresh" class="applyLeaveMngBean" method="leaveInfoRefresh">
+		    <result name="success">leaveDetailInfo.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="ApproveLeave" class="applyLeaveMngBean" method="ApproveLeave">
+		    <result name="success">leaveDetailInfo.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="DeclineLeave" class="applyLeaveMngBean" method="DeclineLeave">
+		    <result name="success">leaveDetailInfo.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+<!-- 出勤管理Action -->
+
+<!-- 部门职位管理Action -->
+		<action name="positionInfoInit" class="departmentMngBean" method="positionInfoInit">
+			<result name="success">positionMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="positionInfoAddInit" class="departmentMngBean" method="positionInfoAddInit">
+			<result name="success">../../positionAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="positionInfoAdd" class="departmentMngBean" method="positionInfoAdd">
+			<result name="success">positionAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="positionInfoDel" class="departmentMngBean" method="positionInfoDel">
+			<result name="success" type="redirect">positionDetailInfoSearch.action</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="positionDetailInfoSearch" class="departmentMngBean" method="positionDetailInfoSearch">
+			<result name="success">positionDetailList.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="departmentAddInit" class="departmentMngBean" method="departmentAddInit">
+			<result name="edit">../../departmentAdd.jsp</result>
+			<result name="add">departmentAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="departmentInfoSave" class="departmentMngBean" method="departmentInfoSave">
+			<result name="edit">departmentAdd.jsp</result>
+			<result name="add">departmentAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="departmentPositionSetInit" class="departmentMngBean" method="departmentPositionSetInit">
+			<result name="success">../../departmentPositionSet.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="departmentPosotionSave" class="departmentMngBean" method="departmentPosotionSave">
+			<result name="success">../../departmentPositionSet.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="departmentPositionRefresh" class="departmentMngBean" method="departmentPositionRefresh">
+			<result name="success">departmentPositionRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+        <action name="departmentSelectInit" class="departmentMngBean" method="departmentSelectInit">
+            <result name="success">departmentSelect.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="departmentSelectSave" class="departmentMngBean" method="departmentSelectSave">
+            <result name="success">departmentSelect.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+<!-- 部门职位管理Action -->
+
+<!-- Holiday管理Action -->
+        <action name="holidayMngInit" class="departmentMngBean" method="holidayMngInit">
+            <result name="success">publicHolidayMng.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+		<action name="mp0010InfoListRefresh" class="departmentMngBean" method="mp0010InfoListRefresh">
+			<result name="success">mp0010InfoListRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="holidayInfoListRefresh" class="departmentMngBean" method="holidayInfoListRefresh">
+			<result name="success">holidayInfoListRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+        <action name="mp0010InfoAddInit" class="departmentMngBean" method="mp0010InfoAddInit">
+            <result name="success">mp0010InfoAdd.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="holidayInfoAddInit" class="departmentMngBean" method="holidayInfoAddInit">
+            <result name="success">holidayInfoAdd.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="mp0010InfoSave" class="departmentMngBean" method="mp0010InfoSave">
+            <result name="success">mp0010InfoAdd.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="holidayInfoSave" class="departmentMngBean" method="holidayInfoSave">
+            <result name="success">holidayInfoAdd.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+		<action name="mp0010InfoListDelete" class="departmentMngBean" method="mp0010InfoListDelete">
+			<result name="success">mp0010InfoListRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="holidayInfoListDelete" class="departmentMngBean" method="holidayInfoListDelete">
+			<result name="success">holidayInfoListRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+        
+<!-- Holiday管理Action -->
+
+<!-- 预算管理Action -->
+		<action name="mainPmsInit" class="requisitionFormMngBean" method="mainPmsInit">
+		    <result name="success" >mainPms.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+        <action name="bugdetMngInit" class="requisitionFormMngBean" method="bugdetMngInit">
+            <result name="success">departmentBudgetMng.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="departmentList" class="requisitionFormMngBean" method="departmentList">
+            <result name="success">departmentInfoList.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetSetInit" class="requisitionFormMngBean" method="budgetSetInit">
+            <result name="success">departmentBudgetSet.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="departmentBudgetSave" class="requisitionFormMngBean" method="departmentBudgetSave">
+            <result name="success">departmentBudgetSet.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="departmentBudgetSave2" class="requisitionFormMngBean" method="departmentBudgetSave2">
+            <result name="success">departmentBudgetSet.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="type2Info" class="requisitionFormMngBean" method="type2Info">
+            <result name="success">type2InfoPage.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfo" class="requisitionFormMngBean" method="budgetInfo">
+            <result name="page1">bugdetInfoPage.jsp</result>
+            <result name="page2">relatedDepInfoPage.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="departmentBudgetInfoList" class="requisitionFormMngBean" method="departmentBudgetInfoList">
+            <result name="success">departBudgetInfoList.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="superaddBudgetInfoInit" class="requisitionFormMngBean" method="superaddBudgetInfoInit">
+            <result name="success">budgetSuperadd.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="superaddBudgetInfoSave" class="requisitionFormMngBean" method="superaddBudgetInfoSave">
+            <result name="success">budgetSuperadd.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfoReportByDepYearInit" class="requisitionFormMngBean" method="budgetInfoReportByDepYearInit">
+            <result name="success">budgetInfoDepYearReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfoReportByDepYearSearch" class="requisitionFormMngBean" method="budgetInfoReportByDepYearSearch">
+            <result name="success">pages/pms/budgetInfoDepYearReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfoReportByDepYearMonthInit" class="requisitionFormMngBean" method="budgetInfoReportByDepYearMonthInit">
+            <result name="success">budgetInfoDepYearMonthReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfoReportByDepYearMonthSearch" class="requisitionFormMngBean" method="budgetInfoReportByDepYearMonthSearch">
+            <result name="success">pages/pms/budgetInfoDepYearMonthReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfoReportByAccYearInit" class="requisitionFormMngBean" method="budgetInfoReportByAccYearInit">
+            <result name="success">budgetInfoAccYearReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfoReportByAccYearSearch" class="requisitionFormMngBean" method="budgetInfoReportByAccYearSearch">
+            <result name="success">pages/pms/budgetInfoAccYearReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfoReportByAccYearMonthInit" class="requisitionFormMngBean" method="budgetInfoReportByAccYearMonthInit">
+            <result name="success">budgetInfoAccYearMonthReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetInfoReportByAccYearMonthSearch" class="requisitionFormMngBean" method="budgetInfoReportByAccYearMonthSearch">
+            <result name="success">pages/pms/budgetInfoAccYearMonthReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="applyBudgetAdditionInit" class="requisitionFormMngBean" method="applyBudgetAdditionInit">
+            <result name="success">applyBudgetAddition.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetAdditionMngInit" class="requisitionFormMngBean" method="budgetAdditionMngInit">
+            <result name="success">budgetAdditionMng.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetAdditionSave" class="requisitionFormMngBean" method="budgetAdditionSave">
+            <result name="success" type="redirectAction">budgetAdditionMngInit.action</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="BudgetAdditionSearch" class="requisitionFormMngBean" method="BudgetAdditionSearch">
+            <result name="success">pages/pms/budgetAdditionMng.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetAdditionRefresh" class="requisitionFormMngBean" method="budgetAdditionRefresh">
+            <result name="success">budgetAdditionDetail.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetAdditionDel" class="requisitionFormMngBean" method="budgetAdditionDel">
+            <result name="success">budgetAdditionDetail.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        
+        <action name="budgetAdditionApprove" class="requisitionFormMngBean" method="budgetAdditionApprove">
+            <result name="success">budgetAdditionDetail.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        
+        <action name="budgetChartReportBar" class="requisitionFormMngBean" method="budgetChartReportBar">
+            <result name="success">budgetChartReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetChartReportLine" class="requisitionFormMngBean" method="budgetChartReportLine">
+            <result name="success">budgetChartReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="budgetChartReportInit" class="requisitionFormMngBean" method="budgetChartReportInit">
+            <result name="success">budgetChartReport.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+<!-- 预算管理Action -->
+
+<!-- 员工绩效考核管理Action -->
+ <!-- 考核题目管理 -->
+		<action name="performanceMngInit" class="performanceMngBean" method="performanceMngInit">
+		    <result name="success">main.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionAddInit" class="performanceMngBean" method="examQuestionAddInit">
+			<result name="success" >pages/performance/examQuestionInfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionInfoMngInit" class="performanceMngBean" method="examQuestionInfoMngInit">
+			<result name="success" >pages/performance/examQuestionInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionInfoSave" class="performanceMngBean" method="examQuestionInfoSave">
+ 			<result name="success">pages/performance/examQuestionInfoAdd.jsp</result>
+			<result name="input" >pages/performance/examQuestionInfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionInfoSearch" class="performanceMngBean" method="examQuestionInfoSearch">
+			<result name="success" >pages/performance/examQuestionInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionInfoPageClick" class="performanceMngBean" method="examQuestionInfoPageClick">
+			<result name="success" >pages/performance/examQuestionDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionInfoDelete" class="performanceMngBean" method="examQuestionInfoDelete">
+			<result name="success" >pages/performance/examQuestionDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionSelectInit" class="performanceMngBean" method="examQuestionSelectInit">
+			<result name="success" >pages/performance/examQuestionSelect.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionSelectPageClick" class="performanceMngBean" method="examQuestionSelectPageClick">
+			<result name="success" >pages/performance/examQuestionSelectDetail.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+ <!-- 考核题目管理 (部门考评)-->
+		<action name="performance2MngInit" class="performanceMngBean" method="performance2MngInit">
+		    <result name="success">main.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2AddInit" class="performanceMngBean" method="examQuestion2AddInit">
+			<result name="success" >pages/performance2/examQuestion2InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2InfoMngInit" class="performanceMngBean" method="examQuestion2InfoMngInit">
+			<result name="success" >pages/performance2/examQuestion2InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2InfoSave" class="performanceMngBean" method="examQuestion2InfoSave">
+ 			<result name="success">pages/performance2/examQuestion2InfoAdd.jsp</result>
+			<result name="input" >pages/performance2/examQuestion2InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2InfoSearch" class="performanceMngBean" method="examQuestion2InfoSearch">
+			<result name="success" >pages/performance2/examQuestion2InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2InfoPageClick" class="performanceMngBean" method="examQuestion2InfoPageClick">
+			<result name="success" >pages/performance2/examQuestion2DetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2InfoDelete" class="performanceMngBean" method="examQuestion2InfoDelete">
+			<result name="success" >pages/performance2/examQuestion2DetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2SelectInit" class="performanceMngBean" method="examQuestion2SelectInit">
+			<result name="success" >pages/performance2/examQuestion2Select.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2SelectPageClick" class="performanceMngBean" method="examQuestion2SelectPageClick">
+			<result name="success" >pages/performance2/examQuestion2SelectDetail.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+ <!-- 考核计划管理 -->
+		<action name="examPlanAddInit" class="performanceMngBean" method="examPlanAddInit">
+			<result name="success" >pages/performance/examPlanInfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanInfoMngInit" class="performanceMngBean" method="examPlanInfoMngInit">
+			<result name="success" >pages/performance/examPlanInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanInfoSave" class="performanceMngBean" method="examPlanInfoSave">
+ 			<result name="success">pages/performance/examPlanInfoAdd.jsp</result>
+			<result name="input" >pages/performance/examPlanInfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanInfoSearch" class="performanceMngBean" method="examPlanInfoSearch">
+			<result name="success" >pages/performance/examPlanInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanInfoPageClick" class="performanceMngBean" method="examPlanInfoPageClick">
+			<result name="success" >pages/performance/examPlanDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanInfoDelete" class="performanceMngBean" method="examPlanInfoDelete">
+			<result name="success" >pages/performance/examPlanDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanInfoCopy" class="performanceMngBean" method="examPlanInfoCopy">
+			<result name="success" >pages/performance/examPlanDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanInfoExecute" class="performanceMngBean" method="examPlanInfoExecute">
+			<result name="success" >pages/performance/examPlanDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="examQuestionSelectMngInit" class="performanceMngBean" method="examQuestionSelectMngInit">
+			<result name="success" >pages/performance/examQuestionSelectedItemMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestionSelectMngPageClick" class="performanceMngBean" method="examQuestionSelectMngPageClick">
+			<result name="success" >pages/performance/examQuestionSelectedItemDetail.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanItemInfoRefresh" class="performanceMngBean" method="examPlanItemInfoRefresh">
+			<result name="success" >pages/performance/examPlanItemInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanEmpInfoRefresh" class="performanceMngBean" method="examPlanEmpInfoRefresh">
+			<result name="success" >pages/performance/examPlanEmpInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanItemInfoDelete" class="performanceMngBean" method="examPlanItemInfoDelete">
+			<result name="success" >pages/performance/examPlanItemInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanEmpInfoDelete" class="performanceMngBean" method="examPlanEmpInfoDelete">
+			<result name="success" >pages/performance/examPlanEmpInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlanItemInfoSave" class="performanceMngBean" method="examPlanItemInfoSave">
+		    <result name="success" >pages/performance/examQuestionSelect.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+ <!-- 考核计划管理 (部门考评)-->
+		<action name="examPlan2AddInit" class="performanceMngBean" method="examPlan2AddInit">
+			<result name="success" >pages/performance2/examPlan2InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2InfoMngInit" class="performanceMngBean" method="examPlan2InfoMngInit">
+			<result name="success" >pages/performance2/examPlan2InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2InfoSave" class="performanceMngBean" method="examPlan2InfoSave">
+ 			<result name="success">pages/performance2/examPlan2InfoAdd.jsp</result>
+			<result name="input" >pages/performance2/examPlan2InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2InfoSearch" class="performanceMngBean" method="examPlan2InfoSearch">
+			<result name="success" >pages/performance2/examPlan2InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2InfoPageClick" class="performanceMngBean" method="examPlan2InfoPageClick">
+			<result name="success" >pages/performance2/examPlan2DetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2InfoDelete" class="performanceMngBean" method="examPlan2InfoDelete">
+			<result name="success" >pages/performance2/examPlan2DetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2InfoCopy" class="performanceMngBean" method="examPlan2InfoCopy">
+			<result name="success" >pages/performance2/examPlan2DetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2InfoExecute" class="performanceMngBean" method="examPlan2InfoExecute">
+			<result name="success" >pages/performance2/examPlan2DetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="examQuestion2SelectMngInit" class="performanceMngBean" method="examQuestion2SelectMngInit">
+			<result name="success" >pages/performance2/examQuestion2SelectedItemMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examQuestion2SelectMngPageClick" class="performanceMngBean" method="examQuestion2SelectMngPageClick">
+			<result name="success" >pages/performance2/examQuestion2SelectedItemDetail.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2ItemInfoRefresh" class="performanceMngBean" method="examPlan2ItemInfoRefresh">
+			<result name="success" >pages/performance2/examPlan2ItemInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2EmpInfoRefresh" class="performanceMngBean" method="examPlan2EmpInfoRefresh">
+			<result name="success" >pages/performance2/examPlan2EmpInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2ItemInfoDelete" class="performanceMngBean" method="examPlan2ItemInfoDelete">
+			<result name="success" >pages/performance2/examPlan2ItemInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2EmpInfoDelete" class="performanceMngBean" method="examPlan2EmpInfoDelete">
+			<result name="success" >pages/performance2/examPlan2EmpInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examPlan2ItemInfoSave" class="performanceMngBean" method="examPlan2ItemInfoSave">
+		    <result name="success" >pages/performance2/examQuestionSelect.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+ <!-- 月度考核计划管理 -->
+		<action name="examEvaluationMonthlyAddInit" class="performanceMngBean" method="examEvaluationMonthlyAddInit">
+			<result name="success" >pages/performance/examEvaluationMonthlyInfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthlyInfoMngInit" class="performanceMngBean" method="examEvaluationMonthlyInfoMngInit">
+			<result name="success" >pages/performance/examEvaluationMonthlyInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthlyInfoSave" class="performanceMngBean" method="examEvaluationMonthlyInfoSave">
+ 			<result name="success">pages/performance/examEvaluationMonthlyInfoAdd.jsp</result>
+			<result name="input" >pages/performance/examEvaluationMonthlyInfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthlyInfoSearch" class="performanceMngBean" method="examEvaluationMonthlyInfoSearch">
+			<result name="success" >pages/performance/examEvaluationMonthlyInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthlyInfoPageClick" class="performanceMngBean" method="examEvaluationMonthlyInfoPageClick">
+			<result name="success" >pages/performance/examEvaluationMonthlyDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthlyInfoDelete" class="performanceMngBean" method="examEvaluationMonthlyInfoDelete">
+			<result name="success" >pages/performance/examEvaluationMonthlyDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+ <!-- 月度考核计划管理((部门考评)) -->
+		<action name="examEvaluationMonthly2AddInit" class="performanceMngBean" method="examEvaluationMonthly2AddInit">
+			<result name="success" >pages/performance2/examEvaluationMonthly2InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthly2InfoMngInit" class="performanceMngBean" method="examEvaluationMonthly2InfoMngInit">
+			<result name="success" >pages/performance2/examEvaluationMonthly2InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthly2InfoSave" class="performanceMngBean" method="examEvaluationMonthly2InfoSave">
+ 			<result name="success">pages/performance2/examEvaluationMonthly2InfoAdd.jsp</result>
+			<result name="input" >pages/performance2/examEvaluationMonthly2InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthly2InfoSearch" class="performanceMngBean" method="examEvaluationMonthly2InfoSearch">
+			<result name="success" >pages/performance2/examEvaluationMonthly2InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthly2InfoPageClick" class="performanceMngBean" method="examEvaluationMonthly2InfoPageClick">
+			<result name="success" >pages/performance2/examEvaluationMonthly2DetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthly2InfoDelete" class="performanceMngBean" method="examEvaluationMonthly2InfoDelete">
+			<result name="success" >pages/performance2/examEvaluationMonthly2DetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthly2ReportMngInit" class="performanceMngBean" method="examEvaluationMonthly2ReportMngInit">
+			<result name="success" >pages/performance2/examEvaluationMonthly2ReportMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthly2ReportMngSearch" class="performanceMngBean" method="examEvaluationMonthly2ReportMngSearch">
+			<result name="success" >pages/performance2/examEvaluationMonthly2ReportMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationMonthly2Detail" class="performanceMngBean" method="examEvaluationMonthly2Detail">
+			<result name="success" >pages/performance2/examEvaluationMonthly2Detail.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+ <!-- 年度考核计划管理 -->
+		<action name="examEvaluationYearlyAddInit" class="performanceMngBean" method="examEvaluationYearlyAddInit">
+			<result name="success" >pages/performance/examEvaluationYearlyInfoAdd3.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationYearlyInfoMngInit" class="performanceMngBean" method="examEvaluationYearlyInfoMngInit">
+			<result name="success" >pages/performance/examEvaluationYearlyInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationYearlyInfoSave" class="performanceMngBean" method="examEvaluationYearlyInfoSave">
+ 			<result name="success">pages/performance/examEvaluationYearlyInfoAdd3.jsp</result>
+			<result name="input" >pages/performance/examEvaluationYearlyInfoAdd3.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationYearlyInfoSearch" class="performanceMngBean" method="examEvaluationYearlyInfoSearch">
+			<result name="success" >pages/performance/examEvaluationYearlyInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationYearlyInfoPageClick" class="performanceMngBean" method="examEvaluationYearlyInfoPageClick">
+			<result name="success" >pages/performance/examEvaluationYearlyDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examEvaluationYearlyInfoDelete" class="performanceMngBean" method="examEvaluationYearlyInfoDelete">
+			<result name="success" >pages/performance/examEvaluationYearlyDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+ <!-- 指定评定人管理 -->
+		<action name="examAppraiserAddInit" class="performanceMngBean" method="examAppraiserAddInit">
+			<result name="success" >pages/performance/examAppraiserInfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examAppraiserInfoMngInit" class="performanceMngBean" method="examAppraiserInfoMngInit">
+			<result name="success" >pages/performance/examAppraiserInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examAppraiserInfoSave" class="performanceMngBean" method="examAppraiserInfoSave">
+ 			<result name="success">pages/performance/examAppraiserInfoAdd.jsp</result>
+			<result name="input" >pages/performance/examAppraiserInfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examAppraiserInfoSearch" class="performanceMngBean" method="examAppraiserInfoSearch">
+			<result name="success" >pages/performance/examAppraiserInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="examAppraiserInfoPageClick" class="performanceMngBean" method="examAppraiserInfoPageClick">
+			<result name="success" >pages/performance/examAppraiserDetailInfo.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+ <!-- 考核报表管理 -->
+        <action name="appraisalChartReport1" class="performanceMngBean" method="appraisalChartReport1">
+            <result name="success">appraisalChartReport1.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="appraisalChartReport2Init" class="performanceMngBean" method="appraisalChartReport2Init">
+            <result name="success">pages/performance/appraisalChartReport2.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="appraisalChartReport2" class="performanceMngBean" method="appraisalChartReport2">
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="appraisalChartReport3Init" class="performanceMngBean" method="appraisalChartReport3Init">
+            <result name="success">pages/performance/appraisalChartReport3.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="appraisalChartReport3" class="performanceMngBean" method="appraisalChartReport3">
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="appraisalChartReport4Init" class="performanceMngBean" method="appraisalChartReport4Init">
+            <result name="success">pages/performance/appraisalChartReport4.jsp</result>
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        <action name="appraisalChartReport4" class="performanceMngBean" method="appraisalChartReport4">
+            <interceptor-ref name="sessioncheck"/>
+        </action>
+        
+		
+<!-- 员工绩效考核管理Action -->
+
+<!-- 考勤数据自动导入管理Action -->
+		<action name="checkinoutInfoMngInit" class="AttendanceDataLoadBean" method="checkinoutInfoMngInit">
+			<result name="success" >CHECKINOUTInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="checkinoutInfoSearch" class="AttendanceDataLoadBean" method="checkinoutInfoSearch">
+			<result name="success" >CHECKINOUTInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="checkinoutInfoPageClick" class="AttendanceDataLoadBean" method="checkinoutInfoPageClick">
+			<result name="success" >CHECKINOUTInfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="loadDataToHrSystem" class="AttendanceDataLoadBean" method="loadDataToHrSystem">
+			<result name="success" >CHECKINOUTInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="calculateAttendanceData" class="AttendanceDataLoadBean" method="calculateAttendanceData">
+			<result name="success" >CHECKINOUTInfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+<!-- 加班申请表管理 -->
+		<action name="mp2008AddInit" class="applyLeaveMngBean" method="mp2008AddInit">
+			<result name="success" >MP2008InfoAdd.jsp</result>
+			<result name="view">MP2008InfoView.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp2008InfoMngInit" class="applyLeaveMngBean" method="mp2008InfoMngInit">
+			<result name="success" >MP2008InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp2008Save" class="applyLeaveMngBean" >
+		    <result name="mp2008InfoSave">MP2008InfoAdd.jsp</result>
+		    <result name="mp2008InfoSave2">MP2008InfoAdd.jsp</result>
+ 			<result name="success">MP2008InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp2008InfoSearch" class="applyLeaveMngBean" method="mp2008InfoSearch">
+			<result name="success" >MP2008InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp2008InfoPageClick" class="applyLeaveMngBean" method="mp2008InfoPageClick">
+			<result name="success" >MP2008InfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp2008InfoDelete" class="applyLeaveMngBean" method="mp2008InfoDelete">
+			<result name="success" >MP2008InfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp2008InfoApprove" class="applyLeaveMngBean" method="mp2008InfoApprove">
+			<result name="success" >MP2008InfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp2008InfoDecline" class="applyLeaveMngBean" method="mp2008InfoDecline">
+			<result name="success" >MP2008InfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+<!-- 临时员工管理 -->
+		<action name="mp1010AddInit" class="employeeMngBean" method="mp1010AddInit">
+			<result name="success" >MP1010InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp1010InfoMngInit" class="employeeMngBean" method="mp1010InfoMngInit">
+			<result name="success" >MP1010InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp1010InfoSave" class="employeeMngBean" method="mp1010InfoSave">
+ 			<result name="success">MP1010InfoAdd.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp1010InfoSearch" class="employeeMngBean" method="mp1010InfoSearch">
+			<result name="success" >MP1010InfoMng.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp1010InfoPageClick" class="employeeMngBean" method="mp1010InfoPageClick">
+			<result name="success" >MP1010InfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="mp1010InfoDelete" class="employeeMngBean" method="mp1010InfoDelete">
+			<result name="success" >MP1010InfoRefresh.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+
+<!-- PDF文档Action -->
+		<action name="telInfoPdf" class="employeeMngBean" method="telInfoPdf">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workingInfoPdf" class="applyLeaveMngBean" method="workingInfoPdf">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="documentDownload" class="applyLeaveMngBean" method="documentDownload">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="documentDownloadEmp" class="employeeMngBean" method="documentDownloadEmp">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="documentDownloadPR" class="applyLeaveMngBean" method="documentDownloadPR">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createBudgetExcelDocument" class="requisitionFormMngBean" method="createBudgetExcelDocument">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createBudgetExcelDocument2" class="requisitionFormMngBean" method="createBudgetExcelDocument2">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createEmployeeInfoExcelDocument" class="employeeMngBean" method="createEmployeeInfoExcelDocument">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createEmployeeInfoExcelDocument2" class="employeeMngBean" method="createEmployeeInfoExcelDocument2">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createMonthlyAppraisalFormInfoExcelDocument" class="performanceMngBean" method="createMonthlyAppraisalFormInfoExcelDocument">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createMonthlyAppraisalFormInfoExcelDocument2" class="performanceMngBean" method="createMonthlyAppraisalFormInfoExcelDocument2">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createMonthlyAppraisalFormInfoExcelDocument3" class="performanceMngBean" method="createMonthlyAppraisalFormInfoExcelDocument3">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createYearlyAppraisalFormInfoExcelDocument" class="performanceMngBean" method="createYearlyAppraisalFormInfoExcelDocument">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createLeaveInfoExcelDocument" class="applyLeaveMngBean" method="createLeaveInfoExcelDocument">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createOvertimeExcel" class="applyLeaveMngBean" method="createOvertimeExcel">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="createCheckInOuteExcel" class="AttendanceDataLoadBean" method="createCheckInOuteExcel">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="workingInfoExcel" class="applyLeaveMngBean" method="workingInfoExcel">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="leaveInfoExcel" class="applyLeaveMngBean" method="leaveInfoExcel">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+<!-- PDF文档Action -->
+	</package>
+</struts>
+
+

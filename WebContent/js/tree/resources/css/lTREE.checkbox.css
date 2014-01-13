@@ -1,0 +1,34 @@
+﻿/****************************
+CSS Code for lTREEMenu
+Version: Ver2.0.1
+Author : CNLei, 枫岩
+E-Mail : CNLei.Y.L@Gmail.com
+MySite : http://www.cnlei.com
+Passed : IE6.0+, FF1.0+, Opera8.5+, Safari 3.0+
+Update : 2008-5-19
+****************************/
+a {text-decoration:none;}
+a,a:visited {color:#000;background:inherit;}
+body {margin:0;padding:20px;font:12px tahoma,宋体,sans-serif;}
+h4 {margin:0;padding:0;font-size:18px;}
+p {margin:0;padding:0 0 0 18px;}
+p a,p a:visited {color:#00f;background:inherit;}
+
+/*lTREEMenu Start*/
+.lTREEMenu dl {padding:0;margin:0 0 0 17px;clear:both;}
+.lTREEMenu a {background:none;}/*消除在FF2.0,Opera9下有重复背景图bug*/
+.lTREEMenu dd {padding:0;margin:0px;list-style:none;clear:both;}
+.lTREEMenu dd input {vertical-align:middle;margin-top:2px;}
+.lTREEMenu dt input {vertical-align:middle;margin-top:0;}
+.lTREEMenu dd button {width:32px;height:18px;overflow:hidden;cursor:pointer;vertical-align:middle;border:none;background:url(../images/default/tree/folder-opened.gif) no-repeat 3px 1px;}
+.lTREEMenu dd.folderClose dl {display:none;}
+.lTREEMenu dd.folderClose button {background-image:url(../images/default/tree/folder-closed.gif);}
+.lTREEMenu dd {background:url(../images/default/tree/elbow-line.gif) repeat-y 0 0;}
+.lTREEMenu dd.lastChild {background:url(../images/default/tree/folder-last.gif) no-repeat 0 0;}
+.lTREEMenu dt {margin:0px;padding:0 0 0 15px;background:url(../images/default/tree/elbow.gif) no-repeat 0 50%;line-height:18px;height:20px;overflow:hidden;}
+.lTREEMenu dt.lastChild {background:url(../images/default/tree/elbow-end.gif) no-repeat 0 50%;}
+.lTREEMenu dd a,
+.lTREEMenu dd a:visited {color:#0594E7;font-weight:bold;}
+.lTREEMenu dt a,
+.lTREEMenu dt a:visited {color:#000;font-weight:normal;}
+/*lTREEMenu End*/

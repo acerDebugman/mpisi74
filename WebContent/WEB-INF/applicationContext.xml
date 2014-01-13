@@ -1,0 +1,1310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+xmlns:aop="http://www.springframework.org/schema/aop"  
+xmlns:tx="http://www.springframework.org/schema/tx"  
+xsi:schemaLocation="  
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd  
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+<!-- 系统定时任务执行处理 -->
+<!--===== job =====-->
+	<bean id="executeJobs" class="schedule.executeJobs"/>
+<!--===== job detail =====-->
+	<bean id="quartzDetail1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob1</value>
+		</property>
+	</bean>
+	<bean id="quartzDetail2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob2</value>
+		</property>
+	</bean>
+	<bean id="quartzDetail3" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob3</value>
+		</property>
+	</bean>
+	<bean id="quartzDetail4" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob4</value>
+		</property>
+	</bean>
+	<bean id="quartzDetail5" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob5</value>
+		</property>
+	</bean>
+	<bean id="quartzDetail6" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob6</value>
+		</property>
+	</bean>
+	<bean id="quartzDetail7" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob7</value>
+		</property>
+	</bean>
+	<bean id="quartzDetail8" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob8</value>
+		</property>
+	</bean>
+	<bean id="quartzDetail9" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob9</value>
+		</property>
+	</bean>
+<!--===== Trigger =====-->
+	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail1"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 1 * * ?</value>
+			<!--  <value>0 0/15 * * * ?</value> -->
+		</property>
+	</bean>
+	<bean id="quartzTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail2"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 30 1 20 * ?</value>
+		</property>
+	</bean>
+	<bean id="quartzTrigger3" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail3"/>
+		</property>
+		<property name="cronExpression">
+		  <value>* * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="quartzTrigger4" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail4"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 0 2 * * ?</value>
+		</property>
+	</bean>
+	<bean id="quartzTrigger5" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail5"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 10 2 L * ?</value>
+		</property>
+	</bean>
+	<bean id="quartzTrigger6" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail6"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 30 2 L * ?</value> 
+		  <!-- <value>0 0/6 * * * ?</value> -->
+		  <!-- <value>0 25 12 * * ?</value> -->
+		</property>
+	</bean>
+	<bean id="quartzTrigger7" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail7"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 0 3 1 3 ?</value>
+		</property>
+	</bean>
+	<bean id="quartzTrigger8" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail8"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 30 22 * * ?</value>
+		</property>
+	</bean>
+	<bean id="quartzTrigger9" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail9"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 30 3 1 * ?</value>
+		</property>
+	</bean>
+<!--===== Schedule =====-->
+	<bean autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+			    <ref local="quartzTrigger1"/>
+			    <ref local="quartzTrigger2"/>
+			    <!-- <ref local="quartzTrigger3"/> -->
+			    <ref local="quartzTrigger4"/>
+			    <ref local="quartzTrigger5"/>
+			    <ref local="quartzTrigger6"/>
+			    <ref local="quartzTrigger7"/>
+			    <!-- <ref local="quartzTrigger8"/> -->
+			    <ref local="quartzTrigger9"/>
+			</list>
+		</property>
+	</bean>
+<!-- 系统定时任务执行处理 -->
+
+	<!-- sessionFactory
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	  <property name="configLocation">
+	    <value>/WEB-INF/classes/hibernate.cfg.xml</value>
+	  </property>
+	</bean>
+	 -->
+	 
+	<!-- Mysql
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/catalog"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="ethip"></property>
+	</bean>
+	-->
+	
+<!-- 	<bean id="parentDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+	<bean id="parentDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"></property>
+		<property name="username" value="sa"></property>
+		<property name="password" value="IDpt463"></property>
+	</bean>
+	<bean id="dataSourceHr" parent="parentDataSource">
+ 		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property> -->
+ 		<property name="url" value="jdbc:jtds:sqlserver://192.168.50.141:1433/mpisiHr;instance=JOE"></property>
+ 		
+ 		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.141:1433/mpisiHr_test;instance=JOE"></property>  -->
+	</bean>
+	<bean id="dataSourceFinger" parent="parentDataSource">
+		<property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/finger"></property>
+	</bean>
+	
+	<bean id="dataSource" class="common.DynamicDataSource">
+        <property name="targetDataSources">
+           <map key-type="java.lang.String">
+               <entry key="hr" value-ref="dataSourceHr"/>
+               <entry key="finger" value-ref="dataSourceFinger"/>
+               <!--更多的数据源,根据下面的配置文件再写一个datasource 并且在这里配置entry -->
+           </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="dataSourceHr"/>
+    </bean>
+	 
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+			    <!--  mysql
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+				-->
+				<!-- sqlserver2005 -->
+				<prop key="hibernate.dialect">common.SQLServerLocalDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- <prop key="hibernate.format_sql">true</prop> -->
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+<!-- Entity配置信息 -->
+				<value>entity/MP0002.hbm.xml</value>
+				<value>entity/MP0005.hbm.xml</value>
+				<value>entity/MP0006.hbm.xml</value>
+				<value>entity/MP0008.hbm.xml</value>
+				<value>entity/MP0009.hbm.xml</value>
+				<value>entity/MP0010.hbm.xml</value>
+				<value>entity/MP0011.hbm.xml</value>
+				
+				<value>entity/MP1001.hbm.xml</value>
+				<value>entity/MP1002.hbm.xml</value>
+				<value>entity/MP1003.hbm.xml</value>
+				<value>entity/MP1004.hbm.xml</value>
+				<value>entity/MP1005.hbm.xml</value>
+				<value>entity/MP1006.hbm.xml</value>
+				<value>entity/MP1007.hbm.xml</value>
+				<value>entity/MP1008.hbm.xml</value>
+				<value>entity/MP1009.hbm.xml</value>
+				<value>entity/MP1010.hbm.xml</value>
+				
+				<value>entity/MP2001.hbm.xml</value>
+				<value>entity/MP2002.hbm.xml</value>
+				<value>entity/MP2003.hbm.xml</value>
+				<value>entity/MP2004.hbm.xml</value>
+				<value>entity/MP2007.hbm.xml</value>
+				<value>entity/MP2008.hbm.xml</value>
+				<value>entity/MP2009.hbm.xml</value>
+				
+				<value>entity/MP4001.hbm.xml</value>
+				<value>entity/MP4002.hbm.xml</value>
+				<value>entity/MP4003.hbm.xml</value>
+				<value>entity/MP4004.hbm.xml</value>
+				
+				<value>entity/HOLIDAY.hbm.xml</value>
+				
+				<value>entity/AC0001.hbm.xml</value>
+				<value>entity/AC0002.hbm.xml</value>
+				<value>entity/AC0003.hbm.xml</value>
+				<value>entity/AC0004.hbm.xml</value>
+				<value>entity/AC0005.hbm.xml</value>
+				<value>entity/AC0006.hbm.xml</value>
+				<value>entity/AC0007.hbm.xml</value>
+				<value>entity/AC0008.hbm.xml</value>
+				<value>entity/AC0009.hbm.xml</value>
+				<value>entity/AC0010.hbm.xml</value>
+				<value>entity/AC0011.hbm.xml</value>
+				<value>entity/AC0012.hbm.xml</value>
+				
+				<value>entity/MP7001.hbm.xml</value>
+				<value>entity/MP7002.hbm.xml</value>
+				<value>entity/MP7003.hbm.xml</value>
+				<value>entity/MP7004.hbm.xml</value>
+				<value>entity/MP7005.hbm.xml</value>
+				<value>entity/MP7006.hbm.xml</value>
+				<value>entity/MP7007.hbm.xml</value>
+				<value>entity/MP7008.hbm.xml</value>
+				
+				<value>entity/MP8001.hbm.xml</value>
+				<value>entity/MP8002.hbm.xml</value>
+				<value>entity/MP8003.hbm.xml</value>
+				<value>entity/MP8004.hbm.xml</value>
+				<value>entity/MP8005.hbm.xml</value>
+				<value>entity/MP8006.hbm.xml</value>
+				
+				<value>entity/CHECKINOUT.hbm.xml</value>
+				<value>entity/USERINFO.hbm.xml</value>
+				
+<!-- Entity配置信息 -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+<!-- Dao配置信息 -->
+	<bean id="HOLIDAYDAO" class="dao.HOLIDAYDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP0002DAO" class="dao.MP0002DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP0005DAO" class="dao.MP0005DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP0006DAO" class="dao.MP0006DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP0008DAO" class="dao.MP0008DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP0009DAO" class="dao.MP0009DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP0010DAO" class="dao.MP0010DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP0011DAO" class="dao.MP0011DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="MP1001DAO" class="dao.MP1001DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1002DAO" class="dao.MP1002DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1003DAO" class="dao.MP1003DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1004DAO" class="dao.MP1004DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1005DAO" class="dao.MP1005DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1006DAO" class="dao.MP1006DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1007DAO" class="dao.MP1007DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1008DAO" class="dao.MP1008DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1009DAO" class="dao.MP1009DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP1010DAO" class="dao.MP1010DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="MP2001DAO" class="dao.MP2001DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP2002DAO" class="dao.MP2002DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP2003DAO" class="dao.MP2003DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP2004DAO" class="dao.MP2004DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP2007DAO" class="dao.MP2007DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP2008DAO" class="dao.MP2008DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP2009DAO" class="dao.MP2009DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP4001DAO" class="dao.MP4001DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP4002DAO" class="dao.MP4002DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP4003DAO" class="dao.MP4003DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP4004DAO" class="dao.MP4004DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7001DAO" class="dao.MP7001DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7002DAO" class="dao.MP7002DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7003DAO" class="dao.MP7003DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7004DAO" class="dao.MP7004DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7005DAO" class="dao.MP7005DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7006DAO" class="dao.MP7006DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7007DAO" class="dao.MP7007DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7008DAO" class="dao.MP7008DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>	
+	<bean id="MP8001DAO" class="dao.MP8001DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP8002DAO" class="dao.MP8002DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP8003DAO" class="dao.MP8003DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP8004DAO" class="dao.MP8004DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP8005DAO" class="dao.MP8005DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP8006DAO" class="dao.MP8006DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>	
+	<bean id="AC0001DAO" class="dao.AC0001DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0002DAO" class="dao.AC0002DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0003DAO" class="dao.AC0003DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0004DAO" class="dao.AC0004DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0005DAO" class="dao.AC0005DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0006DAO" class="dao.AC0006DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0007DAO" class="dao.AC0007DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0008DAO" class="dao.AC0008DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0009DAO" class="dao.AC0009DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0010DAO" class="dao.AC0010DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0011DAO" class="dao.AC0011DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="AC0012DAO" class="dao.AC0012DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="CHECKINOUTDAO" class="dao.CHECKINOUTDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+<!-- Dao配置信息 -->
+
+<!-- Service配置信息 -->
+	<bean id="HOLIDAYService" class="service.HOLIDAYService">
+		<property name="dao">
+			<ref bean="HOLIDAYDAO" />
+		</property>
+	</bean>
+	<bean id="MP0002Service" class="service.MP0002Service">
+		<property name="dao">
+			<ref bean="MP0002DAO" />
+		</property>
+	</bean>
+	<bean id="MP0005Service" class="service.MP0005Service">
+		<property name="dao">
+			<ref bean="MP0005DAO" />
+		</property>
+	</bean>
+	<bean id="MP0006Service" class="service.MP0006Service">
+		<property name="dao">
+			<ref bean="MP0006DAO" />
+		</property>
+	</bean>
+	<bean id="MP0008Service" class="service.MP0008Service">
+		<property name="dao">
+			<ref bean="MP0008DAO" />
+		</property>
+	</bean>
+	<bean id="MP0009Service" class="service.MP0009Service">
+		<property name="dao">
+			<ref bean="MP0009DAO" />
+		</property>
+	</bean>
+	<bean id="MP0010Service" class="service.MP0010Service">
+		<property name="dao">
+			<ref bean="MP0010DAO" />
+		</property>
+	</bean>
+	<bean id="MP0011Service" class="service.MP0011Service">
+		<property name="dao">
+			<ref bean="MP0011DAO" />
+		</property>
+	</bean>
+	
+	<bean id="MP1001Service" class="service.MP1001Service">
+		<property name="dao">
+			<ref bean="MP1001DAO" />
+		</property>
+	</bean>
+	<bean id="MP1002Service" class="service.MP1002Service">
+		<property name="dao">
+			<ref bean="MP1002DAO" />
+		</property>
+	</bean>
+	<bean id="MP1003Service" class="service.MP1003Service">
+		<property name="dao">
+			<ref bean="MP1003DAO" />
+		</property>
+	</bean>
+	<bean id="MP1004Service" class="service.MP1004Service">
+		<property name="dao">
+			<ref bean="MP1004DAO" />
+		</property>
+	</bean>
+	<bean id="MP1005Service" class="service.MP1005Service">
+		<property name="dao">
+			<ref bean="MP1005DAO" />
+		</property>
+	</bean>
+	<bean id="MP1006Service" class="service.MP1006Service">
+		<property name="dao">
+			<ref bean="MP1006DAO" />
+		</property>
+	</bean>
+	<bean id="MP1007Service" class="service.MP1007Service">
+		<property name="dao">
+			<ref bean="MP1007DAO" />
+		</property>
+	</bean>
+	<bean id="MP1008Service" class="service.MP1008Service">
+		<property name="dao">
+			<ref bean="MP1008DAO" />
+		</property>
+	</bean>
+	<bean id="MP1009Service" class="service.MP1009Service">
+		<property name="dao">
+			<ref bean="MP1009DAO" />
+		</property>
+	</bean>
+	<bean id="MP1010Service" class="service.MP1010Service">
+		<property name="dao">
+			<ref bean="MP1010DAO" />
+		</property>
+	</bean>
+
+	<bean id="MP2001Service" class="service.MP2001Service">
+		<property name="dao">
+			<ref bean="MP2001DAO" />
+		</property>
+	</bean>
+	<bean id="MP2002Service" class="service.MP2002Service">
+		<property name="dao">
+			<ref bean="MP2002DAO" />
+		</property>
+	</bean>
+	<bean id="MP2003Service" class="service.MP2003Service">
+		<property name="dao">
+			<ref bean="MP2003DAO" />
+		</property>
+	</bean>
+	<bean id="MP2004Service" class="service.MP2004Service">
+		<property name="dao">
+			<ref bean="MP2004DAO" />
+		</property>
+	</bean>
+	<bean id="MP2007Service" class="service.MP2007Service">
+		<property name="dao">
+			<ref bean="MP2007DAO" />
+		</property>
+	</bean>
+	<bean id="MP2008Service" class="service.MP2008Service">
+		<property name="dao">
+			<ref bean="MP2008DAO" />
+		</property>
+	</bean>
+	<bean id="MP2009Service" class="service.MP2009Service">
+		<property name="dao">
+			<ref bean="MP2009DAO" />
+		</property>
+	</bean>
+	<bean id="MP4001Service" class="service.MP4001Service">
+		<property name="dao">
+			<ref bean="MP4001DAO" />
+		</property>
+	</bean>
+	<bean id="MP4002Service" class="service.MP4002Service">
+		<property name="dao">
+			<ref bean="MP4002DAO" />
+		</property>
+	</bean>
+	<bean id="MP4003Service" class="service.MP4003Service">
+		<property name="dao">
+			<ref bean="MP4003DAO" />
+		</property>
+	</bean>
+	<bean id="MP4004Service" class="service.MP4004Service">
+		<property name="dao">
+			<ref bean="MP4004DAO" />
+		</property>
+	</bean>
+	<bean id="MP7001Service" class="service.MP7001Service">
+		<property name="dao">
+			<ref bean="MP7001DAO" />
+		</property>
+	</bean>
+	<bean id="MP7002Service" class="service.MP7002Service">
+		<property name="dao">
+			<ref bean="MP7002DAO" />
+		</property>
+	</bean>
+	<bean id="MP7003Service" class="service.MP7003Service">
+		<property name="dao">
+			<ref bean="MP7003DAO" />
+		</property>
+	</bean>
+	<bean id="MP7004Service" class="service.MP7004Service">
+		<property name="dao">
+			<ref bean="MP7004DAO" />
+		</property>
+	</bean>
+	<bean id="MP7005Service" class="service.MP7005Service">
+		<property name="dao">
+			<ref bean="MP7005DAO" />
+		</property>
+	</bean>
+	<bean id="MP7006Service" class="service.MP7006Service">
+		<property name="dao">
+			<ref bean="MP7006DAO" />
+		</property>
+	</bean>
+	<bean id="MP7007Service" class="service.MP7007Service">
+		<property name="dao">
+			<ref bean="MP7007DAO" />
+		</property>
+	</bean>
+	<bean id="MP7008Service" class="service.MP7008Service">
+		<property name="dao">
+			<ref bean="MP7008DAO" />
+		</property>
+	</bean>	
+	<bean id="MP8001Service" class="service.MP8001Service">
+		<property name="dao">
+			<ref bean="MP8001DAO" />
+		</property>
+	</bean>
+	<bean id="MP8002Service" class="service.MP8002Service">
+		<property name="dao">
+			<ref bean="MP8002DAO" />
+		</property>
+	</bean>
+	<bean id="MP8003Service" class="service.MP8003Service">
+		<property name="dao">
+			<ref bean="MP8003DAO" />
+		</property>
+	</bean>
+	<bean id="MP8004Service" class="service.MP8004Service">
+		<property name="dao">
+			<ref bean="MP8004DAO" />
+		</property>
+	</bean>
+	<bean id="MP8005Service" class="service.MP8005Service">
+		<property name="dao">
+			<ref bean="MP8005DAO" />
+		</property>
+	</bean>
+	<bean id="MP8006Service" class="service.MP8006Service">
+		<property name="dao">
+			<ref bean="MP8006DAO" />
+		</property>
+	</bean>	
+	<bean id="AC0001Service" class="service.AC0001Service">
+		<property name="dao">
+			<ref bean="AC0001DAO" />
+		</property>
+	</bean>
+	<bean id="AC0002Service" class="service.AC0002Service">
+		<property name="dao">
+			<ref bean="AC0002DAO" />
+		</property>
+	</bean>
+	<bean id="AC0003Service" class="service.AC0003Service">
+		<property name="dao">
+			<ref bean="AC0003DAO" />
+		</property>
+	</bean>
+	<bean id="AC0004Service" class="service.AC0004Service">
+		<property name="dao">
+			<ref bean="AC0004DAO" />
+		</property>
+	</bean>
+	<bean id="AC0005Service" class="service.AC0005Service">
+		<property name="dao">
+			<ref bean="AC0005DAO" />
+		</property>
+	</bean>
+	<bean id="AC0006Service" class="service.AC0006Service">
+		<property name="dao">
+			<ref bean="AC0006DAO" />
+		</property>
+	</bean>
+	<bean id="AC0007Service" class="service.AC0007Service">
+		<property name="dao">
+			<ref bean="AC0007DAO" />
+		</property>
+	</bean>
+	<bean id="AC0008Service" class="service.AC0008Service">
+		<property name="dao">
+			<ref bean="AC0008DAO" />
+		</property>
+	</bean>
+	<bean id="AC0009Service" class="service.AC0009Service">
+		<property name="dao">
+			<ref bean="AC0009DAO" />
+		</property>
+	</bean>
+	<bean id="AC0010Service" class="service.AC0010Service">
+		<property name="dao">
+			<ref bean="AC0010DAO" />
+		</property>
+	</bean>
+	<bean id="AC0011Service" class="service.AC0011Service">
+		<property name="dao">
+			<ref bean="AC0011DAO" />
+		</property>
+	</bean>
+	<bean id="AC0012Service" class="service.AC0012Service">
+		<property name="dao">
+			<ref bean="AC0012DAO" />
+		</property>
+	</bean>
+
+	<bean id="CHECKINOUTService" class="service.CHECKINOUTService">
+		<property name="dao">
+			<ref bean="CHECKINOUTDAO" />
+		</property>
+	</bean>
+<!-- Service配置信息 -->
+
+<!-- Bean配置信息 -->
+    <bean name="authorityMngBean" class="action.AuthorityAction" scope="prototype">
+		<property name="serviceAC0001">
+			<ref bean="AC0001Service" />
+		</property>
+		<property name="serviceAC0002">
+			<ref bean="AC0002Service" />
+		</property>
+		<property name="serviceAC0003">
+			<ref bean="AC0003Service" />
+		</property>
+		<property name="serviceAC0004">
+			<ref bean="AC0004Service" />
+		</property>
+		<property name="serviceAC0005">
+			<ref bean="AC0005Service" />
+		</property>
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceAC0010">
+			<ref bean="AC0010Service" />
+		</property>
+		<property name="serviceAC0011">
+			<ref bean="AC0011Service" />
+		</property>
+		<property name="serviceAC0012">
+			<ref bean="AC0012Service" />
+		</property>
+		<property name="serviceMP0002">
+			<ref bean="MP0002Service" />
+		</property>
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+	</bean>
+	<bean name="loginMngBean" class="action.LoginAction" scope="prototype">
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMp0002">
+			<ref bean="MP0002Service" />
+		</property>
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+		<property name="serviceMP1010">
+			<ref bean="MP1010Service" />
+		</property>
+		<property name="serviceHOLIDAY">
+			<ref bean="HOLIDAYService" />
+		</property>
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+	</bean>
+	<bean name="bulletinMngBean" class="action.BulletinMngAction" scope="prototype">
+		<property name="service">
+			<ref bean="MP0005Service" />
+		</property>
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMp0002">
+			<ref bean="MP0002Service" />
+		</property>
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+	</bean>
+	<bean name="employeeMngBean" class="action.EmployeeMngAction" scope="prototype">
+		<property name="service">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMP1002">
+			<ref bean="MP1002Service" />
+		</property>
+		<property name="serviceMP1003">
+			<ref bean="MP1003Service" />
+		</property>
+		<property name="serviceMP1004">
+			<ref bean="MP1004Service" />
+		</property>
+		<property name="serviceMP1005">
+			<ref bean="MP1005Service" />
+		</property>
+		<property name="serviceMP1008">
+			<ref bean="MP1008Service" />
+		</property>
+		<property name="serviceMP1009">
+			<ref bean="MP1009Service" />
+		</property>
+		<property name="serviceMP1010">
+			<ref bean="MP1010Service" />
+		</property>
+		<property name="serviceMP0006">
+			<ref bean="MP0006Service" />
+		</property>
+		<property name="serviceMP0008">
+			<ref bean="MP0008Service" />
+		</property>
+		<property name="serviceMP0009">
+			<ref bean="MP0009Service" />
+		</property>
+		<property name="serviceMP2001">
+			<ref bean="MP2001Service" />
+		</property>
+		<property name="serviceMP2002">
+			<ref bean="MP2002Service" />
+		</property>
+		<property name="serviceMP2003">
+			<ref bean="MP2003Service" />
+		</property>
+		<property name="serviceMP2004">
+			<ref bean="MP2004Service" />
+		</property>
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+		<property name="serviceMP7008">
+			<ref bean="MP7008Service" />
+		</property>
+		<property name="serviceMP7003">
+			<ref bean="MP7003Service" />
+		</property>
+		<property name="serviceMP7002">
+			<ref bean="MP7002Service" />
+		</property>
+	</bean>
+	<bean name="applyLeaveMngBean" class="action.ApplyLeaveAction" scope="prototype">
+		<property name="service">
+			<ref bean="MP2001Service" />
+		</property>
+		<property name="serviceMp2002">
+			<ref bean="MP2002Service" />
+		</property>
+		<property name="serviceMp2003">
+			<ref bean="MP2003Service" />
+		</property>
+		<property name="serviceMp2004">
+			<ref bean="MP2004Service" />
+		</property>
+		<property name="serviceMP2007">
+			<ref bean="MP2007Service" />
+		</property>
+		<property name="serviceMP2008">
+			<ref bean="MP2008Service" />
+		</property>
+		<property name="serviceMP2009">
+			<ref bean="MP2009Service" />
+		</property>
+		<property name="serviceMp0002">
+			<ref bean="MP0002Service" />
+		</property>
+		<property name="serviceMP0006">
+			<ref bean="MP0006Service" />
+		</property>
+		<property name="serviceMP0009">
+			<ref bean="MP0009Service" />
+		</property>
+		<property name="serviceHoliday">
+			<ref bean="HOLIDAYService" />
+		</property>
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMP1009">
+			<ref bean="MP1009Service" />
+		</property>
+		<property name="serviceMP1010">
+			<ref bean="MP1010Service" />
+		</property>
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceMp0010">
+			<ref bean="MP0010Service" />
+		</property>
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+		<property name="serviceCHECKINOUT">
+			<ref bean="CHECKINOUTService" />
+		</property>
+	</bean>
+	<bean name="requisitionFormMngBean" class="action.RequisitionFormAction" scope="prototype">
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMP1009">
+			<ref bean="MP1009Service" />
+		</property>
+		<property name="serviceMP0002">
+			<ref bean="MP0002Service" />
+		</property>
+		<property name="serviceMP4001">
+			<ref bean="MP4001Service" />
+		</property>
+		<property name="serviceMP4002">
+			<ref bean="MP4002Service" />
+		</property>
+		<property name="serviceMP4003">
+			<ref bean="MP4003Service" />
+		</property>
+		<property name="serviceMP4004">
+			<ref bean="MP4004Service" />
+		</property>
+		<property name="serviceMP0006">
+			<ref bean="MP0006Service" />
+		</property>
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+	</bean>
+	<bean name="departmentMngBean" class="action.DepPositionMngAction" scope="prototype">
+		<property name="service">
+			<ref bean="MP0009Service" />
+		</property>
+		<property name="serviceMP0002">
+			<ref bean="MP0002Service" />
+		</property>
+		<property name="serviceMP0008">
+			<ref bean="MP0008Service" />
+		</property>
+		<property name="serviceMP0010">
+			<ref bean="MP0010Service" />
+		</property>
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMP7008">
+			<ref bean="MP7008Service" />
+		</property>
+		<property name="serviceMP8004">
+			<ref bean="MP8004Service" />
+		</property>
+		<property name="serviceHoliday">
+			<ref bean="HOLIDAYService" />
+		</property>
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+	</bean>
+	<bean name="performanceMngBean" class="action.PerformanceMngAction" scope="prototype">
+		<property name="serviceMP7001">
+			<ref bean="MP7001Service" />
+		</property>
+		<property name="serviceMP7002">
+			<ref bean="MP7002Service" />
+		</property>	
+		<property name="serviceMP7003">
+			<ref bean="MP7003Service" />
+		</property>
+		<property name="serviceMP7004">
+			<ref bean="MP7004Service" />
+		</property>
+		<property name="serviceMP7005">
+			<ref bean="MP7005Service" />
+		</property>
+		<property name="serviceMP7006">
+			<ref bean="MP7006Service" />
+		</property>
+		<property name="serviceMP7007">
+			<ref bean="MP7007Service" />
+		</property>
+		<property name="serviceMP7008">
+			<ref bean="MP7008Service" />
+		</property>
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMP0009">
+			<ref bean="MP0009Service" />
+		</property>
+		<property name="serviceMP8001">
+			<ref bean="MP8001Service" />
+		</property>
+		<property name="serviceMP8002">
+			<ref bean="MP8002Service" />
+		</property>	
+		<property name="serviceMP8003">
+			<ref bean="MP8003Service" />
+		</property>
+		<property name="serviceMP8004">
+			<ref bean="MP8004Service" />
+		</property>
+		<property name="serviceMP8005">
+			<ref bean="MP8005Service" />
+		</property>
+		<property name="serviceMP8006">
+			<ref bean="MP8006Service" />
+		</property>
+	</bean>
+	<bean name="fileUploadBean" class="action.FileUploadAction" scope="prototype"></bean>
+	<bean name="AttendanceDataLoadBean" class="action.AttendanceDataLoadAction" scope="prototype">
+		<property name="serviceAC0006">
+			<ref bean="AC0006Service" />
+		</property>
+		<property name="serviceAC0007">
+			<ref bean="AC0007Service" />
+		</property>
+		<property name="serviceAC0008">
+			<ref bean="AC0008Service" />
+		</property>
+		<property name="serviceAC0009">
+			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMP1010">
+			<ref bean="MP1010Service" />
+		</property>
+		<property name="serviceMP0011">
+			<ref bean="MP0011Service" />
+		</property>
+		<property name="serviceMP2003">
+			<ref bean="MP2003Service" />
+		</property>
+		<property name="serviceCHECKINOUT">
+			<ref bean="CHECKINOUTService" />
+		</property>
+	</bean>
+<!-- Bean配置信息 -->
+
+</beans>

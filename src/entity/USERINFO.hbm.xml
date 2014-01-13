@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.USERINFO" table="USERINFO">
+        <id name="USERID" type="java.lang.Integer">
+            <column name="USERID" />
+            <generator class="native" />
+        </id>
+        <property name="BADGENUMBER" type="java.lang.String">
+            <column name="BADGENUMBER" length="24" not-null="false" />
+        </property>
+        <property name="SSN" type="java.lang.String">
+            <column name="SSN" length="20" not-null="false" />
+        </property>
+        <property name="NAME" type="java.lang.String">
+            <column name="NAME" length="40" not-null="false" />
+        </property>
+        <property name="GENDER" type="java.lang.String">
+            <column name="GENDER" length="8" not-null="false" />
+        </property>
+        <property name="TITLE" type="java.lang.String">
+            <column name="TITLE" length="20" not-null="false" />
+        </property>
+        <property name="PAGER" type="java.lang.String">
+            <column name="PAGER" length="20" not-null="false" />
+        </property>
+        <property name="BIRTHDAY" type="java.lang.String">
+            <column name="BIRTHDAY" length="30" not-null="false" />
+        </property>
+        <property name="HIREDDAY" type="java.lang.String">
+            <column name="HIREDDAY" length="30" not-null="false" />
+        </property>
+        <property name="STREET" type="java.lang.String">
+            <column name="STREET" length="80" not-null="false" />
+        </property>
+        <property name="CITY" type="java.lang.String">
+            <column name="CITY" length="2" not-null="false" />
+        </property>
+        <property name="STATE" type="java.lang.String">
+            <column name="STATE" length="2" not-null="false" />
+        </property>
+        <property name="ZIP" type="java.lang.String">
+            <column name="ZIP" length="12" not-null="false" />
+        </property>
+        <property name="OPHONE" type="java.lang.String">
+            <column name="OPHONE" length="20" not-null="false" />
+        </property>
+        <property name="FPHONE" type="java.lang.String">
+            <column name="FPHONE" length="20" not-null="false" />
+        </property>
+        <property name="VERIFICATIONMETHOD" type="java.lang.Integer">
+            <column name="VERIFICATIONMETHOD" not-null="false" />
+        </property>
+        <property name="DEFAULTDEPTID" type="java.lang.Integer">
+            <column name="DEFAULTDEPTID" not-null="false" />
+        </property>
+        <property name="SECURITYFLAGS" type="java.lang.Integer">
+            <column name="SECURITYFLAGS" not-null="false" />
+        </property>
+        <property name="ATT" type="java.lang.Integer">
+            <column name="ATT" not-null="false" />
+        </property>
+        <property name="INLATE" type="java.lang.Integer">
+            <column name="INLATE" not-null="false" />
+        </property>
+        <property name="OUTEARLY" type="java.lang.Integer">
+            <column name="OUTEARLY" not-null="false" />
+        </property>
+        <property name="OVERTIME" type="java.lang.Integer">
+            <column name="OVERTIME" not-null="false" />
+        </property>
+        <property name="SEP" type="java.lang.Integer">
+            <column name="SEP" not-null="false" />
+        </property>
+        <property name="HOLIDAY" type="java.lang.Integer">
+            <column name="HOLIDAY" not-null="false" />
+        </property>
+        <property name="MINZU" type="java.lang.String">
+            <column name="MINZU" length="8" not-null="false" />
+        </property>
+        <property name="PASSWORD" type="java.lang.String">
+            <column name="PASSWORD" length="50" not-null="false" />
+        </property>
+        <property name="LUNCHDURATION" type="java.lang.Integer">
+            <column name="LUNCHDURATION" not-null="false" />
+        </property>
+        <property name="MVERIFYPASS" type="java.lang.String">
+            <column name="MVERIFYPASS" length="10" not-null="false" />
+        </property>
+        <property name="PRIVILEGE" type="java.lang.Integer">
+            <column name="PRIVILEGE" not-null="false" />
+        </property>
+        <property name="INHERITDEPTSCH" type="java.lang.Integer">
+            <column name="INHERITDEPTSCH" not-null="false" />
+        </property>
+        <property name="INHERITDEPTSCHCLASS" type="java.lang.Integer">
+            <column name="INHERITDEPTSCHCLASS" not-null="false" />
+        </property>
+        <property name="AUTOSCHPLAN" type="java.lang.Integer">
+            <column name="AUTOSCHPLAN" not-null="false" />
+        </property>
+        <property name="MINAUTOSCHINTERVAL" type="java.lang.Integer">
+            <column name="MINAUTOSCHINTERVAL" not-null="false" />
+        </property>
+        <property name="REGISTEROT" type="java.lang.Integer">
+            <column name="REGISTEROT" not-null="false" />
+        </property>
+        <property name="INHERITDEPTRULE" type="java.lang.Integer">
+            <column name="INHERITDEPTRULE" not-null="false" />
+        </property>
+        <property name="EMPRIVILEGE" type="java.lang.Integer">
+            <column name="EMPRIVILEGE" not-null="false" />
+        </property>
+        <property name="CARDNO" type="java.lang.String">
+            <column name="CARDNO" length="20" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP0005" table="MP0005">
+        <id name="MP0005_SEQ" type="java.lang.Integer">
+            <column name="MP0005_SEQ" />
+            <generator class="native" />
+        </id>
+        <property name="MP0005_DEPART_ID" type="java.lang.Integer">
+            <column name="MP0005_DEPART_ID" not-null="false" />
+        </property>
+        <property name="MP0005_TITLE" type="java.lang.String">
+            <column name="MP0005_TITLE" length="50" not-null="false" />
+        </property>
+        <property name="MP0005_CONTENT" type="java.lang.String">
+            <column name="MP0005_CONTENT" length="4000" not-null="false" />
+        </property>
+        <property name="MP0005_AUTHOR" type="java.lang.String">
+            <column name="MP0005_AUTHOR" length="50" not-null="false" />
+        </property>
+        <property name="MP0005_ADDTIME" type="java.lang.String">
+            <column name="MP0005_ADDTIME" length="40" not-null="false" />
+        </property>
+        <property name="MP0005_TYPE" type="java.lang.String">
+            <column name="MP0005_TYPE" length="1" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

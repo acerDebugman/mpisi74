@@ -1,0 +1,50 @@
+﻿<html>
+    <head>
+    	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <title>菜单</title>
+        <link type="text/css" rel="stylesheet" href="resources/css/lTREE.default.css"/>
+    </head>
+    <body bgcolor="#FFFFFF">
+
+		<div class="lTREEMenu lTREENormal" id="lTREEMenuDEMO">
+<span id="TreeHeader">管理菜单</span>
+        <dl id="TopDL">
+        	<dd>
+        		分类
+				<dl>
+					<dt>子分类1</dt>
+					<dt>子分类1中华人民共和国中华人民共和国</dt>
+				</dl>
+	                        
+        	</dd>
+		<dd>我来
+				<dl>
+				<dd>sss
+					<dl><dt>fff</dt></dl>
+				</dd>
+				</dl>
+		</dd>
+			<dd>
+				分类二
+				<dl>
+					<dt>分类2</dt>
+				</dl>
+			</dd>
+<!-- 顶层结点 -->
+  <dt><a href="http://WWW.CNLEI.COM" target="_blank">叶结点1</a></dt>
+  <dt><a href="http://WWW.CNLEI.COM" target="_blank">叶结点1</a></dt>
+  <dt><a href="http://WWW.CNLEI.COM" target="_blank">叶结点1</a></dt>
+</dl>
+		</div>
+    </body>
+    <script type="text/javascript" src="js/lTREE.js">
+    </script>
+	<script class="lJSFDemo" type="text/javascript">
+var lTree = new lTREE();
+
+
+lTree.build("lTREEMenuDEMO");
+//lTree.changAll(0);
+
+</script>
+</html>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP2001" table="MP2001">
+        <id name="MP2001_NUM" type="java.lang.String">
+            <column name="MP2001_NUM" />
+            <generator class="assigned" />
+        </id>
+        <property name="MP2001_EMPLOYEE_NUM" type="java.lang.String">
+            <column name="MP2001_EMPLOYEE_NUM" length="10" not-null="false" />
+        </property>
+        <property name="MP2001_ACTING_APPLICATION_PERSON" type="java.lang.String">
+            <column name="MP2001_ACTING_APPLICATION_PERSON" length="10" not-null="false" />
+        </property>
+        <property name="MP2001_APPLIY_TYPE" type="java.lang.String">
+            <column name="MP2001_APPLIY_TYPE" length="20" not-null="false" />
+        </property>
+        <property name="MP2001_DAYS" type="java.lang.String">
+            <column name="MP2001_DAYS" length="10" not-null="false" />
+        </property>
+        <property name="MP2001_FROM_DATETIME" type="java.lang.String">
+            <column name="MP2001_FROM_DATETIME" length="20" not-null="false" />
+        </property>
+        <property name="MP2001_TO_DATETIME" type="java.lang.String">
+            <column name="MP2001_TO_DATETIME" length="20" not-null="false" />
+        </property>
+        <property name="MP2001_ACTING_PERSON" type="java.lang.String">
+            <column name="MP2001_ACTING_PERSON" length="5" not-null="false" />
+        </property>
+        <property name="MP2001_LEAVE_TYPE" type="java.lang.String">
+            <column name="MP2001_LEAVE_TYPE" length="1" not-null="false" />
+        </property>
+        <property name="MP2001_APPROVAL" type="java.lang.String">
+            <column name="MP2001_APPROVAL" length="1" not-null="false" />
+        </property>
+        <property name="MP2001_STATUS" type="java.lang.String">
+            <column name="MP2001_STATUS" length="1" not-null="false" />
+        </property>
+        <property name="MP2001_COMMENT" type="java.lang.String">
+            <column name="MP2001_COMMENT" length="2000" not-null="false" />
+        </property>
+        <property name="MP2001_MAJOR_SEQ" type="java.lang.String">
+            <column name="MP2001_MAJOR_SEQ" length="20" not-null="false" />
+        </property>
+        <property name="MP2001_CREATE_USER" type="java.lang.String">
+            <column name="MP2001_CREATE_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP2001_CREATE_DATETIME" type="java.lang.String">
+            <column name="MP2001_CREATE_DATETIME" length="30" not-null="false" />
+        </property>
+        <property name="MP2001_EDIT_USER" type="java.lang.String">
+            <column name="MP2001_EDIT_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP2001_EDIT_DATETIME" type="java.lang.String">
+            <column name="MP2001_EDIT_DATETIME" length="30" not-null="false" />
+        </property>
+        <property name="MP2001_APPROVAL_USER" type="java.lang.String">
+            <column name="MP2001_APPROVAL_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP2001_APPROVAL_DATETIME" type="java.lang.String">
+            <column name="MP2001_APPROVAL_DATETIME" length="30" not-null="false" />
+        </property>
+        
+    </class>
+</hibernate-mapping>

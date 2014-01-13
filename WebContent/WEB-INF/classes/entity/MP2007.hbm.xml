@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP2007" table="MP2007">
+        <id name="MP2007_SEQ" type="java.lang.Integer">
+            <column name="MP2007_SEQ" />
+            <generator class="native" />
+        </id>
+        <property name="MP2007_EMPLOYEE_NUM" type="java.lang.String">
+            <column name="MP2007_EMPLOYEE_NUM" length="10" not-null="false" />
+        </property>
+        <property name="MP2007_DAYS" type="java.lang.String">
+            <column name="MP2007_DAYS" length="5" not-null="false" />
+        </property>
+        <property name="MP2007_STATUS" type="java.lang.String">
+            <column name="MP2007_STATUS" length="5" not-null="false" />
+        </property>
+        <property name="MP2007_TYPE" type="java.lang.String">
+            <column name="MP2007_TYPE" length="5" not-null="false" />
+        </property>
+         <property name="MP2007_MAJOR_NAME" type="java.lang.String">
+            <column name="MP2007_MAJOR_NAME" length="20" not-null="false" />
+        </property>
+        <property name="MP2007_CREATE_USER" type="java.lang.String">
+            <column name="MP2007_CREATE_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP2007_CREATE_DATETIME" type="java.lang.String">
+            <column name="MP2007_CREATE_DATETIME" length="30" not-null="false" />
+        </property>
+        <property name="MP2007_EDIT_USER" type="java.lang.String">
+            <column name="MP2007_EDIT_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP2007_EDIT_DATETIME" type="java.lang.String">
+            <column name="MP2007_EDIT_DATETIME" length="30" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

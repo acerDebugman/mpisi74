@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP1009" table="MP1009">
+        <id name="MP1009_SEQ" type="java.lang.Integer">
+            <column name="MP1009_SEQ" />
+            <generator class="native" />
+        </id>
+        <property name="MP1009_EMPLOYEE_NUM" type="java.lang.String">
+            <column name="MP1009_EMPLOYEE_NUM" length="50" not-null="true" />
+        </property>
+        <property name="MP1009_DOCUMENT_NAME" type="java.lang.String">
+            <column name="MP1009_DOCUMENT_NAME" length="100" not-null="false" />
+        </property>
+        <property name="MP1009_PATH" type="java.lang.String">
+            <column name="MP1009_PATH" length="1000" not-null="false" />
+        </property>
+        <property name="MP1009_UPLOAD_TIME" type="java.lang.String">
+            <column name="MP1009_UPLOAD_TIME" length="30" not-null="false" />
+        </property>
+        <property name="MP1009_UPLOADER" type="java.lang.String">
+            <column name="MP1009_UPLOADER" length="10" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

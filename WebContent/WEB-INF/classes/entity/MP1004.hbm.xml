@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP1004" table="MP1004">
+        <id name="MP1004_SEQ" type="java.lang.Integer">
+            <column name="MP1004_SEQ" />
+            <generator class="native" />
+        </id>
+        <property name="MP1004_EMPLOYEE_NUM" type="java.lang.String">
+            <column name="MP1004_EMPLOYEE_NUM" length="10" not-null="false" />
+        </property>
+        <property name="MP1004_DEPARTMENT_CODE" type="java.lang.String">
+            <column name="MP1004_DEPARTMENT_CODE" length="10" not-null="false" />
+        </property>
+        <property name="MP1004_POSITION" type="java.lang.String">
+            <column name="MP1004_POSITION" length="2" not-null="false" />
+        </property>
+        <property name="MP1004_TRANSFER_DATETIME" type="java.lang.String">
+            <column name="MP1004_TRANSFER_DATETIME" length="10" not-null="false" />
+        </property>
+        <property name="MP1004_JOB_DESC" type="java.lang.String">
+            <column name="MP1004_JOB_DESC" length="500" not-null="false" />
+        </property>
+        <property name="MP1004_DEPARTMENT_CODE_OLD" type="java.lang.String">
+            <column name="MP1004_DEPARTMENT_CODE_OLD" length="10" not-null="false" />
+        </property>
+        <property name="MP1004_POSITION_OLD" type="java.lang.String">
+            <column name="MP1004_POSITION_OLD" length="2" not-null="false" />
+        </property>        
+        <property name="MP1004_CREATE_USER" type="java.lang.String">
+            <column name="MP1004_CREATE_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP1004_CREATE_DATETIME" type="java.lang.String">
+            <column name="MP1004_CREATE_DATETIME" length="30" not-null="false" />
+        </property>
+        <property name="MP1004_EDIT_USER" type="java.lang.String">
+            <column name="MP1004_EDIT_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP1004_EDIT_DATETIME" type="java.lang.String">
+            <column name="MP1004_EDIT_DATETIME" length="30" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP1003" table="MP1003">
+        <id name="MP1003_SEQ" type="java.lang.Integer">
+            <column name="MP1003_SEQ" />
+            <generator class="native" />
+        </id>
+        <property name="MP1003_EMPLOYEE_NUM" type="java.lang.String">
+            <column name="MP1003_EMPLOYEE_NUM" length="10" not-null="true" />
+        </property>
+        <property name="MP1003_COMPANY_NAME" type="java.lang.String">
+            <column name="MP1003_COMPANY_NAME" length="200" not-null="false" />
+        </property>
+        <property name="MP1003_DEPARTMENT_ID" type="java.lang.String">
+            <column name="MP1003_DEPARTMENT_ID" length="100" not-null="false" />
+        </property>
+        <property name="MP1003_POSITION" type="java.lang.String">
+            <column name="MP1003_POSITION" length="200" not-null="false" />
+        </property>
+        <property name="MP1003_ENTRY_DATETIME" type="java.lang.String">
+            <column name="MP1003_ENTRY_DATETIME" length="20" not-null="false" />
+        </property>
+        <property name="MP1003_TERMINATION_DATETIME" type="java.lang.String">
+            <column name="MP1003_TERMINATION_DATETIME" length="20" not-null="false" />
+        </property>
+        <property name="MP1003_JOB_DESC" type="java.lang.String">
+            <column name="MP1003_JOB_DESC" length="1000" not-null="false" />
+        </property>
+        <property name="MP1003_TERMINATION_REASON" type="java.lang.String">
+            <column name="MP1003_TERMINATION_REASON" length="1000" not-null="false" />
+        </property>
+        <property name="MP1003_CONTACT_PERSON_INFO" type="java.lang.String">
+            <column name="MP1003_CONTACT_PERSON_INFO" length="1000" not-null="false" />
+        </property>
+        <property name="MP1003_CREATE_USER" type="java.lang.String">
+            <column name="MP1003_CREATE_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP1003_CREATE_DATETIME" type="java.lang.String">
+            <column name="MP1003_CREATE_DATETIME" length="30" not-null="false" />
+        </property>
+        <property name="MP1003_EDIT_USER" type="java.lang.String">
+            <column name="MP1003_EDIT_USER" length="10" not-null="false" />
+        </property>
+        <property name="MP1003_EDIT_DATETIME" type="java.lang.String">
+            <column name="MP1003_EDIT_DATETIME" length="30" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

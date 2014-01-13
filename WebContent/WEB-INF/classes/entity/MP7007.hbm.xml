@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP7007" table="MP7007">
+        <id name="MP7007_SEQ" type="java.lang.String">
+            <column name="MP7007_SEQ" />
+            <generator class="assigned" />
+        </id>
+        <property name="MP7007_MASTER_KEY" type="java.lang.String">
+            <column name="MP7007_MASTER_KEY" length="20" not-null="false" />
+        </property>
+        <property name="MP7007_EXAM_CODE" type="java.lang.String">
+            <column name="MP7007_EXAM_CODE" length="20" not-null="false" />
+        </property>
+        <property name="MP7007_SELF_SCORE" type="java.lang.String">
+            <column name="MP7007_SELF_SCORE" length="10" not-null="false" />
+        </property>
+        <property name="MP7007_MANAGER_SCORE" type="java.lang.String">
+            <column name="MP7007_MANAGER_SCORE" length="10" not-null="false" />
+        </property>
+        <property name="MP7007_AGREED_SCORE" type="java.lang.String">
+            <column name="MP7007_AGREED_SCORE" length="10" not-null="false" />
+        </property>
+        <property name="MP7007_REMARKS" type="java.lang.String">
+            <column name="MP7007_REMARKS" length="4000" not-null="false" />
+        </property>
+        <property name="MP7007_WEIGHTAGE" type="java.lang.String">
+            <column name="MP7007_WEIGHTAGE" length="10" not-null="false" />
+        </property>
+        <property name="MP7007_FINAL_SCORE" type="java.lang.String">
+            <column name="MP7007_FINAL_SCORE" length="10" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

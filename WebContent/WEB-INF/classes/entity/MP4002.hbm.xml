@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.MP4002" table="MP4002">
+        <id name="MP4002_NUM" type="java.lang.String">
+            <column name="MP4002_NUM" />
+            <generator class="assigned" />
+        </id>
+        <property name="MP4002_NAME_E" type="java.lang.String">
+            <column name="MP4002_NAME_E" length="500" not-null="false" />
+        </property>
+        <property name="MP4002_NAME_C" type="java.lang.String">
+            <column name="MP4002_NAME_C" length="500" not-null="false" />
+        </property>
+        <property name="MP4002_STATUS" type="java.lang.String">
+            <column name="MP4002_STATUS" length="5" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>
