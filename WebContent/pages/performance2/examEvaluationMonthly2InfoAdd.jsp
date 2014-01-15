@@ -15,7 +15,7 @@
 <title></title>
 <link href="css/Site_Css.css" rel="stylesheet" type="text/css" />
 <link href="css/skins2/main.css" rel="stylesheet" type="text/css" />
-
+<script src="js/jquery1.4.2.js" type="text/javascript"></script>
 <script src = "js/skins2/Main82.js" type="text/javascript"></script>
 
 <style type="text/css">
@@ -26,7 +26,7 @@
 </style>
 
 <script type="text/javascript">
-function cbc(id,idx){
+/*function cbc(id,idx){
 	var o1 = "sa1_" + idx;
 	var o2 = "sa2_" + idx;
 	var o3 = "sa3_" + idx;
@@ -48,7 +48,7 @@ function cbc(id,idx){
 	if(o5 != id){
 		document.getElementById("sa5_" + idx).checked = false;
 	}
-}
+}*/
 function tabClick(idx,count) {
     for (var i_tr=0; i_tr < count; i_tr++) {
 	    if (i_tr == idx) {
@@ -88,7 +88,20 @@ function rowClick(id){
 	// nothing to do
 }
 </script>
-
+<script type="text/javascript">
+function checkSubmit(){
+	$.each($("select"), function(idx, obj){
+		alert($(obj).val());
+		alert($(obj).parent().attr("id"));
+	});
+	
+	/*var param = {"pageType":"<s:property value='pageType'/>", 
+				 "commonSeq":"<s:property value='commonSeq'/>",
+				 "Mp8005comment_In":$("#qt").val()
+				 "":			 
+				 };*/
+}
+</script>
 </head>
 <body>
 <s:form action="examEvaluationMonthly2InfoSave" method="post" theme="simple">
@@ -159,28 +172,35 @@ function rowClick(id){
 		<tr align="center" style="background:url(css/table/blue/images/header_bg.gif) #2f589c repeat-x 0px 0px">
 		    <th scope="col" class="tdBg">Seq</th>
 			<th scope="col" class="tdBg">Title</th>
+			<th scope="col" class="tdBg">Evaluation</th>
+			<!-- 
 			<th scope="col" class="tdBg">Exceptional</th>
 			<th scope="col" class="tdBg">Exceeds Requirements</th>
 			<th scope="col" class="tdBg">Meet Requirement</th>
 			<th scope="col" class="tdBg">Gets By</th>
 			<th scope="col" class="tdBg">Needs Work</th>
+			 -->
 		</tr>
 <s:iterator value="evaluationMonthly2ScoresList" status="st">
 		<tr id="<s:property value="MP8006_SEQ"/>" align="left" style="height:28px;background-color:green;" onmousedown="rowClick('<s:property value="MP8006_SEQ"/>')">
 		    <td width="50px" align="center" class="tdBg1">${st.index + 1}</td>
 		    <td class="tdBg1"><s:property value="MP8006_EXAM_NAME"/></td>
-		    <td width="80px" class="tdBg1"><div class="checkdiv"><input id="sa5_${st.index + 1}" onclick="cbc('sa5_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray5" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray5.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
+		    <td id="<s:property value="MP8006_SEQ" />"><s:select list="scoreLevelList" value="MP8006_SCORES" name="scoreLevel" id="scoreLevel" theme="simple"/></td>
+		    <!-- <td width="80px" class="tdBg1"><div class="checkdiv"><input id="sa5_${st.index + 1}" onclick="cbc('sa5_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray5" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray5.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
 		    <td width="150px" class="tdBg1"><div class="checkdiv"><input id="sa4_${st.index + 1}" onclick="cbc('sa4_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray4" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray4.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
 		    <td width="120px" class="tdBg1"><div class="checkdiv"><input id="sa3_${st.index + 1}" onclick="cbc('sa3_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray3" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray3.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
 		    <td width="50px" class="tdBg1"><div class="checkdiv"><input id="sa2_${st.index + 1}" onclick="cbc('sa2_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray2" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray2.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
 		    <td width="80px" class="tdBg1"><div class="checkdiv"><input id="sa1_${st.index + 1}" onclick="cbc('sa1_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray1" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray1.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
+		     -->
 		</tr>
 </s:iterator>
 	</table>
 </div>
 
-<div style="width:100%;margin-top:10px;" align="center"><input type="submit" class="button" name="Submit" value="Save" <s:if test="optSave == 0" >disabled="disabled"</s:if>/></div>
+<!-- <div style="width:100%;margin-top:10px;" align="center"><input type="submit" class="button" name="Submit" value="Save" <s:if test="optSave == 0" >disabled="disabled"</s:if>/></div> -->
 
 </s:form>
+
+<div id="joeTest" style="width:100%;margin-top:10px;" align="center"><input type="button" value="Json Test" onclick="checkSubmit()"/></div>
 </body>
 </html>

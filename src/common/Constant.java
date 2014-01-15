@@ -618,6 +618,24 @@ public class Constant {
 		return rs;
 	}
 	
+	public static Map<String, String> getDepartmentScoreLevel(){
+		Map<String, String> rs = new LinkedHashMap<String, String>();
+		rs.put("-1","---please select appraisal---");
+		rs.put("0","Complete Fail");
+		rs.put("1","Fail");
+		rs.put("2","Dissappointment");
+		rs.put("3","Unacceptable");
+		rs.put("4","Acceptable");
+		rs.put("5","Expected Standard");
+		rs.put("6","Satisfactory");
+		rs.put("7","Good");
+		rs.put("8","Value adding performance");
+		rs.put("9","Excellent");
+		rs.put("10","Exceptional");
+		
+		return rs; 
+	}
+	
 	public static String LOGIN_SUCCESS = "Logon Success";
 	public static String LOGIN_FAILURE = "Logon failure";
 	public static String RESET_PWD = "Reset Password";

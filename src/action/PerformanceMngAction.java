@@ -45,11 +45,9 @@ import service.IMP8003Service;
 import service.IMP8004Service;
 import service.IMP8005Service;
 import service.IMP8006Service;
-import sun.rmi.server.Util;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-
 import common.Arith;
 import common.ChartUtil;
 import common.Constant;
@@ -58,7 +56,6 @@ import common.LogUtil;
 import common.UtilCommon;
 import common.UtilDate;
 
-import entity.MP0002;
 import entity.MP0009;
 import entity.MP1001;
 import entity.MP7001;
@@ -146,12 +143,16 @@ public class PerformanceMngAction extends ActionSupport {
 	private Map<String,String> commonDepartmentList = new LinkedHashMap<String,String>();
 	private Map<String,String> commonDepartmentList2 = new LinkedHashMap<String,String>();
 	private Map<String,String> departmentEmpList = new LinkedHashMap<String,String>();
+
+	private Map<String,String> scoreLevelList = new LinkedHashMap<String, String>();
 	
 	private List<String>  scoreArray1 = new ArrayList<String>();
 	private List<String>  scoreArray2 = new ArrayList<String>();
 	private List<String>  scoreArray3 = new ArrayList<String>();
 	private List<String>  scoreArray4 = new ArrayList<String>();
 	private List<String>  scoreArray5 = new ArrayList<String>();
+	
+	private String existScore;
 	
 	//------------失败做法--哈哈--------------
 	private String DEP_1;
@@ -4164,7 +4165,11 @@ public class PerformanceMngAction extends ActionSupport {
 						}
 						
 						evaluationMonthly2ScoresList = serviceMP8006.findByProperty("MP8006_MASTER_KEY", commonSeq);
-						for(int i=0,j=evaluationMonthly2ScoresList.size(); i<j; i++){
+						scoreLevelList = Constant.getDepartmentScoreLevel();
+						
+						
+						
+						/*for(int i=0,j=evaluationMonthly2ScoresList.size(); i<j; i++){
 							MP8006 mp86 = evaluationMonthly2ScoresList.get(i);
 							String examScores = "";
 							if(mp86.getMP8006_SCORES() == null || mp86.getMP8006_SCORES().equals("")){
@@ -4190,7 +4195,7 @@ public class PerformanceMngAction extends ActionSupport {
 								   scoreArray5.add(mp86.getMP8006_EXAM_CODE());
 							           break;
 							}// End Switch
-						}// End List
+						}// End List*/
 					}else{
 						return "error";
 					}
@@ -4275,7 +4280,7 @@ public class PerformanceMngAction extends ActionSupport {
 				addFieldError("errMsg","数据保存成功");
 				return INPUT;
 			}else if(pageType.equals("edit")){
-				if(scoreArray1 == null) {scoreArray1 = new ArrayList<String>();}
+				/*if(scoreArray1 == null) {scoreArray1 = new ArrayList<String>();}
 				if(scoreArray2 == null) {scoreArray2 = new ArrayList<String>();}
 				if(scoreArray3 == null) {scoreArray3 = new ArrayList<String>();}
 				if(scoreArray4 == null) {scoreArray4 = new ArrayList<String>();}
@@ -4298,6 +4303,8 @@ public class PerformanceMngAction extends ActionSupport {
 				mp85.setMP8005_SCORES(Double.toString(averageScroes));
 				//mp85.setMP8005_APPRAISER(mp8005.getMP8005_APPRAISER());
 				serviceMP8005.update(mp85);
+				*/
+				
 				
 				HttpServletResponse response = ServletActionContext.getResponse();
 				response.setCharacterEncoding("utf-8");
@@ -6287,6 +6294,18 @@ public class PerformanceMngAction extends ActionSupport {
 	}
 	public void setReviewPeriod(String reviewPeriod) {
 		this.reviewPeriod = reviewPeriod;
+	}
+	public Map<String, String> getScoreLevelList() {
+		return scoreLevelList;
+	}
+	public void setScoreLevelList(Map<String, String> scoreLevelList) {
+		this.scoreLevelList = scoreLevelList;
+	}
+	public String getExistScore() {
+		return existScore;
+	}
+	public void setExistScore(String existScore) {
+		this.existScore = existScore;
 	}
 	
 }
