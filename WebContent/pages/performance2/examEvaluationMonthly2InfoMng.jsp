@@ -59,9 +59,13 @@ PageClick = function(pageclickednumber) {
 function pageRefresh(){
     var param2 = $("#param2").val();
     var param3 = $("#param3").val();
-    var _pageNum = document.getElementById("pageNum").value;
-    var param = {"pageNum" : _pageNum,"param2" : param2,"param3" : param3};
-	$("#examEvaluationInfoListDiv").load("examEvaluationMonthly2InfoPageClick.action",param);
+    var _pageNum = document.getElementById("pageNum").value;    
+    var param = {"pageNum" : _pageNum,"param2" : param2,"param3" : param3,"param4":$("#param4").val(), "param5":$("#param5").val()};
+	//$("#examEvaluationInfoListDiv").load("examEvaluationMonthly2InfoPageClick.action",param);
+	window.parent.frames["frmright"].location="examEvaluationMonthly2InfoSearch.action?pageNum=" + _pageNum + "&param2=" + param2 + "&param3=" + param3 + 
+			"&param4=" + $("#param4").val() + "&param5=" + $("#param5").val();
+	//$("body").load("examEvaluationMonthly2InfoSearch.action",param);
+	//location.reload();
 }
 function edit(id){
 	var popstyle="dialogTop:50px;dialogLeft:300px;help:no;center:yes;dialogHeight:650px;dialogWidth:1000px;status:no;resizable:yes;scroll:yes;loacation:no;toolbar:no;";
@@ -190,6 +194,5 @@ function ce(){
 <div id="pager" style="border: 0px solid #000000;height:30px;width:1300px;margin-top:10px;"></div>
 
 </form>
-<s:debug/>
 </body>
 </html>

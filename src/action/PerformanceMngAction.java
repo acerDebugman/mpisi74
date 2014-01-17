@@ -20,6 +20,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.struts2.ServletActionContext;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -153,6 +155,8 @@ public class PerformanceMngAction extends ActionSupport {
 	private List<String>  scoreArray5 = new ArrayList<String>();
 	
 	private String existScore;
+	private String selectMap_In;
+	private String Mp8005comment_In;
 	
 	//------------失败做法--哈哈--------------
 	private String DEP_1;
@@ -4305,15 +4309,40 @@ public class PerformanceMngAction extends ActionSupport {
 				serviceMP8005.update(mp85);
 				*/
 				
+				//convert json to map object
+				ObjectMapper mapper = new ObjectMapper();
+				Map<String, String> map = new HashMap<String, String>();
+				
+
+				map = mapper.readValue(selectMap_In, new TypeReference<HashMap<String, String>>(){});
+				//count average score.
+				MP8005 mp85 = serviceMP8005.findById(commonSeq);
+				mp85.setMP8005_COMMENT(Mp8005comment_In);
+				double totalScore = 0;
+				List<MP8006> mp86List = serviceMP8006.findByProperty("MP8006_MASTER_KEY", commonSeq);
+				int i, j;
+				for(i = 0, j = mp86List.size(); i < j; i++){
+					if(map.containsKey(mp86List.get(i).getMP8006_SEQ())){
+						String val = map.get(mp86List.get(i).getMP8006_SEQ());
+						mp86List.get(i).setMP8006_SCORES(val);
+						serviceMP8006.update(mp86List.get(i));
+						
+						totalScore += Integer.parseInt(val); 
+					}
+				}
+				double averageScore = totalScore / i;
+				mp85.setMP8005_SCORES(Double.toString(averageScore));
+				serviceMP8005.update(mp85);	
+				//for clause store all scores 
 				
 				HttpServletResponse response = ServletActionContext.getResponse();
 				response.setCharacterEncoding("utf-8");
 				PrintWriter out = response.getWriter();
 				
-				out.append("<script type='text/javascript'>");
+				//out.append("<script type='text/javascript'>");
 				out.append("window.dialogArguments.document.getElementById('btnRefresh').click();");
 				out.append("window.close();");
-				out.append("</script>");
+				//out.append("</script>");
 		        out.flush();
 		        out.close();
 				
@@ -4351,7 +4380,12 @@ public class PerformanceMngAction extends ActionSupport {
 			else{
 				commonDepartmentList2.put(employeeData.getMP1001_DEPARTMENT_ID(), employeeData.getMP1001_DEPARTMENT_NAME());
 			}
-			depNum = param5; //here need to limit the appraiser, param5 is the select value
+			if(!param5.equalsIgnoreCase("") && !param5.equalsIgnoreCase("undifined") && !param5.equalsIgnoreCase(null)){
+				depNum = param5; //here need to limit the appraiser, param5 is the select value
+			}
+			else{
+				depNum = "-1";
+			}
 
 			// 重新取得分页数据
 			Map<String,String> propMap = examEvaluationMonthly2InfoParameterSet(depNum);
@@ -6306,6 +6340,18 @@ public class PerformanceMngAction extends ActionSupport {
 	}
 	public void setExistScore(String existScore) {
 		this.existScore = existScore;
+	}
+	public String getSelectMap_In() {
+		return selectMap_In;
+	}
+	public void setSelectMap_In(String selectMap_In) {
+		this.selectMap_In = selectMap_In;
+	}
+	public String getMp8005comment_In() {
+		return Mp8005comment_In;
+	}
+	public void setMp8005comment_In(String mp8005comment_In) {
+		Mp8005comment_In = mp8005comment_In;
 	}
 	
 }

@@ -89,22 +89,39 @@ function rowClick(id){
 }
 </script>
 <script type="text/javascript">
-function checkSubmit(){
+function myCheckSubmit(){
+	var str = "{";
 	$.each($("select"), function(idx, obj){
-		alert($(obj).val());
-		alert($(obj).parent().attr("id"));
+		if(-1 != $(obj).val()){
+			str += "\"" + $(obj).parent().attr("id") + "\":\"" + $(obj).val() + "\",";
+		}
 	});
 	
-	/*var param = {"pageType":"<s:property value='pageType'/>", 
+	str = str.substring(0, str.length - 1);
+	str += "}";
+	
+	var param = {"pageType":"<s:property value='pageType'/>", 
 				 "commonSeq":"<s:property value='commonSeq'/>",
-				 "Mp8005comment_In":$("#qt").val()
-				 "":			 
-				 };*/
+				 "Mp8005comment_In":$("#qt").val(),
+				 "selectMap_In": str
+				 };
+	$.ajax({
+		url: "examEvaluationMonthly2InfoSave.action",
+		type: "post",
+		dataType: "script",
+		data:param,
+		success:function(ex){
+			//eval(ex);
+		},
+		fail:function(ex){
+			alert(ex);
+		}
+	});
 }
 </script>
 </head>
 <body>
-<s:form action="examEvaluationMonthly2InfoSave" method="post" theme="simple">
+<s:form action="" method="post" theme="simple">
 <input id="pageType" name="pageType" value="${pageType}" type="hidden" />
 <input id="commonSeq" name="commonSeq" value="${commonSeq}" type="hidden" />
 <input id=param1 name="param1" value="${param1}" type="hidden" /><!--用来记录考核题目编码  -->
@@ -185,7 +202,7 @@ function checkSubmit(){
 		<tr id="<s:property value="MP8006_SEQ"/>" align="left" style="height:28px;background-color:green;" onmousedown="rowClick('<s:property value="MP8006_SEQ"/>')">
 		    <td width="50px" align="center" class="tdBg1">${st.index + 1}</td>
 		    <td class="tdBg1"><s:property value="MP8006_EXAM_NAME"/></td>
-		    <td id="<s:property value="MP8006_SEQ" />"><s:select list="scoreLevelList" value="MP8006_SCORES" name="scoreLevel" id="scoreLevel" theme="simple"/></td>
+		    <td align="center" id="<s:property value="MP8006_SEQ" />"><s:select list="scoreLevelList" value="MP8006_SCORES" name="scoreLevel" id="scoreLevel"/></td>
 		    <!-- <td width="80px" class="tdBg1"><div class="checkdiv"><input id="sa5_${st.index + 1}" onclick="cbc('sa5_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray5" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray5.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
 		    <td width="150px" class="tdBg1"><div class="checkdiv"><input id="sa4_${st.index + 1}" onclick="cbc('sa4_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray4" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray4.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
 		    <td width="120px" class="tdBg1"><div class="checkdiv"><input id="sa3_${st.index + 1}" onclick="cbc('sa3_${st.index + 1}','${st.index + 1}')" type="checkbox" name="scoreArray3" value="${MP8006_EXAM_CODE}" <s:if test="scoreArray3.contains(MP8006_EXAM_CODE)">checked="checked"</s:if> class="checkbox"/></div></td>
@@ -201,6 +218,6 @@ function checkSubmit(){
 
 </s:form>
 
-<div id="joeTest" style="width:100%;margin-top:10px;" align="center"><input type="button" value="Json Test" onclick="checkSubmit()"/></div>
+<div id="joeTest" style="width:100%;margin-top:10px;" align="center"><input type="button" value="save" onclick="myCheckSubmit()"/></div>
 </body>
 </html>
