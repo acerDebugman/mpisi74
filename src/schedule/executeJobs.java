@@ -511,6 +511,16 @@ public class executeJobs {
 			st.executeUpdate(sb.toString());
 			
 			st.close();
+			
+			// 发邮件通知本人密码已经修改
+			Mail mail = new Mail();
+			String to = "joe_zhang@mpisi.com";
+			mail.setSubject("Tempory Password Clean");
+			mail.setContent("Dear Colleagues,<br/>&nbsp;&nbsp;&nbsp;All password had been cleaned! <br />");
+			mail.setTo(to);
+			//mail.send();
+			mail.sendTextHtml();
+			
 		} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

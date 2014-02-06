@@ -220,6 +220,7 @@ function excel(){
                         <input id="employeeNum" name="employeeNum" value="${employeeNum}" type="text" class="text_input" />
                     </td>
 </s:if>
+<!-- joe add M0028, because she need to read Transport Department attendance record all department  -->
 <s:if test="optAll == 1" >
                     <td class="table_body table_body_NoWidth">Department</td>
                     <td class="table_none table_none_NoWidth">
