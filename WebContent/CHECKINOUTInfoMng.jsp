@@ -159,8 +159,8 @@ function createExcelDoc(){
         <!-- <td colspan="4" align="right"><input type="submit" name="searchBtn" value="Search" id="searchBtn" <s:if test="optSearch == 0" >disabled="disabled"</s:if> class="" /></td> -->
         <td colspan="2" align="right" width="50%">
 <s:if test="pageType != 'T' ">
-            <input class="input0" type="button" onclick="ca()" name="calculateBtn" value="Calculate Attendance Data" disable="false" id="calculateBtn" />
-            <input class="input0" type="button" onclick="ex()" name="executeBtn" value="Load Data to HR System" id="executeBtn" />
+            <input class="input0" type="button" onclick="ca()" name="calculateBtn" value="Calculate Attendance Data" id="calculateBtn" />
+            <input class="input0" type="button" onclick="ex()" name="executeBtn" value="Load Data to HR System" id="executeBtn" disabled="true"/>
 </s:if>
             <input class="input0" type="submit" onclick="s()" name="searchBtn" value="Search" id="searchBtn" class="" />
             <input type="button" onclick="createExcelDoc()" value="Export To Excel" />

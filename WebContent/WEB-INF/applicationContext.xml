@@ -85,6 +85,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>executeJob9</value>
 		</property>
 	</bean>
+	<bean id="quartzDetail10" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob10</value>
+		</property>
+	</bean>
 <!--===== Trigger =====-->
 	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail">
@@ -161,6 +169,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 30 3 1 * ?</value>
 		</property>
 	</bean>
+	<bean id="quartzTrigger10" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail10"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 20 4 * * ?</value>
+		</property>
+	</bean>
 <!--===== Schedule =====-->
 	<bean autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
@@ -174,6 +190,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			    <ref local="quartzTrigger7"/>
 			    <!-- <ref local="quartzTrigger8"/> -->
 			    <ref local="quartzTrigger9"/>
+			    <ref local="quartzTrigger10"/>
 			</list>
 		</property>
 	</bean>
@@ -203,7 +220,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="password" value="IDpt463"></property>
 	</bean>
 	<bean id="dataSourceHr" parent="parentDataSource">
- 		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property> -->
+ 		<!--  <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property>-->
  		<property name="url" value="jdbc:jtds:sqlserver://192.168.50.141:1433/mpisiHr;instance=JOE"></property> 
  		
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.141:1433/mpisiHr_test;instance=JOE"></property>  -->
@@ -308,6 +325,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 				<value>entity/CHECKINOUT.hbm.xml</value>
 				<value>entity/USERINFO.hbm.xml</value>
 				
+				<value>entity/JE0101.hbm.xml</value>
 <!-- Entity配置信息 -->
 			</list>
 		</property>
@@ -600,6 +618,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
+	<bean id="JE0101DAO" class="dao.JE0101DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
 <!-- Dao配置信息 -->
 
 <!-- Service配置信息 -->
@@ -886,6 +909,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="CHECKINOUTDAO" />
 		</property>
 	</bean>
+	
+	<bean id="JE0101Service" class="service.JE0101Service">
+		<property name="dao">
+			<ref bean="JE0101DAO" />
+		</property>
+	</bean>
 <!-- Service配置信息 -->
 
 <!-- Bean配置信息 -->
@@ -964,6 +993,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 		<property name="serviceAC0009">
 			<ref bean="AC0009Service" />
+		</property>
+		<property name="serviceJE0101">
+			<ref bean="JE0101Service" />
 		</property>
 	</bean>
 	<bean name="bulletinMngBean" class="action.BulletinMngAction" scope="prototype">
@@ -1062,6 +1094,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="serviceMP7002">
 			<ref bean="MP7002Service" />
 		</property>
+		
 	</bean>
 	<bean name="applyLeaveMngBean" class="action.ApplyLeaveAction" scope="prototype">
 		<property name="service">

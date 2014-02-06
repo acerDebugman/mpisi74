@@ -30,7 +30,7 @@ public class executeJobs {
 		Connection connSql = null;
 		//log.info("------Execute Job1 Start------");
 		try {
-			CommonJobMethod.loadDataToHrSystem(true, null);
+			//CommonJobMethod.loadDataToHrSystem(true, null);
 			
 			connSql = CommonJobMethod.getDBConnection();
 			List<MP2003> mp2003List =CommonJobMethod.getAllData(connSql,parameter);
@@ -499,4 +499,27 @@ public class executeJobs {
 			}
 		}
 	}
+	
+	public void executeJob10() throws SQLException{
+		Connection connSql = null;
+		try{
+			connSql = CommonJobMethod.getDBConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append(" delete from JE0101 where JE0101_TYPE='FORGETPSWD' ");
+			Statement st = connSql.createStatement();
+			//st.executeQuery(sb.toString());
+			st.executeUpdate(sb.toString());
+			
+			st.close();
+		} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+		finally{
+			if(connSql!=null){
+				connSql.close();
+			}
+		}
+	}
+
 }

@@ -129,6 +129,11 @@ $(document).ready(function(){
 				                        <s:submit id="loginBtn" label="" value="" style="width:95px;height:34px;background-image:url(images/login/login01.gif);border:solid 0px blue;" theme="simple"/>
 				                    </td>
 				                  </tr>
+				                  <tr>
+				                  	<td height="0">&nbsp;</td>
+				                  	<td height="0">&nbsp;</td>
+				                  	<td height="30" style="float:right">&nbsp;<a href="forgetMyPassword.jsp" style="color:red" target="_blank">Forget your password ?</a>&nbsp;</td>
+				                  </tr>
 				                </table>
 			                </td>
 			                <td width="214" style="background:url(images/login/login04.jpg)" >&nbsp;</td>

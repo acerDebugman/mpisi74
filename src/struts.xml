@@ -91,6 +91,17 @@
 		    <result name="input" >login.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		
+		<action name="forgetPassword" class="loginMngBean" method="forgetPassword">
+		    <result name="success" >forgetPasswordResetSuccess.jsp</result>
+		    <result name="noEmailAddr" >cantFindEmail.jsp</result>
+		    <result name="resetPasswordPage" >forgetMyPassword.jsp</result>
+		</action>
+		<action name="resetPasswordFromMailLink" class="loginMngBean" method="resetPasswordFromMailLink">
+		    <result name="success" >resetPasswordFromEmailLink.jsp</result>
+		    <result name="linkNotAvailable" >resetPswdLinkInvalid.jsp</result>
+		</action>
+
 <!-- 登陆Action -->
 
 <!-- 公告栏Action -->

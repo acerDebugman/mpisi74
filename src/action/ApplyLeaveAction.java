@@ -1567,7 +1567,8 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 						
 						mail.setSubject(Constant.MESSAGE_LEAVE_TITLE);
 						
-						StringBuffer result = new StringBuffer(); 
+						StringBuffer result = new StringBuffer();
+						//text/plain
 						result.append("Dear " + emp01.getMP1001_PREFERED_NAME() + "(" + emp01.getMP1001_EMPLOYEE_NUM() + ")" + ",\r\n \r\n ");
 						result.append("Please note that " + emp02.getMP1001_PREFERED_NAME() + " have apply for leave, you are the acting person.\r\n \r\n ");
 						
@@ -1582,8 +1583,6 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 						result.append("Thank you very much! \r\n \r\n\r\n ");
 						result.append("Your Faithfully, \r\n ");
 						result.append("HRMS Administrator");
-						
-						mail.setContent(result.toString());					
 
 						mail.setTo(toList.toString());
 						mail.send();
@@ -5273,7 +5272,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	        //----------------------------Operation History------------------
 	        hourInfoList = Constant.getHourList();
 	        workingMinuteList = Constant.getWorkingMinute2();
-	        if(mp2008.getMP2008_DATE() != null && mp2008.getMP2008_DATE().equals("") && checkHoliday(mp2008.getMP2008_DATE(), holidayMap)){
+	        if(mp2008.getMP2008_DATE() != null && !mp2008.getMP2008_DATE().equals("") && checkHoliday(mp2008.getMP2008_DATE(), holidayMap)){
 	        	overTimeFlag = true; 
 	        }
 	        
@@ -5414,7 +5413,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 				toList.append("," + mp11Obj.getMP1001_COMPANY_EMAIL());
 				result.append("Dear " + mp11Obj.getMP1001_PREFERED_NAME() + "(" + mp11Obj.getMP1001_EMPLOYEE_NUM() + ")" + ",\r\n \r\n ");
 			}else{
-				result.append("Dear " + emp02.getMP1001_PREFERED_NAME() + "(" + emp02.getMP1001_EMPLOYEE_NUM() + ")" + ",\r\n \r\n ");
+				result.append("Dear " + emp02.getMP1001_PREFERED_NAME() + "(" + emp02.getMP1001_EMPLOYEE_NUM() + ")" + ",\r\n \r\n");
 			}
 			//toList.append("," + managerMap.get("6").getMP1001_COMPANY_EMAIL()); //Shann require to unreceive overtime email @2013/09/18
 			

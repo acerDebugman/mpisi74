@@ -68,6 +68,7 @@ public class CommonJobMethod {
 			//sql = "select * from MP2003 where 1=1 and MP2003_DATETIME < '" + UtilDate.getToday()  + "'  order by MP2003_DATETIME ";
 		}else{
 			sql = "select mp23.*,mp11.MP1001_DEPARTMENT_ID  from MP2003 mp23, MP1001 mp11 where 1=1 and mp23.MP2003_EMPLOYEE_NUM = mp11.MP1001_EMPLOYEE_NUM and mp23.MP2003_DATETIME < '" + UtilDate.getToday()  + "' and  mp23.MP2003_DATETIME >= DATEADD(DD, DATEDIFF(DD,0,getdate()), -62) order by mp23.MP2003_DATETIME ";
+			//sql = "select mp23.*,mp11.MP1001_DEPARTMENT_ID  from MP2003 mp23, MP1001 mp11 where 1=1 and MP2003_EMPLOYEE_NUM = 'M0289' and MP2003_DATETIME='2013-12-27' and mp23.MP2003_EMPLOYEE_NUM = mp11.MP1001_EMPLOYEE_NUM and mp23.MP2003_DATETIME < '" + UtilDate.getToday()  + "' and  mp23.MP2003_DATETIME >= DATEADD(DD, DATEDIFF(DD,0,getdate()), -62) order by mp23.MP2003_DATETIME ";
 			//sql = "select * from MP2003 where 1=1 and MP2003_EMPLOYEE_NUM = 'M0180' and  MP2003_DATETIME >= '2013-04-01' and MP2003_DATETIME <= '2013-05-12'  order by MP2003_DATETIME ";
 			//sql = "select * from MP2003 where 1=1 and MP2003_DATETIME >= '2013-04-01' and MP2003_DATETIME <= '2013-04-10'  order by MP2003_DATETIME ";
 		}
@@ -205,9 +206,52 @@ public class CommonJobMethod {
 							obj.setMP2003_COMMENT("Leave");
 							obj.setMP2003_STATUS("2");
 						}else{
-							// 如果请假时间为8小时，则不为异常
-							obj.setMP2003_COMMENT("Abnormal");
-							obj.setMP2003_STATUS("1");
+							//if that day work time less than 8 hours.
+							MP0010 mp10 = getDataFromMP0010(obj.getMP2003_DATETIME(),con);
+							if(null != mp10){
+								int startTimeHour = Integer.parseInt(mp10.getMP0010_START_TIME().substring(0, 2));
+								int startTimeMinutes  = Integer.parseInt(mp10.getMP0010_START_TIME().substring(3,5));
+								int endTimeHour = Integer.parseInt(mp10.getMP0010_END_TIME().substring(0, 2));
+								int endTimeMinutes = Integer.parseInt(mp10.getMP0010_END_TIME().substring(3, 5));
+								int workTimeHour = 8;
+								int workTimeMinutes = 0;
+								if(endTimeHour <= 13){
+									workTimeHour = endTimeHour - startTimeHour;
+									workTimeMinutes = endTimeMinutes - startTimeMinutes;
+									if(workTimeMinutes < 0){
+										workTimeMinutes += 60;
+										workTimeHour -= 1;
+									}
+								}
+								else{
+									workTimeHour = endTimeHour - startTimeHour;
+									workTimeMinutes = endTimeMinutes - startTimeMinutes;
+									if(workTimeMinutes < 0){
+										workTimeMinutes += 60;
+										workTimeHour -= 1;
+									}
+									workTimeMinutes -= 30; //only 30 minutes for noon
+									if(workTimeMinutes < 0){
+										workTimeMinutes += 60;
+										workTimeHour -= 1;
+									}
+								}
+								if(leaveHour >= workTimeHour){
+									obj.setMP2003_COMMENT("Leave");
+									obj.setMP2003_STATUS("2");
+								}
+								else{
+									//if that day he didn't come and didn't apply for leave
+									obj.setMP2003_COMMENT("Abnormal");
+									obj.setMP2003_STATUS("1");
+								}
+							}
+							else{
+								//if that day he didn't come and didn't apply for leave
+								obj.setMP2003_COMMENT("Abnormal");
+								obj.setMP2003_STATUS("1");
+							}
+							
 						}
 					}else if((startHour > 8 || 8 == startHour && startMinute > 0) || (finishHour < 16 || 16 == finishHour && finishMinute < 30)){
 						if(leaveHour >= 8){
@@ -240,7 +284,7 @@ public class CommonJobMethod {
 							// 迟到的情况
 							if(startHour > 8 || 8 == startHour && startMinute > 0){
 								double lateHour = 0;// 迟到时间
-								double lateLeaveHour = getExactLeaveHours(mp2001List,startHour,startMinute,sdf0.format(_dateTime));//请假时间
+								double lateLeaveHour = getExactLeaveHours(mp2001List,startHour,startMinute,sdf0.format(_dateTime));//请假时间, diff from getLeaveHours() function
 								
 								if(startHour < 13 || 13 == startHour && 0 == startMinute){
 									lateHour = startHour - 8 + (startMinute>0?1:0);
@@ -293,7 +337,7 @@ public class CommonJobMethod {
 								if(earlyLeaveHour >= earlyHour){
 									altMsg += "Leave";
 								}else{
-									if(mp10 != null){								
+									if(mp10 != null){
 										double _outValue = Math.round(16.5-endWorkTime);
 										
 										if(earlyLeaveHour >= earlyHour - _outValue){
@@ -392,6 +436,7 @@ public class CommonJobMethod {
 		queryString.append(" and MP2001_EMPLOYEE_NUM = '" + empNum + "' ");
 		queryString.append(" and Convert(char(10),MP2001_FROM_DATETIME,120) <= '" + date + "' ");
 		queryString.append(" and Convert(char(10),MP2001_TO_DATETIME,120) >= '" + date + "' ");
+		queryString.append(" order by MP2001_FROM_DATETIME ASC"); //here is important, so I can merge them later.
 
 		MP2001 mp21 = new MP2001();
 		ResultSet rs = statement.executeQuery(queryString.toString());
@@ -437,6 +482,29 @@ public class CommonJobMethod {
 		SimpleDateFormat sdf1 = new SimpleDateFormat("HH");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("mm");
 		
+		//add by Joe, mp2001List already order by MP2001_FROM_DATETIME
+		for(int i=0,j=mp2001List.size(); i<j; i++){
+			if(i + 1 >= j){
+				break;
+			}
+			MP2001 mp21 = mp2001List.get(i);
+			String endTime_0 = mp21.getMP2001_TO_DATETIME();
+			String startTime_1 = mp2001List.get(i+1).getMP2001_FROM_DATETIME();
+			Date endDate_0 = sdf0.parse(endTime_0);
+			Date startDate_1 = sdf0.parse(startTime_1);
+			if(startDate_1.compareTo(endDate_0) < 0){ //startDate_1 is before endDate_0
+				mp21.setMP2001_TO_DATETIME(mp2001List.get(i+1).getMP2001_TO_DATETIME()); //the only reason is I only need total time
+				//merge hours
+				int a = Integer.parseInt(mp2001List.get(i).getMP2001_DAYS());
+				int b = Integer.parseInt(mp2001List.get(i + 1).getMP2001_DAYS());
+				mp2001List.get(i).setMP2001_DAYS(Integer.toString(a+b));
+				
+				mp2001List.remove(i+1);
+				i--;
+				j--;
+			}
+		}//END JOE
+		
 		for(int i=0,j=mp2001List.size(); i<j; i++){
 			MP2001 mp21 = mp2001List.get(i);
 			
@@ -461,10 +529,18 @@ public class CommonJobMethod {
 				continue;
 			}
 			
+			/*
 			if(startHour <= _hour && finishHour >= _hour){
 				result = Double.parseDouble(mp21.getMP2001_DAYS());
+				//result = Integer.parseInt(sdf1.parse(mp21.getMP2001_FROM_DATETIME()).toString()) - Integer.parseInt(sdf1.parse(mp21.getMP2001_TO_DATETIME()).toString());
 				retValue = retValue + result;
 			}
+			*/
+			
+			//changed by joe
+			result = Double.parseDouble(mp21.getMP2001_DAYS());
+			retValue = retValue + result;
+			
 		}
 
 		return retValue;

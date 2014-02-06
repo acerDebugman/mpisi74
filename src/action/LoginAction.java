@@ -17,28 +17,31 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 
-import entity.HOLIDAY;
-import entity.MP0011;
-import entity.MP1001;
-import entity.MP0002;
-import entity.MP1010;
 import service.IAC0006Service;
 import service.IAC0007Service;
 import service.IAC0008Service;
 import service.IAC0009Service;
 import service.IHOLIDAYService;
+import service.IJE0101Service;
+import service.IMP0002Service;
 import service.IMP0011Service;
 import service.IMP1001Service;
-import service.IMP0002Service;
 import service.IMP1010Service;
 
-import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
 import common.Constant;
 import common.LogUtil;
 import common.Mail;
 import common.UtilCommon;
 import common.UtilDate;
+
+import entity.HOLIDAY;
+import entity.JE0101;
+import entity.MP0002;
+import entity.MP0011;
+import entity.MP1001;
+import entity.MP1010;
 
 public class LoginAction extends ActionSupport {
 	private static final long serialVersionUID = 1L;
@@ -53,6 +56,7 @@ public class LoginAction extends ActionSupport {
 	private IAC0008Service serviceAC0008;
 	private IAC0009Service serviceAC0009;
 	private IHOLIDAYService serviceHOLIDAY;
+	private IJE0101Service serviceJE0101;
 	private MP1001 mp1001;
 	private List<?> mp1001s;
 	private String MP1001_EMPLOYEE_NUM;
@@ -71,6 +75,10 @@ public class LoginAction extends ActionSupport {
 	private int pageNum;
 	private int pageCount;
 	private String errMsg;
+	
+	//forget password for email
+	private String companyEmailAddr;
+	private String forgetPasswordSeq;
 	
 	private List<MP0011> loginHistoryInfo = new ArrayList<MP0011>();
 	
@@ -215,11 +223,11 @@ public class LoginAction extends ActionSupport {
 				return INPUT;
 			}
 			// 判断密码是否正确
-			/*if(!mp1001.getMP1001_PASSWORD().equals(employeeData.getMP1001_PASSWORD())){
+			if(!mp1001.getMP1001_PASSWORD().equals(employeeData.getMP1001_PASSWORD())){
 				addFieldError("mp1001.MP1001_PASSWORD","login failure.");
 				writeLoginLog(employeeData,"N");
 				return INPUT;
-			}*/
+			}
 
 			group = employeeData.getMP1001_GROUP();
 			mp1001.setMP1001_EMPLOYEE_NUM(employeeNum.toUpperCase());
@@ -251,7 +259,7 @@ public class LoginAction extends ActionSupport {
 		    
 		    log.info(employeeData.getMP1001_EMPLOYEE_NUM() + " " + employeeData.getMP1001_PREFERED_NAME() + " " + "login success!");
 		    
-		    /*if(employeeNum.indexOf("M") >= 0){
+		    if(employeeNum.indexOf("M") >= 0){
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				Date passwordDate = df.parse(employeeData.getMP1001_PASSWORD_DATE());
 			    
@@ -281,8 +289,8 @@ public class LoginAction extends ActionSupport {
 				}
 		    }else{
 		    	return SUCCESS;
-		    }*/
-		    return SUCCESS;
+		    }
+		    //return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
 			return "error";
@@ -871,6 +879,65 @@ public class LoginAction extends ActionSupport {
 		if(optMap.containsKey(Constant.OPT_CANCEL)){
 			optCancel = "1";
 		}		
+	}
+	
+	//forget password ---reset password
+	public String forgetPassword(){
+		try{
+			if(null == MP1001_EMPLOYEE_NUM || MP1001_EMPLOYEE_NUM.equalsIgnoreCase("")){
+				return "resetPasswordPage";
+			}
+			MP1001 _mp1 = serviceMP1001.findById(MP1001_EMPLOYEE_NUM);
+			if(_mp1.getMP1001_COMPANY_EMAIL().equalsIgnoreCase("") || _mp1.getMP1001_COMPANY_EMAIL().equalsIgnoreCase("null") || null == _mp1.getMP1001_COMPANY_EMAIL()){
+				//can't find email addresss
+				return "noEmailAddr";
+			}
+
+			String randomValue = "";
+			randomValue = Constant.generateSeq() + UtilCommon.getTempSeq();
+			JE0101 je0101 = new JE0101();
+			je0101.setJE0101_PROPERTY(randomValue);
+			je0101.setJE0101_VALUE(MP1001_EMPLOYEE_NUM);
+			je0101.setJE0101_TYPE("FORGETPSWD");
+			serviceJE0101.save(je0101);
+			
+			// 发邮件通知本人密码已经修改
+			Mail mail = new Mail();
+		    
+			String to = _mp1.getMP1001_COMPANY_EMAIL();
+			mail.setSubject("HRMS Password Reset");
+			mail.setContent("Dear Colleagues,<br/>&nbsp;&nbsp;&nbsp;Please click below link to reset your password, please be adviced that the link only available for 1 day! <br />&nbsp;&nbsp;&nbsp;&nbsp;Link Address:   <a href='http://192.168.50.11:8080/mpisi74/resetPasswordFromMailLink?forgetPasswordSeq=" + randomValue + "'>Reset My Password</a><br/>&nbsp;&nbsp;&nbsp;Time:" + UtilDate.get24DateTime() + "<br/>&nbsp;&nbsp;&nbsp;Thank you very much! <br />&nbsp;&nbsp;&nbsp;Your Faithfully, <br />&nbsp;&nbsp;&nbsp;HRMS Administrator");
+			mail.setTo(to);
+			//mail.send();
+			mail.sendTextHtml();
+			
+			return SUCCESS;
+		}catch(Exception ex){
+			log.info("Abnormal:" + ex.getMessage());
+			return "error"; 
+		}
+	}
+	
+	public String resetPasswordFromMailLink(){
+		try{
+			JE0101 je0101 = serviceJE0101.findByKey(forgetPasswordSeq);
+			if(null == je0101){
+				return "linkNotAvailable";
+			}
+			
+			String employeeNum = je0101.getJE0101_VALUE();
+			MP1001 mp11 = serviceMP1001.findById(employeeNum);
+			mp11.setMP1001_PASSWORD("mpisi123");
+			serviceMP1001.update(mp11);
+			
+			//delete record
+			serviceJE0101.delete(je0101);
+			
+			return SUCCESS;
+		}catch(Exception ex){
+			log.info("Abnormal:" + ex.getMessage());
+			return "error"; 
+		}
 	}
 	
 	
@@ -2098,6 +2165,34 @@ public class LoginAction extends ActionSupport {
 	 */
 	public void setServiceMP1010(IMP1010Service serviceMP1010) {
 		this.serviceMP1010 = serviceMP1010;
+	}
+
+	public IJE0101Service getServiceJE0101() {
+		return serviceJE0101;
+	}
+
+	public void setServiceJE0101(IJE0101Service serviceJE0101) {
+		this.serviceJE0101 = serviceJE0101;
+	}
+
+	public String getCompanyEmailAddr() {
+		return companyEmailAddr;
+	}
+
+	public void setCompanyEmailAddr(String companyEmailAddr) {
+		this.companyEmailAddr = companyEmailAddr;
+	}
+
+	public String getForgetPasswordSeq() {
+		return forgetPasswordSeq;
+	}
+
+	public void setForgetPasswordSeq(String forgetPasswordSeq) {
+		this.forgetPasswordSeq = forgetPasswordSeq;
+	}
+
+	public static Log getLog() {
+		return log;
 	}
 
 

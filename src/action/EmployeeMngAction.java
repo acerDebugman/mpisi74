@@ -2894,8 +2894,7 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 			    
 				String toList = mailListObj.getMP0006_VALUE() + "," + mp11Obj.getMP1001_COMPANY_EMAIL();
 				mail.setSubject("welcome new recruit");
-				//mail.setContent("Dear Colleagues,\r\n \r\n Please note that the below employee's number has been updated.\r\n Employee No. : " + employeeNum + "(" + mp11Obj.getMP1001_PREFERED_NAME() + ")--------->" + empNum + "\r\n \r\n Thank you very much! \r\n \r\n\r\n Your Faithfully, \r\n HRMS Administrator");
-				mail.setContent("Dear Colleagues,\r\n \r\n Please note that  the employee(" + empNum + ") has passed three months probation." + "\r\n \r\n Thank you very much! \r\n \r\n\r\n Your Faithfully, \r\n HRMS Administrator");
+				mail.setContent("Dear Colleagues,\r\n \r\n Please note that the below employee's number has been updated.\r\n Employee No. : " + employeeNum + "(" + mp11Obj.getMP1001_PREFERED_NAME() + ")--------->" + empNum + "\r\n \r\n Thank you very much! \r\n \r\n\r\n Your Faithfully, \r\n HRMS Administrator");
 				mail.setTo(toList);
 				mail.send();
 				
