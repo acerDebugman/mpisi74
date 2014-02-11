@@ -1338,6 +1338,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="CHECKINOUTService" />
 		</property>
 	</bean>
+	<!-- ItService -->
+	<bean name="itServiceBean" class="action.ItService" scope="prototype">
+		
+	</bean>
 <!-- Bean配置信息 -->
 
 </beans>

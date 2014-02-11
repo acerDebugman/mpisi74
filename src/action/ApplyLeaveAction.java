@@ -5624,6 +5624,10 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
         	datas[2] = mp2008Obj.getMP2008_EMPLOYEE_NUM();
         	datas[3] = mp2008Obj.getMP2008_EMPLOYEE_NAME();
         	datas[4] = mp2008Obj.getMP2008_DEPARTMENT_NAME();
+        	//add @20140211, just change name, for different company, if time is enough, need to add subcompany concept
+        	if(datas[4].equalsIgnoreCase("TRANSPORT")){
+        		datas[4] = "JAYCEPT";
+        	}
         	datas[5] = mp2008Obj.getMP2008_DATE();
         	datas[6] = mp2008Obj.getMP2008_HOURS();
         	datas[7] = mp2008Obj.getMP2008_RATING();
@@ -5679,6 +5683,10 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
         	datas[2] = mp2008Obj.getMP2008_EMPLOYEE_NUM();
         	datas[3] = mp2008Obj.getMP2008_EMPLOYEE_NAME();
         	datas[4] = mp2008Obj.getMP2008_DEPARTMENT_NAME();
+        	//add @20140211, just change name, for different company, if time is enough, need to add subcompany concept
+        	if(datas[4].equalsIgnoreCase("TRANSPORT")){
+        		datas[4] = "JAYCEPT";
+        	}
         	datas[5] = mp2008Obj.getMP2008_APP_STATUS_NAME();
         	datas[6] = mp2008Obj.getMP2008_HOURS_TOTAL()/60 + "H" + mp2008Obj.getMP2008_HOURS_TOTAL()%60 + "M";        	
         	datas[7] = mp2008Obj.getMP2008_RATING();
