@@ -1340,7 +1340,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	</bean>
 	<!-- ItService -->
 	<bean name="itServiceBean" class="action.ItService" scope="prototype">
-		
 	</bean>
 <!-- Bean配置信息 -->
 

@@ -540,6 +540,11 @@
 		    <result name="input">login.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		
+		<action name="shiftWorkMngInit" class="applyLeaveMngBean" method="shiftWorkMngInit">
+			<result name="success">test.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
 <!-- 出勤管理Action -->
 
 <!-- 部门职位管理Action -->
@@ -1363,8 +1368,15 @@
 <!-- PDF文档Action -->
 
 <!-- IT Request -->
-	<action name="" class="" method="" >
-		
-	</action>
+	
+		<action name="itServiceMngInit" class="itServiceBean" method="itServiceMngInit">
+			<result name="success">main.jsp</result>
+		    <result name="input">login.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="convertPdfToText" class="itServiceBean" method="convertPdfToText">
+			<result name="success">pages/itService/main.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
 	</package>
 </struts>

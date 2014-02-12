@@ -5782,7 +5782,15 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		}
 	}
 	
-
+	public String shiftWorkMngInit(){
+		try{
+			
+			return SUCCESS;
+		}catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
 
 	/**
 	 * @return the service

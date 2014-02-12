@@ -218,6 +218,12 @@ function showAddDocument(){
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">OverTime Application
                              </td>
                          </tr>
+
+                         <tr>
+                             <td class="table_none" onclick="javascript:NowShow('M_29','shiftWorkMngInit.action');" onmousemove="javascript:TDOverORIn('M_29');" onmouseout="javascript:TDOverOROut('M_29');" id="M_29">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Shift Work
+                             </td>
+                         </tr>
                      </tbody>
                  </table>
              </td>
