@@ -373,6 +373,26 @@ public class CommonJobMethod {
 			}
 		}
 	}
+	
+	public static void mergeShiftWorkSchedule(List<MP2003> mp2003list, Connection con) throws SQLException {
+		try{
+			//delete all shift work employee old data in mp2003list and reload their attendance data
+			
+			//go normal procedure
+			
+			/* normal procedure
+			//normal work time: 8:00 - 16:30
+			//apply for leave
+			//weekend and holiday
+			//MP0010 special day, work off early
+			*/
+			//shift work
+			
+			
+		}catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+	}
 	// 取得给定日期的请假时间
 	public static double getLeaveHours(String empNum,String date,Connection con) throws ParseException, SQLException{
 		double result = 0;
@@ -828,7 +848,8 @@ public class CommonJobMethod {
 		mail.send();
 	}
 	// 取得日期
-	public static List<String> getFormatDate( int value,Connection con) throws SQLException{
+	//get all work day, do not include holday, saturday and sunday 
+	public static List<String> getFormatDate( int value,Connection con) throws SQLException{ 
 		 List<String> dateList = new ArrayList<String>();
 	     Calendar c = Calendar.getInstance();
 	     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -884,7 +905,7 @@ public class CommonJobMethod {
 		ResultSet rs = stSql.executeQuery(employeeStr.toString());
 		
 		MP1001 mp1 =null;
-		List<String> dateList = getFormatDate(-62,con);
+		List<String> dateList = getFormatDate(-62,con); //get all work day, 
 		Map<String, MP1001> empDateMap = new HashMap<String, MP1001>();
 		while(rs.next()){
 			mp1 = new MP1001();
@@ -1137,4 +1158,6 @@ public class CommonJobMethod {
 		System.out.println(_totalH);
 		return _totalTo - _totalFrom;
 	}
+	
+	
 }

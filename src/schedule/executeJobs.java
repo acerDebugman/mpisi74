@@ -30,7 +30,7 @@ public class executeJobs {
 		Connection connSql = null;
 		//log.info("------Execute Job1 Start------");
 		try {
-			//CommonJobMethod.loadDataToHrSystem(true, null);
+			CommonJobMethod.loadDataToHrSystem(true, null);
 			
 			connSql = CommonJobMethod.getDBConnection();
 			List<MP2003> mp2003List =CommonJobMethod.getAllData(connSql,parameter);
@@ -40,22 +40,23 @@ public class executeJobs {
 				mp23Map.put(mp23.getMP2003_EMPLOYEE_NUM().toUpperCase() + "#@" +mp23.getMP2003_DATETIME().substring(0,10).trim(), "");
 			}
 			
-			Map<String, MP1001> empDateMap =  CommonJobMethod.getEmployeeInfoList(connSql);
+			Map<String, MP1001> empDateMap =  CommonJobMethod.getEmployeeInfoList(connSql); //get all employees of normal work day
 			Map<String, MP1001> newEmpDateMap = new HashMap<String, MP1001>();
 			int date1, date2;
-			for(Map.Entry<String, MP1001> entry : empDateMap.entrySet()){
+			for(Map.Entry<String, MP1001> entry : empDateMap.entrySet()){ //empDataMap contains all normal records,but it's empty 
 				date1 = Integer.parseInt(entry.getKey().split("#@")[1].replace("-", ""));
 				date2 = Integer.parseInt(entry.getValue().getMP1001_ENTRY_DATE().substring(0,10).replace("-", ""));
-				if(!mp23Map.containsKey(entry.getKey()) && date1 >= date2 ){
+				if(!mp23Map.containsKey(entry.getKey()) && date1 >= date2 ){ //mp23Map contains all the clock records,if it doesn't contains the normal records,the empty record will insert into MP2003 table;   
 					newEmpDateMap.put(entry.getKey(), entry.getValue());
 					System.out.println("Line: key:[" + entry.getKey() + "]  date1: [" + date1 + "] date2: [" + date2 + "]");
 				}
 			}
 			
-			CommonJobMethod.insertEmptyAttendanceRecord(newEmpDateMap, connSql);
+			CommonJobMethod.insertEmptyAttendanceRecord(newEmpDateMap, connSql); //insert into empty records
 			System.out.println("insert finish");
-			mp2003List =CommonJobMethod.getAllData(connSql,parameter);
+			mp2003List =CommonJobMethod.getAllData(connSql,parameter); //this time will get all mp2003 records
 			CommonJobMethod.dataConvert2003(mp2003List,connSql);
+			CommonJobMethod.mergeShiftWorkSchedule(mp2003List, connSql);
 			System.out.println("dataConvert finish");
 			CommonJobMethod.update2003(mp2003List,connSql);
 			System.out.println("update finish");
@@ -516,7 +517,7 @@ public class executeJobs {
 			Mail mail = new Mail();
 			String to = "joe_zhang@mpisi.com";
 			mail.setSubject("Tempory Password Clean");
-			mail.setContent("Dear Colleagues,<br/>&nbsp;&nbsp;&nbsp;All password had been cleaned! <br />");
+			mail.setContent("Dear Colleagues,<br/>&nbsp;&nbsp;&nbsp;All tempory password had been cleaned! <br />");
 			mail.setTo(to);
 			//mail.send();
 			mail.sendTextHtml();

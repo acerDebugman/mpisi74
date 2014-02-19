@@ -218,12 +218,13 @@ function showAddDocument(){
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">OverTime Application
                              </td>
                          </tr>
-
+<!-- 
                          <tr>
-                             <td class="table_none" onclick="javascript:NowShow('M_29','shiftWorkMngInit.action');" onmousemove="javascript:TDOverORIn('M_29');" onmouseout="javascript:TDOverOROut('M_29');" id="M_29">
-                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Shift Work
+                             <td class="table_none" onclick="javascript:NowShow('M_201','shiftWorkMngInit.action');" onmousemove="javascript:TDOverORIn('M_201');" onmouseout="javascript:TDOverOROut('M_201');" id="M_201">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Shift Work Schedule
                              </td>
                          </tr>
+ -->
                      </tbody>
                  </table>
              </td>
@@ -383,6 +384,47 @@ function showAddDocument(){
              </td>
          </tr>
      </table>
+     
+          <!-- ALL Report -->
+     <table cellspacing="0" cellpadding="0" width="180" align="center" border="0">
+         <tr>
+             <td width="23"><img height="25" src="images/menu/box_topleft.gif" width="23"></td>
+             <td class="ttl" onclick="JavaScript:showHide('M_50');" width="180"background="images/menu/box_topbg.gif">Boardroom Booking</td>
+             <td width="7"><img height="25" src="images/menu/box_topright.gif" width="7"></td>
+         </tr>
+     </table>
+     <table id="M_50" style="display: none" cellspacing="0" cellpadding="0" width="180" align="center" border="0">
+         <tr>
+             <td background='images/menu/box_bg.gif' height="0px" width='180' colspan='3'>
+                 <table width="178" border="0" cellpadding="2" cellspacing="1">
+                     <tbody>
+<s:if test="func0005001 == 1" >
+                         <tr>
+                             <td class="table_none" onclick="javascript:NowShow('M_51','departmentalTransfersReportInit.action');" onmousemove="javascript:TDOverORIn('M_51');" onmouseout="javascript:TDOverOROut('M_51');" id="M_51">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Departmental Transfers
+                             </td>
+                         </tr>
+</s:if>
+<s:if test="func0005002 == 1" >
+                         <tr>
+                             <td class="table_none" onclick="javascript:NowShow('M_52','trunoverReportInit.action');" onmousemove="javascript:TDOverORIn('M_52');" onmouseout="javascript:TDOverOROut('M_52');" id="M_52">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Employee Dimission Report
+                             </td>
+                         </tr>
+</s:if>
+                     </tbody>
+                 </table>
+             </td>
+         </tr>
+     </table>
+     <table cellspacing="0" cellpadding="0" width="180" align="center" border="0">
+         <tr>
+             <td colspan="3">
+                 <img height='10' src='images/menu/box_bottom.gif' width='180'>
+             </td>
+         </tr>
+     </table>
+
 </body>
 </html>
 

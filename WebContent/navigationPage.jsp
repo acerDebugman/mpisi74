@@ -86,11 +86,13 @@ function changeMenuOff( obj ){
 							<div class="menuButton" onmouseover="changeMenuOn(this);" onmouseout="changeMenuOff(this)" ><span class="menuTextOff">Performance Appraisal(Department)</span></div>
 						</a>
 					</td>
+<s:if test="1 == 0">
 					<td class="menuButtonCell">
 						<a href="pages/itService/itServiceMngInit.action">
 							<div class="menuButton" onmouseover="changeMenuOn(this);" onmouseout="changeMenuOff(this)" ><span class="menuTextOff">IT Service</span></div>
 						</a>
 					</td>
+</s:if>
 				</tr>
 			</table>
         </td>

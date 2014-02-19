@@ -26,8 +26,8 @@
 	Reset Password Center
 </p>
 <hr>
-<h5>Sorry, Can't find your <font size="5"><b>company email address</b></font> in HR system.</h5>
-<h5>Please ask HR department for help!</h5>
+<h5>Sorry, there is no <font size="5"><b>valid email address</b></font> for you in HR system.</h5>
+<h5>Please ask HR department to help you add your email address in HR system !</h5>
 </center>
 </body>
 </html>

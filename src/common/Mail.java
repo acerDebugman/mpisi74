@@ -19,7 +19,7 @@ public class Mail {
 	private String content = ""; // 邮件内容
     
     public void send(){
-	    try{
+	    try{/*
 		    // Get system properties
 		    Properties props = System.getProperties();
 		    // Setup mail server
@@ -54,7 +54,7 @@ public class Mail {
 		    message.saveChanges();
 		    
 		    Transport.send(message);
-		    
+		    */
 		    System.out.println("mail send success"); 
 	    }catch(Exception ex){
 	    	System.out.println(ex.getMessage());

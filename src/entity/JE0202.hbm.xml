@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.JE0202" table="JE0202">
+        <id name="JE0202_SEQ" type="java.lang.String">
+            <column name="JE0202_SEQ" />
+            <generator class="assigned" />
+        </id>
+        <property name="JE0202_ROOM_CODE" type="java.lang.String">
+            <column name="JE0202_ROOM_CODE" length="30" not-null="false" />
+        </property>
+        <property name="JE0202_DATE" type="java.lang.String">
+            <column name="JE0202_DATE" not-null="false" />
+        </property>
+        <property name="JE0202_FROM_DATETIME" type="java.lang.String">
+            <column name="JE0202_FROM_DATETIME" not-null="false" />
+        </property>
+        <property name="JE0202_END_DATETIME" type="java.lang.String">
+            <column name="JE0202_END_DATETIME" not-null="false" />
+        </property>
+        <property name="JE0202_USER_NUM" type="java.lang.String">
+            <column name="JE0202_USER_NUM" length="10" not-null="false" />
+        </property>
+        <property name="JE0202_CREATE_DATETIME" type="java.lang.String">
+            <column name="JE0202_CREATE_DATETIME" not-null="false" />
+        </property>
+        <property name="JE0202_USER_TYPE" type="java.lang.String">
+            <column name="JE0202_USER_TYPE" length="10" not-null="false" />
+        </property>
+        <property name="JE0202_DES" type="java.lang.String">
+            <column name="JE0202_DES" length="200" not-null="false" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -47,6 +47,7 @@ public class ItService extends ActionSupport {
 			PdfReaderContentParser parser = new PdfReaderContentParser(reader);
 			TextExtractionStrategy strategy;
 			
+			/*
 			Rectangle rect = new Rectangle(0, 0, 20, 20);
 			RenderFilter filter = new RegionTextRenderFilter(rect);
 			strategy = new FilteredTextRenderListener(new LocationTextExtractionStrategy(), filter);
@@ -87,22 +88,25 @@ public class ItService extends ActionSupport {
 			filter = new RegionTextRenderFilter(rect);
 			strategy = new FilteredTextRenderListener(new LocationTextExtractionStrategy(), filter);
 			System.out.println(PdfTextExtractor.getTextFromPage(reader, 1, strategy));
+			*/
 			/*for(int x = 20; x < 480; x+=20){
 				for(int y = 20; y < 500; y+=20){
 					rect.setBottom();
 					rect.setRight(x);
 					System.out.println("---------Y: " + i);
 			}*/
-			//for(int i = 1; i <= reader.getNumberOfPages(); i++){
-				//strategy = parser.processContent(i, new SimpleTextExtractionStrategy());
-				//strategy = new FilteredTextRenderListener(new LocationTextExtractionStrategy(), filter);
-				//out.println(strategy.getResultantText());
+			
+			Rectangle rect = new Rectangle(0, 0, 700, 580);
+			RenderFilter filter = new RegionTextRenderFilter(rect);
+			for(int i = 1; i <= reader.getNumberOfPages(); i++){
+				strategy = parser.processContent(i, new LocationTextExtractionStrategy());
+				System.out.println(strategy.getResultantText());
 				//System.out.println(strategy.getResultantText());
 				//System.out.println("-----------first page-----------");
 				//System.out.println(PdfTextExtractor.getTextFromPage(reader, 1, strategy));
 				//System.out.println("-----------second page-----------");
 				//System.out.println(PdfTextExtractor.getTextFromPage(reader, 2, strategy));
-			//}
+			}
 			//out.flush();
 			//out.close();
 			/*byte bWrite [] = {11,21,3,4,5,100};

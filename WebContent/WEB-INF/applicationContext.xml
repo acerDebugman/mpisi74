@@ -220,7 +220,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="password" value="IDpt463"></property>
 	</bean>
 	<bean id="dataSourceHr" parent="parentDataSource">
- 		<!--  <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property>-->
+ 		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property> -->
  		<property name="url" value="jdbc:jtds:sqlserver://192.168.50.141:1433/mpisiHr;instance=JOE"></property> 
  		
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.141:1433/mpisiHr_test;instance=JOE"></property>  -->
@@ -326,6 +326,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 				<value>entity/USERINFO.hbm.xml</value>
 				
 				<value>entity/JE0101.hbm.xml</value>
+				
+				<value>entity/JE0201.hbm.xml</value>
+				<value>entity/JE0202.hbm.xml</value>
 <!-- Entity配置信息 -->
 			</list>
 		</property>
@@ -623,6 +626,16 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
+	<bean id="JE0201DAO" class="dao.JE0201DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="JE0202DAO" class="dao.JE0202DAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
 <!-- Dao配置信息 -->
 
 <!-- Service配置信息 -->
@@ -913,6 +926,16 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="JE0101Service" class="service.JE0101Service">
 		<property name="dao">
 			<ref bean="JE0101DAO" />
+		</property>
+	</bean>
+	<bean id="JE0201Service" class="service.JE0201Service">
+		<property name="dao">
+			<ref bean="JE0201DAO" />
+		</property>
+	</bean>
+	<bean id="JE0202Service" class="service.JE0202Service">
+		<property name="dao">
+			<ref bean="JE0202DAO" />
 		</property>
 	</bean>
 <!-- Service配置信息 -->
@@ -1336,6 +1359,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 		<property name="serviceCHECKINOUT">
 			<ref bean="CHECKINOUTService" />
+		</property>
+	</bean>
+	<!-- ItService -->
+	<bean name="roomsMngBean" class="action.RoomsMngAction" scope="prototype">
+		<property name="serviceJE0201">
+			<ref bean="JE0201Service" />
+		</property>
+		<property name="serviceJE0202">
+			<ref bean="JE0202Service" />
 		</property>
 	</bean>
 	<!-- ItService -->
