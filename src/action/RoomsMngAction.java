@@ -11,5 +11,7 @@ public class RoomsMngAction extends ActionSupport {
 	private IJE0201Service serviceJE0201;
 	private IJE0202Service serviceJE0202;
 	
+
 	
+	public String test;
 }
