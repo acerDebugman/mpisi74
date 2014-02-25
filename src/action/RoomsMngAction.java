@@ -17,4 +17,6 @@ public class RoomsMngAction extends ActionSupport {
 	
 
 	public int Joe;
+	
+	public String shit;
 }
