@@ -23,5 +23,7 @@ public class RoomsMngAction extends ActionSupport {
 
 	public int whatICanSay;
 	public String shit;
+	
+	public String oGod;
 
 }
