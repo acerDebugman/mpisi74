@@ -1,7 +1,9 @@
 package common;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Constant {
@@ -634,6 +636,32 @@ public class Constant {
 		rs.put("10","Exceptional");
 		
 		return rs; 
+	}
+	
+	public static List<String> getHalfAnHourIntervalWorkTime(){
+		List<String> rs = new ArrayList<String>();
+		
+		rs.add("---Please Select---");
+		rs.add("08:00");
+		rs.add("08:30");
+		rs.add("09:00");
+		rs.add("09:30");
+		rs.add("10:00");
+		rs.add("10:30");
+		rs.add("11:00");
+		rs.add("11:30");
+		rs.add("12:00");
+		rs.add("12:30");
+		rs.add("13:00");
+		rs.add("13:30");
+		rs.add("14:00");
+		rs.add("14:30");
+		rs.add("15:00");
+		rs.add("15:30");
+		rs.add("16:00");
+		rs.add("16:30");
+		
+		return rs;
 	}
 	
 	public static String LOGIN_SUCCESS = "Logon Success";

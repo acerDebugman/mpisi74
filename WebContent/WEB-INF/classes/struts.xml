@@ -1367,6 +1367,41 @@
 		</action>
 <!-- PDF文档Action -->
 
+<!-- room manager -->
+		<action name="roomsMngInit" class="roomsMngBean" method="roomsMngInit">
+		    <result name="success">roomsMng.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="roomSearch" class="roomsMngBean" method="roomSearch">
+		    <result name="success">roomsMng.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+
+		<action name="bookBoardroomMngInit" class="roomsMngBean" method="bookBoardroomMngInit">
+		    <result name="success">bookBoardRoom.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="roomAddInit" class="roomsMngBean" method="roomAddInit">
+		    <result name="success">addRoom.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="roomAdd" class="roomsMngBean" method="roomAdd">
+		    <result name="success">addRoom.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="bookOneRoomInit" class="roomsMngBean" method="bookOneRoomInit">
+		    <result name="success">bookOneRoom.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="searchBookedRoom" class="roomsMngBean" method="searchBookedRoom">
+		    <result name="success">bookBoardRoom.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="saveOneBookedRoom" class="roomsMngBean" method="saveOneBookedRoom">
+			<result name="success">bookOneRoom.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
 <!-- IT Request -->
 	
 		<action name="itServiceMngInit" class="itServiceBean" method="itServiceMngInit">

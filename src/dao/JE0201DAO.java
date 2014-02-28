@@ -1,6 +1,7 @@
 package dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -58,4 +59,25 @@ public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
 		getHibernateTemplate().update(je0201);
 	}
 
+	@Override
+	public List<JE0201> findByColumnName(Map<String, String> columnMap) {
+		// TODO Auto-generated method stub
+		StringBuffer sb = new StringBuffer();
+		sb.append("from JE0201 where 1 = 1 ");
+		if(columnMap.containsKey("JE0201_ROOM_NAME") && !columnMap.get("JE0201_ROOM_NAME").equalsIgnoreCase("") && columnMap.get("JE0201_ROOM_NAME")!=null){
+			sb.append(" and JE0201_ROOM_NAME='" + columnMap.get("JE0201_ROOM_NAME") + "' ");
+		}
+		if(columnMap.containsKey("JE0201_ROOM_FLOOR") && !columnMap.get("JE0201_ROOM_FLOOR").equalsIgnoreCase("") && columnMap.get("JE0201_ROOM_FLOOR")!=null){
+			sb.append(" and JE0201_ROOM_FLOOR='" + columnMap.get("JE0201_ROOM_FLOOR") + "' ");
+		}
+		if(columnMap.containsKey("JE0201_ROOM_TYPE") && !columnMap.get("JE0201_ROOM_TYPE").equalsIgnoreCase("") && columnMap.get("JE0201_ROOM_TYPE")!=null){
+			sb.append(" and JE0201_ROOM_TYPE='" + columnMap.get("JE0201_ROOM_TYPE") + "' ");
+		}
+		if(columnMap.containsKey("JE0201_ROOM_DES") && !columnMap.get("JE0201_ROOM_DES").equalsIgnoreCase("") && columnMap.get("JE0201_ROOM_DES")!=null){
+			sb.append(" and JE0201_ROOM_DES='" + columnMap.get("JE0201_ROOM_DES") + "' ");
+		}
+		
+		return getHibernateTemplate().find(sb.toString());
+	}
+		
 }

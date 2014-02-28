@@ -1361,7 +1361,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="CHECKINOUTService" />
 		</property>
 	</bean>
-	<!-- ItService -->
+	<!-- RoomsMngAction -->
 	<bean name="roomsMngBean" class="action.RoomsMngAction" scope="prototype">
 		<property name="serviceJE0201">
 			<ref bean="JE0201Service" />

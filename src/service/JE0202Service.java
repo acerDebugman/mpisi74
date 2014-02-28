@@ -1,8 +1,10 @@
 package service;
 
 import java.util.List;
+import java.util.Map;
 
 import dao.JE0202DAO;
+import entity.JE0201;
 import entity.JE0202;
 
 public class JE0202Service implements IJE0202Service {
@@ -58,4 +60,14 @@ public class JE0202Service implements IJE0202Service {
 		return dao.findByType(type);
 	}
 
+	@Override
+	public List<JE0202> findByColumnName(Map<String, String> columnMap) {
+		// TODO Auto-generated method stub
+		return dao.findByColumnName(columnMap);
+	}
+
+	@Override
+	public List<JE0202> findByColumnName(Map<String, String> columnMap, String strOrder){
+		return dao.findByColumnName(columnMap, strOrder);
+	}
 }

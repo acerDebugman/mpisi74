@@ -1,6 +1,7 @@
 package dao;
 
 import java.util.List;
+import java.util.Map;
 
 import entity.JE0202;
 
@@ -18,5 +19,9 @@ public interface IJE0202DAO {
 
 	public abstract void update(JE0202 je0202);
 	
-	public JE0202 findByType(String type);
+	public abstract JE0202 findByType(String type);
+	
+	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap);
+	
+	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap, String strOrder);
 }

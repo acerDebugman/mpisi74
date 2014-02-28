@@ -40,6 +40,9 @@ function showHide(obj){
 	if(document.getElementById("M_50") != null){
 		document.getElementById("M_50").style.display = "none";
 	}
+	if(document.getElementById("M_60") != null){
+		document.getElementById("M_60").style.display = "none";
+	}
 	
     var oStyle = document.getElementById(obj).style;
     oStyle.display == "none" ? oStyle.display = "block" : oStyle.display = "none";
@@ -389,26 +392,26 @@ function showAddDocument(){
      <table cellspacing="0" cellpadding="0" width="180" align="center" border="0">
          <tr>
              <td width="23"><img height="25" src="images/menu/box_topleft.gif" width="23"></td>
-             <td class="ttl" onclick="JavaScript:showHide('M_50');" width="180"background="images/menu/box_topbg.gif">Boardroom Booking</td>
+             <td class="ttl" onclick="JavaScript:showHide('M_60');" width="180"background="images/menu/box_topbg.gif">Boardroom Booking</td>
              <td width="7"><img height="25" src="images/menu/box_topright.gif" width="7"></td>
          </tr>
      </table>
-     <table id="M_50" style="display: none" cellspacing="0" cellpadding="0" width="180" align="center" border="0">
+     <table id="M_60" style="display: none" cellspacing="0" cellpadding="0" width="180" align="center" border="0">
          <tr>
              <td background='images/menu/box_bg.gif' height="0px" width='180' colspan='3'>
                  <table width="178" border="0" cellpadding="2" cellspacing="1">
                      <tbody>
-<s:if test="func0005001 == 1" >
+<s:if test="1 == 1" >
                          <tr>
-                             <td class="table_none" onclick="javascript:NowShow('M_51','departmentalTransfersReportInit.action');" onmousemove="javascript:TDOverORIn('M_51');" onmouseout="javascript:TDOverOROut('M_51');" id="M_51">
-                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Departmental Transfers
+                             <td class="table_none" onclick="javascript:NowShow('M_61','roomsMngInit.action');" onmousemove="javascript:TDOverORIn('M_61');" onmouseout="javascript:TDOverOROut('M_61');" id="M_61">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Room Manager
                              </td>
                          </tr>
 </s:if>
-<s:if test="func0005002 == 1" >
+<s:if test="1 == 1" >
                          <tr>
-                             <td class="table_none" onclick="javascript:NowShow('M_52','trunoverReportInit.action');" onmousemove="javascript:TDOverORIn('M_52');" onmouseout="javascript:TDOverOROut('M_52');" id="M_52">
-                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Employee Dimission Report
+                             <td class="table_none" onclick="javascript:NowShow('M_62','bookBoardroomMngInit.action');" onmousemove="javascript:TDOverORIn('M_62');" onmouseout="javascript:TDOverOROut('M_62');" id="M_62">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Booking Boardroom
                              </td>
                          </tr>
 </s:if>

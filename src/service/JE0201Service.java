@@ -1,6 +1,7 @@
 package service;
 
 import java.util.List;
+import java.util.Map;
 
 import dao.JE0201DAO;
 import entity.JE0201;
@@ -58,4 +59,8 @@ public class JE0201Service implements IJE0201Service {
 		return dao.findByType(type);
 	}
 
+	@Override
+	public List<JE0201> findByColumnName(Map<String, String> columnMap){
+		return dao.findByColumnName(columnMap);
+	}
 }
