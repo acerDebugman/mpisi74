@@ -24,4 +24,10 @@ public interface IJE0202DAO {
 	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap);
 	
 	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap, String strOrder);
+
+	public abstract int getAllRowsCount();
+
+	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap, String strOrder, boolean pageFlag);
+	
+	public abstract int getSearchConditionRowsCount(Map<String, String> columnMap);
 }

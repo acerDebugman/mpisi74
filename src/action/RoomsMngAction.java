@@ -18,6 +18,7 @@ import service.IJE0202Service;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import common.Constant;
+import common.PageBean;
 import common.UtilCommon;
 import common.UtilDate;
 
@@ -31,6 +32,9 @@ public class RoomsMngAction extends ActionSupport {
 	
 	private IJE0201Service serviceJE0201;
 	private IJE0202Service serviceJE0202;
+	
+	private String currentPageNum;
+	private String pageSize;
 	
 	private String roomName;
 	private String floor;
@@ -187,13 +191,28 @@ public class RoomsMngAction extends ActionSupport {
 
 	public String searchBookedRoom(){
 		try{
-			listTimeList = new ArrayList<String>();
-			listTimeList.add("joe zhang");
-			listTimeList.add("joe zhang2");
-			
 			System.out.println(strWhichDay + "|" + strFromTime + "|" + strToTime + "|" + roomName + "|" + floor);
 			
+			System.out.println("all row counts: " + serviceJE0202.getAllRowsCount());
 			
+			Map<String, String> propMap = new HashMap<String, String>();
+			propMap.put("pageSize", "10");
+			propMap.put("currentPageNum", "1");
+			propMap.put("JE0202_DATE", strWhichDay);
+			propMap.put("JE0202_FROM_DATETIME", strFromTime);
+			propMap.put("JE0202_END_DATETIME", strToTime);
+			propMap.put("JE0202_ROOM_CODE", strRoomCode);
+			propMap.put("JE0202_FLOOR", floor);
+			PageBean pb = serviceJE0202.queryForPage(propMap);
+			listBookedRoomRecords = pb.getList();
+			
+			
+			//room
+			allRoomsList = serviceJE0201.findAll();
+			mapRoomCodeObj = new HashMap<String, JE0201>();
+			for(JE0201 je0201 : allRoomsList){
+				mapRoomCodeObj.put(je0201.getJE0201_ROOM_CODE(), je0201);
+			}
 			
 			return SUCCESS;
 		}catch(Exception ex){
@@ -538,5 +557,21 @@ public class RoomsMngAction extends ActionSupport {
 
 	public void setListMap(List<Map> listMap) {
 		this.listMap = listMap;
+	}
+
+	public String getCurrentPageNum() {
+		return currentPageNum;
+	}
+
+	public void setCurrentPageNum(String currentPageNum) {
+		this.currentPageNum = currentPageNum;
+	}
+
+	public String getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(String pageSize) {
+		this.pageSize = pageSize;
 	}
 }

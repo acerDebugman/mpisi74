@@ -3,7 +3,8 @@ package service;
 import java.util.List;
 import java.util.Map;
 
-import entity.JE0201;
+import common.PageBean;
+
 import entity.JE0202;
 
 public interface IJE0202Service {
@@ -24,4 +25,11 @@ public interface IJE0202Service {
 	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap);
 	
 	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap, String strOrder);
+	
+	public abstract int getAllRowsCount();
+	
+	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap, String strOrder, boolean pageFlag);
+	
+	public abstract PageBean queryForPage(Map<String, String> pageProperty);
+	
 }

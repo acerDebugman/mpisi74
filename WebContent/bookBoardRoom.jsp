@@ -14,6 +14,62 @@
 <script src="js/calendar.js" type="text/javascript" ></script>
 <script src="js/checkform.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/jquery.form.js" type="text/javascript" ></script>
+<script type="text/javascript" src="js/jquery.pager.js"></script>
+
+<style type="text/css">
+#pager ul.pages {
+	display: block;
+	border: none;
+	text-transform: uppercase;
+	font-size: 10px;
+	margin: 1px 0 10px;
+	padding: 0;
+}
+
+#pager ul.pages li {
+	list-style: none;
+	float: left;
+	border: 1px solid #65AB31;
+	text-decoration: none;
+	margin: 0 5px 0 0;
+	padding: 5px;
+}
+
+#pager ul.pages li:hover {
+	border: 1px solid #003f7e;
+}
+
+#pager ul.pages li.pgEmpty {
+	border: 1px solid #000000;
+	color: #000000;
+	background-color: grey;
+}
+
+#pager ul.pages li.pgCurrent {
+	border: 1px solid #003f7e;
+	color: #000;
+	font-weight: 700;
+	background-color: #65AB31;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#pager").pager({ pagenumber: 1, pagecount: $("#pageCount").val(), buttonClickCallback: PageClick });
+});
+
+PageClick = function(pageclickednumber) {
+	
+    $("#pager").pager({ pagenumber: pageclickednumber, pagecount: $("#pageCount").val(), buttonClickCallback: PageClick });
+	var _enum = $("#employeeNum").val();
+	var _ename = $("#employeeName").val();
+	var _dept = $("#departmentID").val();
+	var _status =$("#attendenceStatus").val();
+	var _type = $("#leaveType").val();
+	document.getElementById("pageNum").value = pageclickednumber;
+    var param = {"pageNum" : pageclickednumber,"employeeNum" : _enum,"employeeName" : _ename,"leaveType" : _type,"departmentID" : _dept,"attendenceStatus":_status};
+    $("#leaveInfoDiv").load("leaveInfoRefresh.action",param);
+};
+</script>
 
 <script type="text/javascript">
 function bookOneRoom(){
@@ -22,15 +78,22 @@ function bookOneRoom(){
 }
 
 function searchBookedRoom(){
-	alert("search booked room");
 	var date = $("#strWhichDay").val();
 	var fromTime = $("#strFromTime").val();
-	var toTime = $("strToTime").val();
-	var roomName = $("roomName").val();
-	var floor = $("floor").val();
+	var toTime = $("#strToTime").val();
+	var roomName = $("#roomName").val();
+	var floor = $("#floor").val();
 	
-	if(fromTime == "---Please Select---" || toTime == "---Please Select---"){
-		alert("select warning");	
+	if(null == date || "" == date){
+		alert("Please select date first!");
+		return ;
+	}
+	if(fromTime == "---Please Select---" ){
+		//alert("Please select from time and to time!");
+		fromtime = "-1";
+	}
+	if(toTime == "---Please Select---"){
+		toTime = "-1";
 	}
 	
 	var param = {"strWhichDay":date, 
@@ -48,12 +111,14 @@ function searchBookedRoom(){
 
 			}
 	};
-	$("#form2").ajaxSubmit(options);
+	//$("#form2").ajaxSubmit(options);
+	$.ajax(options);
 }
 </script>
 </head>
 <body>
-<form id="form2" name="form2" method="post" enctype="multipart/form-data">
+<form id="form2" name="form2" enctype="multipart/form-data">
+<input id="pageCount" name="pageCount" value="" type="hidden" />
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
@@ -115,7 +180,7 @@ function searchBookedRoom(){
                 <tr>
                     <td colspan="4" align="right">
                     	<input type="button" id="bookRoom" name="bookRoom" value="Book Boardroom" onclick="bookOneRoom()" />
-                        <input type="submit" name="searchBtn" value="Search" id="searchBtn" class="" onclick="searchBookedRoom()"/>
+                        <input type="button" name="searchBtn" value="Search" id="searchBtn" class="" onclick="searchBookedRoom()"/>
                     </td>
                 </tr>
             </table>
@@ -138,28 +203,35 @@ function searchBookedRoom(){
                     <th scope="col" width="200px">Room Floor</th>
                 </tr>
             </table>
-<div id="allbookedRoomRecords" style="overflow:auto;border:solid 0px red;height:600px;">
-            <table cellspacing="1" border="0" style="background-color:White;border-width:0px; height:22px;">
-<s:iterator value="listBookedRoomRecords" status="st">
-                <tr class="row" align="center" style="height:28px;">
-                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_NAME" /></td>
-                    <td width="200px"><s:property value="JE0202_DATE.substring(0, 10)"/></td>
-                    <td width="200px"><s:property value="JE0202_FROM_DATETIME.substring(0, 16)"/></td>
-                    <td width="200px"><s:property value="JE0202_END_DATETIME.substring(0, 16)"/></td>
-                    <td width="200px"><s:property value="JE0202_USER_NUM"/></td>
-                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_FLOOR"/></td>
-                </tr>
-</s:iterator>
-            </table>
-</div>
+			<div id="allbookedRoomRecords" style="overflow:auto;border:solid 0px red;height:600px;">
+	            <table cellspacing="1" border="0" style="background-color:White;border-width:0px; height:22px;">
+					<s:iterator value="listBookedRoomRecords" status="st">
+					                <tr class="row" align="center" style="height:28px;">
+					                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_NAME" /></td>
+					                    <td width="200px"><s:property value="JE0202_DATE.substring(0, 10)"/></td>
+					                    <td width="200px"><s:property value="JE0202_FROM_DATETIME.substring(0, 16)"/></td>
+					                    <td width="200px"><s:property value="JE0202_END_DATETIME.substring(0, 16)"/></td>
+					                    <td width="200px"><s:property value="JE0202_USER_NUM"/></td>
+					                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_FLOOR"/></td>
+					                </tr>
+					</s:iterator>
+	            </table>
+			</div>
         </td>
     </tr>
     <!-- 内容部分End -->
     
     <tr><td height="5"></td></tr>
 </table>
-<s:debug />
-</form>
 
+			<table cellspacing="1" border="0" style="background-color:White;border-width:0px;" align="center">
+                <tr class="">
+                    <td>
+                        <div id="pager" style="border: 1px solid #FFFFFF;"></div>
+                    </td>
+                </tr>
+            </table>
+</form>
+<s:debug />
 </body>
 </html>

@@ -1395,7 +1395,7 @@
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
 		<action name="searchBookedRoom" class="roomsMngBean" method="searchBookedRoom">
-		    <result name="success">bookBoardRoom.jsp</result>
+		    <result name="success">bookBoardRoom_searchContent.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
 		<action name="saveOneBookedRoom" class="roomsMngBean" method="saveOneBookedRoom">
