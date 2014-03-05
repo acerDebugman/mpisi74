@@ -33,8 +33,9 @@ public class RoomsMngAction extends ActionSupport {
 	private IJE0201Service serviceJE0201;
 	private IJE0202Service serviceJE0202;
 	
-	private String currentPageNum;
-	private String pageSize;
+	private String currentPageNum = "1";
+	private String pageSize = "4";
+	private PageBean pb; 
 	
 	private String roomName;
 	private String floor;
@@ -46,6 +47,8 @@ public class RoomsMngAction extends ActionSupport {
 	private String strWhichDay;
 	private String strFromTime;
 	private String strToTime;
+	
+	private String bookedRoomSeq;
 	
 	private String strSubscriberCode;
 	private String strSubscriberName;
@@ -73,6 +76,7 @@ public class RoomsMngAction extends ActionSupport {
 			 */
 			
 			allRoomsList = serviceJE0201.findAll();
+			floorList = Constant.getRoomFloorList();
 			
 			return SUCCESS;
 		}catch(Exception ex){
@@ -86,15 +90,16 @@ public class RoomsMngAction extends ActionSupport {
 			/*
 			 * log part
 			 * */
-
-			System.out.println(roomName + "|" + floor);
-			
 			Map<String, String> columnMap = new HashMap<String, String>();
+			if(!floor.equalsIgnoreCase("---please select---")){
+				columnMap.put("JE0201_ROOM_FLOOR", floor);	
+			}
 			columnMap.put("JE0201_ROOM_NAME", roomName);
-			columnMap.put("JE0201_ROOM_FLOOR", floor);
 			
 			allRoomsList = serviceJE0201.findByColumnName(columnMap);
 			
+			//initial
+			floorList = Constant.getRoomFloorList();
 			return SUCCESS;
 		}catch(Exception ex){
 			System.out.println(ex.getMessage());
@@ -105,13 +110,8 @@ public class RoomsMngAction extends ActionSupport {
 	
 	public String roomAddInit(){
 		try{
-			floorList = new ArrayList<String>();
-			floorList.add("joe");
-			floorList.add("shit");
-			
-			roomTypeList = new ArrayList<String>();
-			roomTypeList.add("boardroom");
-			roomTypeList.add("bedding room");
+			floorList = Constant.getRoomFloorList();
+			roomTypeList = Constant.getRoomTypeList();
 			
 			
 			
@@ -125,8 +125,6 @@ public class RoomsMngAction extends ActionSupport {
 	
 	public String roomAdd(){
 		try{
-			System.out.println(roomName + "|" + floor + "|" + roomType + "|" + roomDes);
-			
 			String seq = Constant.generateSeq();
 			int number = UtilCommon.getTempSeq();
 			seq = seq + Integer.toString(number);
@@ -140,23 +138,17 @@ public class RoomsMngAction extends ActionSupport {
 			room0201.setJE0201_ROOM_DES(roomDes);
 			serviceJE0201.save(room0201);
 
-
 			HttpServletResponse response = ServletActionContext.getResponse();
 			response.setCharacterEncoding("utf-8");
 			PrintWriter out = response.getWriter();
 			
 			StringBuffer sb = new StringBuffer();
-			sb.append("<script type='text/javascript'>");
-			//sb.append("window.dialogArguments.document.getElementById('refreshData').click();");
-			//sb.append("window.dialogArguments.document.getElementById('1').style.backgroundColor = '#666666';");
-			sb.append("window.close();");
-			sb.append("</script>");
-			
+			sb.append("Room add success!");
 			out.println(sb.toString());
 	        out.flush();
 	        out.close();
 	        
-			return SUCCESS;
+			return NONE;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
 			return "error";
@@ -166,19 +158,42 @@ public class RoomsMngAction extends ActionSupport {
 	public String bookBoardroomMngInit(){
 		try{
 			listTimeList = Constant.getHalfAnHourIntervalWorkTime();
+			floorList = Constant.getRoomFloorList();
 			
-			String order = " order by JE0202_FROM_DATETIME "; 
-			listBookedRoomRecords = serviceJE0202.findByColumnName(null, order);
-			
+			String order = " order by JE0202_FROM_DATETIME ";
+			//Map<String, String> prop = new HashMap<String, String>();
+			//prop.put("", value);
+			//listBookedRoomRecords = serviceJE0202.findByColumnName(null, order);
+			//pb = new PageBean();
+			//pb.setTotalPage(PageBean.countTotalPage(Integer.parseInt(pageSize), listBookedRoomRecords.size()));
+			Map<String, String> pageProperty = new HashMap<String, String>();
+			pageProperty.put("currentPageNum", currentPageNum);
+			pageProperty.put("pageSize", pageSize);
+			pb = serviceJE0202.queryForPage(pageProperty);
+			listBookedRoomRecords = pb.getList();
 			
 			/*mapProperties = new HashMap<String, String>();
 			listMap.add(e);*/
-			
 			
 			allRoomsList = serviceJE0201.findAll();
 			mapRoomCodeObj = new HashMap<String, JE0201>();
 			for(JE0201 je0201 : allRoomsList){
 				mapRoomCodeObj.put(je0201.getJE0201_ROOM_CODE(), je0201);
+			}
+			
+			//allRoomsList = serviceJE0201.findAll();
+			mapRoomCodeName = new HashMap<String, String>();
+			JE0201 old0201 = null;
+			for(JE0201 je0201 : allRoomsList){
+				if(null != old0201){
+					if(!old0201.getJE0201_ROOM_NAME().equalsIgnoreCase(je0201.getJE0201_ROOM_NAME())){
+						mapRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
+					}
+				}
+				else{
+					mapRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
+				}
+				old0201 = je0201;
 			}
 			
 			
@@ -193,17 +208,28 @@ public class RoomsMngAction extends ActionSupport {
 		try{
 			System.out.println(strWhichDay + "|" + strFromTime + "|" + strToTime + "|" + roomName + "|" + floor);
 			
+			
 			System.out.println("all row counts: " + serviceJE0202.getAllRowsCount());
 			
 			Map<String, String> propMap = new HashMap<String, String>();
-			propMap.put("pageSize", "10");
-			propMap.put("currentPageNum", "1");
+			propMap.put("pageSize", pageSize);
+			propMap.put("currentPageNum", currentPageNum);
+			
 			propMap.put("JE0202_DATE", strWhichDay);
-			propMap.put("JE0202_FROM_DATETIME", strFromTime);
-			propMap.put("JE0202_END_DATETIME", strToTime);
+			if(null != strFromTime && !strFromTime.equalsIgnoreCase("") && !strFromTime.equalsIgnoreCase("-1")){
+				strFromTime = strWhichDay + " " + strFromTime;
+				propMap.put("JE0202_FROM_DATETIME", strFromTime);
+			}
+			if(null != strToTime && !strToTime.equalsIgnoreCase("") && !strToTime.equalsIgnoreCase("-1")){
+				strToTime = strWhichDay + " " + strToTime;
+				propMap.put("JE0202_END_DATETIME", strToTime);
+			}
 			propMap.put("JE0202_ROOM_CODE", strRoomCode);
-			propMap.put("JE0202_FLOOR", floor);
-			PageBean pb = serviceJE0202.queryForPage(propMap);
+			//propMap.put("JE0202_ROOM_NAME", roomName);
+			propMap.put("JE0202_ROOM_FLOOR", floor);
+			propMap.put("JE0202_USER_TYPE", "S");//only for
+
+			pb = serviceJE0202.queryForPage(propMap);
 			listBookedRoomRecords = pb.getList();
 			
 			
@@ -223,7 +249,7 @@ public class RoomsMngAction extends ActionSupport {
 	
 	public String bookOneRoomInit(){
 		try{
-			allRoomsList = serviceJE0201.findAll();
+			allRoomsList = serviceJE0201.findByColumnName(null, " order by JE0201_ROOM_NAME DESC ");
 			mapRoomCodeName = new HashMap<String, String>();
 			JE0201 old0201 = null;
 			for(JE0201 je0201 : allRoomsList){
@@ -241,7 +267,7 @@ public class RoomsMngAction extends ActionSupport {
 			/*strSubscriberCode = "m0432";
 			strSubscriberName = "joe_zhang";
 			strWhichDay = "2014-01-01";*/
-						
+
 			ActionContext context = ActionContext.getContext();
 			Map<String, Object> session = context.getSession();
 			
@@ -271,23 +297,43 @@ public class RoomsMngAction extends ActionSupport {
 			String seq = Constant.generateSeq();
 			int number = UtilCommon.getTempSeq();
 			seq = seq + Integer.toString(number);
-			
 			je0202.setJE0202_SEQ(seq);
+			
+			//here also should generate a case code, for late if any one want to use add email function.
+			
 			je0202.setJE0202_DATE(strWhichDay);
 			strFromTime = strWhichDay + " " + strFromTime;
 			je0202.setJE0202_FROM_DATETIME(strFromTime);
 			strToTime = strWhichDay + " " + strToTime;
 			je0202.setJE0202_END_DATETIME(strToTime);
 			je0202.setJE0202_CREATE_DATETIME(UtilDate.get24DateTime());
-			je0202.setJE0202_ROOM_CODE(strRoomCode);
 			je0202.setJE0202_DES(strBookDes);
 			je0202.setJE0202_USER_NUM(strSubscriberCode);
-			je0202.setJE0202_USER_TYPE("subscriber");
+			je0202.setJE0202_USER_TYPE("S");
+			je0202.setJE0202_ROOM_CODE(strRoomCode);
+			JE0201 roomInfo = serviceJE0201.findByKey(strRoomCode);
+			je0202.setJE0202_ROOM_NAME(roomInfo.getJE0201_ROOM_NAME());
+			je0202.setJE0202_ROOM_FLOOR(roomInfo.getJE0201_ROOM_FLOOR());
 			
 			/*judge if time overlapped*/
 			//find which day it is
 			Map<String, String> columnMap = new HashMap<String, String>();
 			columnMap.put("JE0202_DATE", strWhichDay);
+			if(null != strRoomCode && !strRoomCode.equalsIgnoreCase("") && !strRoomCode.equalsIgnoreCase("-1")){
+				columnMap.put("JE0202_ROOM_CODE", strRoomCode);
+			}
+			//.if(null != strSubscriberCode && !strSubscriberCode.equalsIgnoreCase("") && !strSubscriberCode.equalsIgnoreCase("-1")){
+				//columnMap.put("JE0202_USER_NUM", strSubscriberCode);
+			columnMap.put("JE0202_USER_TYPE", "S");
+			//}
+			/*
+			if(null != strFromTime && !strFromTime.equalsIgnoreCase("") && !strFromTime.equalsIgnoreCase("-1")){
+				columnMap.put("JE0202_FROM_DATETIME", strFromTime);
+			}
+			if(null != strToTime && !strToTime.equalsIgnoreCase("") && !strToTime.equalsIgnoreCase("-1")){
+				columnMap.put("JE0202_END_DATETIME", strToTime);
+			}
+			*/
 			listBookedRoomRecords = serviceJE0202.findByColumnName(columnMap);
 			for(JE0202 bookedRoom : listBookedRoomRecords){
 				String bookedStartTime = bookedRoom.getJE0202_FROM_DATETIME();
@@ -304,10 +350,11 @@ public class RoomsMngAction extends ActionSupport {
 					resp.setCharacterEncoding("utf-8");
 					PrintWriter out = resp.getWriter();
 					StringBuffer sb = new StringBuffer();
-					sb.append("<script type='text/javascript'>");
-					sb.append("alert('Time overlapped!Please check if the room is occupied between that period!');");
-					sb.append("window.close();");
-					sb.append("</script>");
+					//sb.append("<script type='text/javascript'>");
+					//sb.append("alert('Time overlapped!Please check if the room is occupied between that period!');");
+					//sb.append("window.close();");
+					//sb.append("</script>");
+					sb.append("Time overlapped!Please check if the room is occupied between that period!");
 					out.print(sb.toString());
 					out.flush();
 					out.close();
@@ -322,14 +369,28 @@ public class RoomsMngAction extends ActionSupport {
 			PrintWriter out = response.getWriter();
 			
 			StringBuffer sb = new StringBuffer();
-			sb.append("<script type='text/javascript'>");
-			sb.append("window.close();");
-			sb.append("</script>");
+			//sb.append("<script type='text/javascript'>");
+			//sb.append("window.close();");
+			//sb.append("</script>");
+			sb.append("book success!");
 			
 			out.println(sb.toString());
 			out.flush();
 			out.close();
 			
+			return NONE;
+		}catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+	
+	public String delBookedRoomRecord(){
+		try{
+			JE0202 je0202 = new JE0202();
+			je0202.setJE0202_SEQ(bookedRoomSeq);
+			serviceJE0202.delete(je0202);
+
 			return NONE;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
@@ -573,5 +634,21 @@ public class RoomsMngAction extends ActionSupport {
 
 	public void setPageSize(String pageSize) {
 		this.pageSize = pageSize;
+	}
+
+	public PageBean getPb() {
+		return pb;
+	}
+
+	public void setPb(PageBean pb) {
+		this.pb = pb;
+	}
+
+	public String getBookedRoomSeq() {
+		return bookedRoomSeq;
+	}
+
+	public void setBookedRoomSeq(String bookedRoomSeq) {
+		this.bookedRoomSeq = bookedRoomSeq;
 	}
 }

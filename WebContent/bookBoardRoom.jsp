@@ -12,62 +12,28 @@
 
 <script src="js/jquery1.4.2.js" type="text/javascript" ></script>
 <script src="js/calendar.js" type="text/javascript" ></script>
-<script src="js/checkform.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/jquery.form.js" type="text/javascript" ></script>
 <script type="text/javascript" src="js/jquery.pager.js"></script>
 
 <style type="text/css">
-#pager ul.pages {
-	display: block;
-	border: none;
-	text-transform: uppercase;
-	font-size: 10px;
-	margin: 1px 0 10px;
-	padding: 0;
-}
-
-#pager ul.pages li {
-	list-style: none;
-	float: left;
-	border: 1px solid #65AB31;
-	text-decoration: none;
-	margin: 0 5px 0 0;
-	padding: 5px;
-}
-
-#pager ul.pages li:hover {
-	border: 1px solid #003f7e;
-}
-
-#pager ul.pages li.pgEmpty {
-	border: 1px solid #000000;
-	color: #000000;
-	background-color: grey;
-}
-
-#pager ul.pages li.pgCurrent {
-	border: 1px solid #003f7e;
-	color: #000;
-	font-weight: 700;
-	background-color: #65AB31;
-}
+#pager ul.pages {display:block;border:none;text-transform:uppercase;font-size:10px;margin:1px 0 10px;padding:0;}
+#pager ul.pages li {list-style:none;float:left;border:1px solid #65AB31;text-decoration:none;margin:0 5px 0 0;padding:5px;}
+#pager ul.pages li:hover {border:1px solid #003f7e;}
+#pager ul.pages li.pgEmpty {border:1px solid #000000;color:#000000;background-color:grey;}
+#pager ul.pages li.pgCurrent {border:1px solid #003f7e;color:#000;font-weight:700;background-color:#65AB31;}
+.tdBg{background:url(css/table/blue/images/header_bg.gif) #2f589c repeat-x 0px 0px;color:white;text-align:center;margin:0px;padding:0px;}
 </style>
+
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#pager").pager({ pagenumber: 1, pagecount: $("#pageCount").val(), buttonClickCallback: PageClick });
+	$("#pager").pager({ pagenumber: 1, pagecount: $("#pageCount").val(), buttonClickCallback: PageClick });
 });
 
 PageClick = function(pageclickednumber) {
-	
     $("#pager").pager({ pagenumber: pageclickednumber, pagecount: $("#pageCount").val(), buttonClickCallback: PageClick });
-	var _enum = $("#employeeNum").val();
-	var _ename = $("#employeeName").val();
-	var _dept = $("#departmentID").val();
-	var _status =$("#attendenceStatus").val();
-	var _type = $("#leaveType").val();
-	document.getElementById("pageNum").value = pageclickednumber;
-    var param = {"pageNum" : pageclickednumber,"employeeNum" : _enum,"employeeName" : _ename,"leaveType" : _type,"departmentID" : _dept,"attendenceStatus":_status};
-    $("#leaveInfoDiv").load("leaveInfoRefresh.action",param);
+    
+	document.getElementById("currentPageNum").value = pageclickednumber;
+
+	searchBookedRoom();
 };
 </script>
 
@@ -77,30 +43,49 @@ function bookOneRoom(){
 	window.showModalDialog("bookOneRoomInit.action?pageType=add", window, popstyle);
 }
 
+function delRecord(seq){
+	$.ajax({
+		url:"delBookedRoomRecord.action?bookedRoomSeq=" + seq,
+		type:"post",
+		dataType:"text"
+	});
+	searchBookedRoom();
+}
 function searchBookedRoom(){
 	var date = $("#strWhichDay").val();
 	var fromTime = $("#strFromTime").val();
 	var toTime = $("#strToTime").val();
-	var roomName = $("#roomName").val();
+	var strRoomCode = $("#strRoomCode").val();
 	var floor = $("#floor").val();
+	var currentPageNum = $("#currentPageNum").val();
 	
 	if(null == date || "" == date){
-		alert("Please select date first!");
-		return ;
+		date = "";
+		if("---Please Select---" != fromTime || toTime != "---Please Select---"){
+			alert("You need select date first !");
+			return ;
+		}
 	}
-	if(fromTime == "---Please Select---" ){
+	if("---Please Select---" == fromTime){
 		//alert("Please select from time and to time!");
-		fromtime = "-1";
+		fromTime = "";
 	}
 	if(toTime == "---Please Select---"){
-		toTime = "-1";
+		toTime = "";
 	}
-	
-	var param = {"strWhichDay":date, 
+	if(floor == "---Please Select---"){
+		floor = "";
+	}
+	if(strRoomCode == null || strRoomCode == "-1"){
+		strRoomCode = "";
+	}
+
+	var param = {"strWhichDay":date,
 			"strFromTime":fromTime,
 			"strToTime":toTime,
-			"roomName":roomName,
-			"floor":floor
+			"strRoomCode":strRoomCode,
+			"floor":floor,
+			"currentPageNum":currentPageNum
 			};
 	var options = {
 			url:"searchBookedRoom.action",
@@ -108,17 +93,21 @@ function searchBookedRoom(){
 			type:"post",
 			dataType:"html",
 			success:function(msg){
-
 			}
 	};
 	//$("#form2").ajaxSubmit(options);
-	$.ajax(options);
+	//$.ajax(options);
+	$("#allbookedRoomRecords").load("searchBookedRoom.action", param);
+}
+function pageRefresh(){
+	window.parent.frames['mainFrame'].location="bookBoardroomMngInit.action";
 }
 </script>
 </head>
 <body>
-<form id="form2" name="form2" enctype="multipart/form-data">
-<input id="pageCount" name="pageCount" value="" type="hidden" />
+<s:form id="form2" name="form2" enctype="multipart/form-data">
+<input id="pageCount" name="pageCount" value="${pb.totalPage}" type="hidden"></input>
+<input id="currentPageNum" name="currentPageNum" value="${currentPageNum}" type="hidden"></input>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
@@ -167,11 +156,13 @@ function searchBookedRoom(){
                 <tr>
                     <td class="table_body table_body_NoWidth">Room Name</td>
                     <td class="table_none table_none_NoWidth">
-                        <input id="roomName" name="roomName" value="${roomName}" type="text" class="text_input" />
+                        <!-- <input id="roomName" name="roomName" value="${roomName}" type="text" class="text_input" /> -->
+                        <s:select id="strRoomCode" name="strRoomCode" list="mapRoomCodeName" headerKey="-1" headerValue="---Please Select---" theme="simple"/>
                     </td>
                     <td class="table_body table_body_NoWidth">Floor</td>
                     <td class="table_none table_none_NoWidth">
-                        <input id="floor" name="floor" value="${floor}" type="text" class="text_input" />
+                        <!-- <input id="floor" name="floor" value="${floor}" type="text" class="text_input" /> -->
+                        <s:select id="floor" name="floor" list="floorList" theme="simple"/>
                     </td>
                     <td></td>
                     <td>
@@ -189,7 +180,6 @@ function searchBookedRoom(){
     </tr>
     <!-- 检索条件End -->
 
-
     <!-- 内容部分Start -->
     <tr>
         <td>
@@ -201,37 +191,31 @@ function searchBookedRoom(){
                     <th scope="col" width="200px">To Time</th>
                     <th scope="col" width="200px">Subscriber</th>
                     <th scope="col" width="200px">Room Floor</th>
+                    <th scope="col" width="200px">Operation</th>
                 </tr>
             </table>
-			<div id="allbookedRoomRecords" style="overflow:auto;border:solid 0px red;height:600px;">
+			<div id="allbookedRoomRecords" style="overflow:auto;border:solid 0px red;">
 	            <table cellspacing="1" border="0" style="background-color:White;border-width:0px; height:22px;">
 					<s:iterator value="listBookedRoomRecords" status="st">
-					                <tr class="row" align="center" style="height:28px;">
-					                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_NAME" /></td>
-					                    <td width="200px"><s:property value="JE0202_DATE.substring(0, 10)"/></td>
-					                    <td width="200px"><s:property value="JE0202_FROM_DATETIME.substring(0, 16)"/></td>
-					                    <td width="200px"><s:property value="JE0202_END_DATETIME.substring(0, 16)"/></td>
-					                    <td width="200px"><s:property value="JE0202_USER_NUM"/></td>
-					                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_FLOOR"/></td>
-					                </tr>
+		                <tr class="row" align="center" style="height:28px;">
+		                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_NAME" /></td>
+		                    <td width="200px"><s:property value="JE0202_DATE.substring(0, 10)"/></td>
+		                    <td width="200px"><s:property value="JE0202_FROM_DATETIME.substring(0, 16)"/></td>
+		                    <td width="200px"><s:property value="JE0202_END_DATETIME.substring(0, 16)"/></td>
+		                    <td width="200px"><s:property value="JE0202_USER_NUM"/></td>
+		                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_FLOOR"/></td>
+		               		<td width="200px"><input type="button" value="Del" onclick="delRecord('<s:property value='JE0202_SEQ' />')"/></td>
+		                </tr>
 					</s:iterator>
 	            </table>
 			</div>
         </td>
     </tr>
-    <!-- 内容部分End -->
-    
-    <tr><td height="5"></td></tr>
+    <!-- 内容部分End -->    
+    <tr>
+    	<td height="5"><div id="pager" style="border: 0px solid #000000;height:30px;width:1300px;margin-top:10px;"></div></td>
+     </tr>
 </table>
-
-			<table cellspacing="1" border="0" style="background-color:White;border-width:0px;" align="center">
-                <tr class="">
-                    <td>
-                        <div id="pager" style="border: 1px solid #FFFFFF;"></div>
-                    </td>
-                </tr>
-            </table>
-</form>
-<s:debug />
+</s:form>
 </body>
 </html>

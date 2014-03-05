@@ -21,4 +21,6 @@ public interface IJE0201Service {
 	public abstract JE0201 findByType(String type);
 	
 	public abstract List<JE0201> findByColumnName(Map<String, String> columnMap);
+	
+	public abstract List<JE0201> findByColumnName(Map<String, String> columnMap, String order);
 }

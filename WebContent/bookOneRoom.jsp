@@ -47,14 +47,35 @@ function roomTypeChange(){
 		document.getElementById("submit").disabled = true;
 	}
 }
+function fromTimeChange(){
+	var fromTime = $("#strFromTime").val();
+	var toTime = $("#strToTime").val();
+
+	if(fromTime == "---Please Select---"){
+		return ;
+	}
+	if(toTime == "---Please Select---"){
+		return ;
+	}
+	
+	if(fromTime >= toTime){
+		alert("End time must behind start time!");
+	}
+}
 
 function toTimeChange(){
 	var fromTime = $("#strFromTime").val();
 	var toTime = $("#strToTime").val();
-	alert(fromTime + "|" + toTime);
+
+	if(fromTime == "---Please Select---"){
+		return ;
+	}
+	if(toTime == "---Please Select---"){
+		return ;
+	}
 	
 	if(fromTime >= toTime){
-		alert("End time must behind start time!");	
+		alert("End time must behind start time!");
 	}
 }
 
@@ -62,8 +83,49 @@ $(document).mousemove(function(e){
 });
 
 function saveOneBookedRoom(){
+	var roomCode = $("#strRoomCode").val();
+	var strWhichDay = $("#strWhichDay").val();
+	var fromTime = $("#strFromTime").val();
+	var toTime = $("#strToTime").val();
+	var des = $("#strBookDes").val();
+	var subscriberCode = $("#strSubscriberCode").val();
+	
+	if(roomCode == null || "-1" == roomCode){
+		roomCode = "";
+		alert("Please select which room first!");
+		return ;
+	}
+	if(strWhichDay == null || strWhichDay == ""){
+		alert("you need choose a date!");
+		return ;
+	}
+	if(fromTime == "---Please Select---"){
+		fromTime = "";
+		alert("Please select from time!");
+		return ;
+	}
+	if(toTime == "---Please Select---"){
+		toTime = "";
+		alert("Please select end time!");
+		return ;
+	}
+		
+	
+	var param = {"strRoomCode":roomCode, 
+			"strWhichDay":strWhichDay, 
+			"strSubscriberCode":subscriberCode,
+			"strFromTime":fromTime,
+			"strToTime":toTime, 
+			"strBookDes":des};
+	
 	var options = {
-			url:,
+			url:"saveOneBookedRoom.action",
+			data:param,
+			dataType:"text",
+			type:"post",
+			success:function(msg){
+				alert(msg);
+			}
 	};
 	$.ajax(options);
 }
@@ -99,9 +161,9 @@ function saveOneBookedRoom(){
 
 <table width="100%" border="0" cellspacing="1" cellpadding="3" align="left">
 	<tr>
-		<td class="table_body table_body_NoWidth">Room Name:</td>
+		<td class="table_body table_body_NoWidth">Room Name:&nbsp;<span style="color:red;">*</span></td>
 		<td class="table_none table_none_NoWidth">
-			<s:select id="strRoomCode" name="strRoomCode" list="mapRoomCodeName" theme="simple"/>
+			<s:select id="strRoomCode" name="strRoomCode" list="mapRoomCodeName" headerKey="-1" headerValue="---Please Select---" theme="simple"/>
 		</td>
 	</tr>
 	<tr>
@@ -111,19 +173,19 @@ function saveOneBookedRoom(){
 		</td>
 	</tr>
 	<tr>
-		<td class="table_body table_body_NoWidth">Which Date:</td>
+		<td class="table_body table_body_NoWidth">Which Date:&nbsp;<span style="color:red;">*</span></td>
 		<td class="table_none table_none_NoWidth">
 			<input id="strWhichDay" name="strWhichDay" value="${strWhichDay}" type="text" class="text_input" onfocus="calendar(this);"/>
 		</td>
 	</tr>
 	<tr>
-		<td class="table_body table_body_NoWidth">From Time:</td>
+		<td class="table_body table_body_NoWidth">From Time:&nbsp;<span style="color:red;">*</span></td>
 		<td class="table_none table_none_NoWidth">
-			<s:select id="strFromTime" name="strFromTime" list="listTimeList" theme="simple" />
+			<s:select id="strFromTime" name="strFromTime" list="listTimeList" theme="simple" onchange="fromTimeChange()"/>
 		</td>
 	</tr>
 	<tr>
-		<td class="table_body table_body_NoWidth">To Time:</td>
+		<td class="table_body table_body_NoWidth">To Time:&nbsp;<span style="color:red;">*</span></td>
 		<td class="table_none table_none_NoWidth">
 			<s:select id="strToTime" name="strToTime" list="listTimeList" theme="simple" onchange="toTimeChange()"/>
 		</td>
@@ -139,7 +201,7 @@ function saveOneBookedRoom(){
 <table width="100%" border="0" cellspacing="1" cellpadding="3" align="center" style="padding-bottom:20px;">
     <tr>
         <td align="center" colspan="2">
-            <input id="submit" type="submit" value="Save" onclick="" />
+            <input type="button" value="Save" onclick="saveOneBookedRoom()"/>
             <input type="button" onclick="window.close()" value="Close"/>
         </td>
     </tr>

@@ -47,11 +47,46 @@ function roomTypeChange(){
 }
 $(document).mousemove(function(e){
 });
+
+function addRoom(){
+	var roomName = $("#roomName").val();
+	var floor = $("#floor").val();
+	var roomType = $("#roomType").val();
+	var roomDes = $("#roomDes").val();
+	
+	if("---Please Select---" == floor){
+		alert("Please select which floor!");
+		return ;
+	}
+	if("---Please Select---" == roomType){
+		alert("Please room type !");
+		return ;
+	}
+	
+	var param = {"roomName":roomName,
+			"floor":floor,
+			"roomType":roomType,
+			"roomDes":roomDes
+			};
+	
+	var options = {
+			url:"roomAdd.action",
+			data:param,
+			type:"post",
+			dataType:"text",
+			success:function(msg){
+				alert(msg);
+				window.close();
+			}
+	};
+	
+	$.ajax(options);
+}
+
 </script>
 </head>
 <body>
-<form action="roomAdd.action" method="post">
-<input id="mp2007Seq" name="mp2007Seq" value="" type="hidden" />
+<form id="form_0" name="form_0" action="roomAdd.action" method="post">
 
 <!-- 头部菜单 Start -->
 <table border='0' cellpadding='0' cellspacing='0' width='100%' align='center'>
@@ -77,11 +112,11 @@ $(document).mousemove(function(e){
 
 <table width="100%" border="0" cellspacing="1" cellpadding="3" align="left">
 	<tr>
-		<td class="table_body table_body_NoWidth">Room Name:</td>
+		<td class="table_body table_body_NoWidth">Room Name:&nbsp;<span style="color:red;">*</span></td>
 		<td class="table_none table_none_NoWidth"><input id="roomName" name="roomName" type="text" class="text_input"/></td>
 	</tr>
 	<tr>
-		<td class="table_body table_body_NoWidth">Room Floor:</td>
+		<td class="table_body table_body_NoWidth">Room Floor:&nbsp;<span style="color:red;">*</span></td>
 		<td class="table_none table_none_NoWidth"><s:select id="floor" name="floor" list="floorList" theme="simple" /></td>
 	</tr>
 	<tr>
@@ -104,7 +139,7 @@ $(document).mousemove(function(e){
 <table width="100%" border="0" cellspacing="1" cellpadding="3" align="center" style="padding-bottom:20px;">
     <tr>
         <td align="center" colspan="2">
-            <input id="submit" type="submit" value="Save" onclick="" />
+            <input id="submit" type="button" value="Save" onclick="addRoom()" />
             <input type="button" onclick="window.close()" value="Close"/>
         </td>
     </tr>

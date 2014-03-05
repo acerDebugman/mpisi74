@@ -63,4 +63,9 @@ public class JE0201Service implements IJE0201Service {
 	public List<JE0201> findByColumnName(Map<String, String> columnMap){
 		return dao.findByColumnName(columnMap);
 	}
+	
+	@Override
+	public List<JE0201> findByColumnName(Map<String, String> columnMap, String order){
+		return dao.findByColumnName(columnMap, order);
+	}
 }

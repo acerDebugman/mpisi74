@@ -6,12 +6,22 @@
             <column name="JE0202_SEQ" />
             <generator class="assigned" />
         </id>
+        <property name="JE0202_CASE_CODE" type="java.lang.String">
+            <column name="JE0202_CASE_CODE" length="30" not-null="false" />
+        </property>
         <property name="JE0202_ROOM_CODE" type="java.lang.String">
             <column name="JE0202_ROOM_CODE" length="30" not-null="false" />
+        </property>
+        <property name="JE0202_ROOM_NAME" type="java.lang.String">
+            <column name="JE0202_ROOM_NAME" length="30" not-null="false" />
+        </property>
+        <property name="JE0202_ROOM_FLOOR" type="java.lang.String">
+            <column name="JE0202_ROOM_FLOOR" length="30" not-null="false" />
         </property>
         <property name="JE0202_DATE" type="java.lang.String">
             <column name="JE0202_DATE" not-null="false" />
         </property>
+        
         <property name="JE0202_FROM_DATETIME" type="java.lang.String">
             <column name="JE0202_FROM_DATETIME" not-null="false" />
         </property>

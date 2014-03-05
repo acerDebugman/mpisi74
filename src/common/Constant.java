@@ -664,6 +664,30 @@ public class Constant {
 		return rs;
 	}
 	
+	public static List<String> getRoomFloorList(){
+		List<String> floorList = new ArrayList<String>();
+
+		floorList.add("---Please Select---");
+		floorList.add("Ground Floor");
+		floorList.add("First Floor");
+		floorList.add("Second Floor");
+		floorList.add("Third Floor");
+
+		return floorList;
+	}
+	
+	public static List<String> getRoomTypeList(){
+		List<String> rs = new ArrayList<String>();
+
+		rs.add("---Please Select---");
+		rs.add("Boardroom");
+		rs.add("Store Room");
+		rs.add("Filing Room");
+
+		return rs;
+	}
+	
+	
 	public static String LOGIN_SUCCESS = "Logon Success";
 	public static String LOGIN_FAILURE = "Logon failure";
 	public static String RESET_PWD = "Reset Password";

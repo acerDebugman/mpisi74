@@ -93,7 +93,8 @@ public class JE0202Service implements IJE0202Service {
 			ctPage = PageBean.countCurrentPage(ctPage);
 			pageProperty.put("currentPageNum", "" + ctPage);
 		}
-		List<JE0202> list = this.dao.findByColumnName(pageProperty, null, true); //per page data
+		String order = " order by JE0202_FROM_DATETIME DESC";
+		List<JE0202> list = this.dao.findByColumnName(pageProperty, order, true); //per page data
 		
 		//int allRow = this.dao.findByColumnNames(pageProperty, false).size(); //all need data, total record count
 		//int allRow = this.dao.getAllRowsCount(); //get all data records

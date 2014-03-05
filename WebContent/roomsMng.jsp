@@ -10,14 +10,15 @@
 <link href="css/Site_Css.css" rel="stylesheet" type="text/css" />
 <link href="css/table/blue/css.css" rel="stylesheet" type="text/css" />
 
-<script src="js/checkform.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/jquery1.4.2.js" type="text/javascript" ></script>
-<script src="js/jquery.form.js" type="text/javascript" ></script>
+<script src="js/checkform.js" type="text/javascript" charset="utf-8"></script>
+
 <script type="text/javascript">
 function addRoom(){
 	var popstyle="dialogTop:300px;dialogLeft:600px;dialogRight:600px;help:no;center:yes;dialogHeight:350px;dialogWidth:600px;status:no;resizable:no;scroll:no";
 	window.showModalDialog("roomAddInit.action?pageType=add", window, popstyle);
 }
+
 </script>
 </head>
 <body>
@@ -54,7 +55,7 @@ function addRoom(){
                     </td>
                     <td class="table_body table_body_NoWidth">Floor</td>
                     <td class="table_none table_none_NoWidth">
-                        <input id="floor" name="floor" value="${floor}" type="text" class="text_input" />
+                        <s:select id="floor" name="floor" list="floorList" theme="simple"/>
                     </td>
                 </tr>
                 <tr>

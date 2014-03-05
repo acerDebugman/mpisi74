@@ -71,28 +71,32 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 		// TODO Auto-generated method stub
 		StringBuffer sb = new StringBuffer();
 		sb.append("from JE0202 where 1 = 1 ");
-		
-		if(null != columnMap && columnMap.containsKey("JE0202_DATE") && !columnMap.get("JE0202_DATE").equalsIgnoreCase("") && columnMap.get("JE0202_DATE")!=null){
+		if(null != columnMap && columnMap.get("JE0202_DATE")!=null && columnMap.containsKey("JE0202_DATE") && !columnMap.get("JE0202_DATE").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_DATE='" + columnMap.get("JE0202_DATE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_FROM_DATETIME") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("") && columnMap.get("JE0202_FROM_DATETIME")!=null){
-			sb.append(" and JE0202_FROM_DATETIME>='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_CASE_CODE")!=null && columnMap.containsKey("JE0202_CASE_CODE") && !columnMap.get("JE0202_CASE_CODE").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_CASE_CODE='" + columnMap.get("JE0202_CASE_CODE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && columnMap.get("JE0202_END_DATETIME")!=null){
+		if(null != columnMap && columnMap.get("JE0202_FROM_DATETIME")!=null && columnMap.containsKey("JE0202_FROM_DATETIME") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("-1")){
+			sb.append(" and JE0202_FROM_DATETIME<='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0202_END_DATETIME")!=null && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("-1")){
 			sb.append(" and JE0202_END_DATETIME>='" + columnMap.get("JE0202_END_DATETIME") + "' ");
 		}
-		
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_NAME") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_NAME")!=null){
+		if(null != columnMap && columnMap.get("JE0202_ROOM_CODE")!=null && columnMap.containsKey("JE0202_ROOM_CODE") && !columnMap.get("JE0202_ROOM_CODE").equalsIgnoreCase("") && !columnMap.get("JE0202_ROOM_CODE").equalsIgnoreCase("-1")){
+			sb.append(" and JE0202_ROOM_CODE='" + columnMap.get("JE0202_ROOM_CODE") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0202_ROOM_NAME")!=null && columnMap.containsKey("JE0202_ROOM_NAME") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_ROOM_NAME='" + columnMap.get("JE0202_ROOM_NAME") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_FLOOR") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_FLOOR")!=null){
+		if(null != columnMap && columnMap.get("JE0202_ROOM_FLOOR")!=null && columnMap.containsKey("JE0202_ROOM_FLOOR") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_ROOM_FLOOR='" + columnMap.get("JE0202_ROOM_FLOOR") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_TYPE") && !columnMap.get("JE0202_ROOM_TYPE").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_TYPE")!=null){
-			sb.append(" and JE0202_ROOM_TYPE='" + columnMap.get("JE0202_ROOM_TYPE") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_USER_TYPE")!=null && columnMap.containsKey("JE0202_USER_TYPE") && !columnMap.get("JE0202_USER_TYPE").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_USER_TYPE='" + columnMap.get("JE0202_USER_TYPE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_DES") && !columnMap.get("JE0202_ROOM_DES").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_DES")!=null){
-			sb.append(" and JE0202_ROOM_DES='" + columnMap.get("JE0202_ROOM_DES") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_DES")!=null && columnMap.containsKey("JE0202_DES") && !columnMap.get("JE0202_DES").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_DES='" + columnMap.get("JE0202_DES") + "' ");
 		}
 	
 		return getHibernateTemplate().find(sb.toString());
@@ -103,28 +107,32 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 		// TODO Auto-generated method stub
 		StringBuffer sb = new StringBuffer();
 		sb.append("from JE0202 where 1 = 1 ");
-		if(null != columnMap && columnMap.containsKey("JE0202_DATE") && !columnMap.get("JE0202_DATE").equalsIgnoreCase("") && columnMap.get("JE0202_DATE")!=null){
+		if(null != columnMap && columnMap.get("JE0202_DATE")!=null && columnMap.containsKey("JE0202_DATE") && !columnMap.get("JE0202_DATE").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_DATE='" + columnMap.get("JE0202_DATE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_FROM_DATETIME") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("") && columnMap.get("JE0202_FROM_DATETIME")!=null){
-			sb.append(" and JE0202_FROM_DATETIME>='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_CASE_CODE")!=null && columnMap.containsKey("JE0202_CASE_CODE") && !columnMap.get("JE0202_CASE_CODE").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_CASE_CODE='" + columnMap.get("JE0202_CASE_CODE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && columnMap.get("JE0202_END_DATETIME")!=null){
+		if(null != columnMap && columnMap.get("JE0202_FROM_DATETIME")!=null && columnMap.containsKey("JE0202_FROM_DATETIME") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("-1")){
+			sb.append(" and JE0202_FROM_DATETIME<='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0202_END_DATETIME")!=null && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("-1")){
 			sb.append(" and JE0202_END_DATETIME>='" + columnMap.get("JE0202_END_DATETIME") + "' ");
 		}
-		
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_NAME") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_NAME")!=null){
+		if(null != columnMap && columnMap.get("JE0202_ROOM_CODE")!=null && columnMap.containsKey("JE0202_ROOM_CODE") && !columnMap.get("JE0202_ROOM_CODE").equalsIgnoreCase("") && !columnMap.get("JE0202_ROOM_CODE").equalsIgnoreCase("-1")){
+			sb.append(" and JE0202_ROOM_CODE='" + columnMap.get("JE0202_ROOM_CODE") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0202_ROOM_NAME")!=null && columnMap.containsKey("JE0202_ROOM_NAME") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_ROOM_NAME='" + columnMap.get("JE0202_ROOM_NAME") + "' ");
 		}
-		
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_FLOOR") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_FLOOR")!=null){
+		if(null != columnMap && columnMap.get("JE0202_ROOM_FLOOR")!=null && columnMap.containsKey("JE0202_ROOM_FLOOR") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_ROOM_FLOOR='" + columnMap.get("JE0202_ROOM_FLOOR") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_TYPE") && !columnMap.get("JE0202_ROOM_TYPE").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_TYPE")!=null){
-			sb.append(" and JE0202_ROOM_TYPE='" + columnMap.get("JE0202_ROOM_TYPE") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_USER_TYPE")!=null && columnMap.containsKey("JE0202_USER_TYPE") && !columnMap.get("JE0202_USER_TYPE").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_USER_TYPE='" + columnMap.get("JE0202_USER_TYPE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_DES") && !columnMap.get("JE0202_ROOM_DES").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_DES")!=null){
-			sb.append(" and JE0202_ROOM_DES='" + columnMap.get("JE0202_ROOM_DES") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_DES")!=null && columnMap.containsKey("JE0202_DES") && !columnMap.get("JE0202_DES").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_DES='" + columnMap.get("JE0202_DES") + "' ");
 		}
 		if(null != strOrder && !strOrder.equalsIgnoreCase("")){
 			sb.append(strOrder);
@@ -140,26 +148,48 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 		final StringBuffer sb = new StringBuffer();
 		
 		sb.append("from JE0202 where 1 = 1 ");
-		if(null != columnMap && columnMap.containsKey("JE0202_DATE") && !columnMap.get("JE0202_DATE").equalsIgnoreCase("") && columnMap.get("JE0202_DATE")!=null){
+		if(null != columnMap && columnMap.get("JE0202_DATE")!=null && columnMap.containsKey("JE0202_DATE") && !columnMap.get("JE0202_DATE").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_DATE='" + columnMap.get("JE0202_DATE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_FROM_DATETIME") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("") && columnMap.get("JE0202_FROM_DATETIME")!=null){
-			sb.append(" and JE0202_FROM_DATETIME>='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_CASE_CODE")!=null && columnMap.containsKey("JE0202_CASE_CODE") && !columnMap.get("JE0202_CASE_CODE").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_CASE_CODE='" + columnMap.get("JE0202_CASE_CODE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && columnMap.get("JE0202_END_DATETIME")!=null){
+		
+		if(null != columnMap && columnMap.get("JE0202_FROM_DATETIME")!=null && columnMap.containsKey("JE0202_FROM_DATETIME") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("-1")){
+			if(null != columnMap && columnMap.get("JE0202_END_DATETIME")!=null && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("-1")){
+				sb.append(" and ((JE0202_FROM_DATETIME <= '" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+				sb.append(" and JE0202_END_DATETIME>='" + columnMap.get("JE0202_END_DATETIME") + "') ");
+				sb.append(" or ");
+				sb.append(" (JE0202_FROM_DATETIME<='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+				sb.append(" and JE0202_END_DATETIME>='" + columnMap.get("JE0202_FROM_DATETIME") + "') ");
+				sb.append(" or ");
+				sb.append(" (JE0202_FROM_DATETIME<='" + columnMap.get("JE0202_END_DATETIME") + "' ");
+				sb.append(" and JE0202_END_DATETIME>='" + columnMap.get("JE0202_END_DATETIME") + "')) ");
+			}
+			else{
+				sb.append(" and JE0202_FROM_DATETIME<='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+				sb.append(" and JE0202_END_DATETIME>='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+			}
+		}
+		else if(null != columnMap && columnMap.get("JE0202_END_DATETIME")!=null && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("-1")){
+			sb.append(" and JE0202_FROM_DATETIME<='" + columnMap.get("JE0202_END_DATETIME") + "' ");
 			sb.append(" and JE0202_END_DATETIME>='" + columnMap.get("JE0202_END_DATETIME") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_NAME") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_NAME")!=null){
+		
+		if(null != columnMap && columnMap.get("JE0202_ROOM_CODE")!=null && columnMap.containsKey("JE0202_ROOM_CODE") && !columnMap.get("JE0202_ROOM_CODE").equalsIgnoreCase("") && !columnMap.get("JE0202_ROOM_CODE").equalsIgnoreCase("-1") ){
+			sb.append(" and JE0202_ROOM_CODE='" + columnMap.get("JE0202_ROOM_CODE") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0202_ROOM_NAME")!=null && columnMap.containsKey("JE0202_ROOM_NAME") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("-1") ){
 			sb.append(" and JE0202_ROOM_NAME='" + columnMap.get("JE0202_ROOM_NAME") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_FLOOR") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_FLOOR")!=null){
+		if(null != columnMap && columnMap.get("JE0202_ROOM_FLOOR")!=null && columnMap.containsKey("JE0202_ROOM_FLOOR") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("-1")){
 			sb.append(" and JE0202_ROOM_FLOOR='" + columnMap.get("JE0202_ROOM_FLOOR") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_TYPE") && !columnMap.get("JE0202_ROOM_TYPE").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_TYPE")!=null){
-			sb.append(" and JE0202_ROOM_TYPE='" + columnMap.get("JE0202_ROOM_TYPE") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_USER_TYPE")!=null && columnMap.containsKey("JE0202_USER_TYPE") && !columnMap.get("JE0202_USER_TYPE").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_USER_TYPE='" + columnMap.get("JE0202_USER_TYPE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_DES") && !columnMap.get("JE0202_ROOM_DES").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_DES")!=null){
-			sb.append(" and JE0202_ROOM_DES='" + columnMap.get("JE0202_ROOM_DES") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_DES")!=null && columnMap.containsKey("JE0202_DES") && !columnMap.get("JE0202_DES").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_DES='" + columnMap.get("JE0202_DES") + "' ");
 		}
 		
 		if(null != strOrder && !strOrder.equalsIgnoreCase("")){
@@ -210,26 +240,32 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 	public int getSearchConditionRowsCount(Map<String, String> columnMap){
 		StringBuffer sb = new StringBuffer();
 		sb.append("select count(*) from JE0202 where 1 = 1 ");
-		if(null != columnMap && columnMap.containsKey("JE0202_DATE") && !columnMap.get("JE0202_DATE").equalsIgnoreCase("") && columnMap.get("JE0202_DATE")!=null){
+		if(null != columnMap && columnMap.get("JE0202_DATE")!=null && columnMap.containsKey("JE0202_DATE") && !columnMap.get("JE0202_DATE").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_DATE='" + columnMap.get("JE0202_DATE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_FROM_DATETIME") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("") && columnMap.get("JE0202_FROM_DATETIME")!=null){
-			sb.append(" and JE0202_FROM_DATETIME>='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_CASE_CODE")!=null && columnMap.containsKey("JE0202_CASE_CODE") && !columnMap.get("JE0202_CASE_CODE").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_CASE_CODE='" + columnMap.get("JE0202_CASE_CODE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && columnMap.get("JE0202_END_DATETIME")!=null){
+		if(null != columnMap && columnMap.get("JE0202_FROM_DATETIME")!=null && columnMap.containsKey("JE0202_FROM_DATETIME") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_FROM_DATETIME").equalsIgnoreCase("-1")){
+			sb.append(" and JE0202_FROM_DATETIME<='" + columnMap.get("JE0202_FROM_DATETIME") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0202_END_DATETIME")!=null && columnMap.containsKey("JE0202_END_DATETIME") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("") && !columnMap.get("JE0202_END_DATETIME").equalsIgnoreCase("-1")){
 			sb.append(" and JE0202_END_DATETIME>='" + columnMap.get("JE0202_END_DATETIME") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_NAME") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_NAME")!=null){
+		if(null != columnMap && columnMap.get("JE0202_ROOM_CODE")!=null && columnMap.containsKey("JE0202_ROOM_CODE") && !columnMap.get("JE0202_ROOM_CODE").equalsIgnoreCase("") && !columnMap.get("JE0202_ROOM_CODE").equalsIgnoreCase("-1")){
+			sb.append(" and JE0202_ROOM_CODE='" + columnMap.get("JE0202_ROOM_CODE") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0202_ROOM_NAME")!=null && columnMap.containsKey("JE0202_ROOM_NAME") && !columnMap.get("JE0202_ROOM_NAME").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_ROOM_NAME='" + columnMap.get("JE0202_ROOM_NAME") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_FLOOR") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_FLOOR")!=null){
+		if(null != columnMap && columnMap.get("JE0202_ROOM_FLOOR")!=null && columnMap.containsKey("JE0202_ROOM_FLOOR") && !columnMap.get("JE0202_ROOM_FLOOR").equalsIgnoreCase("") ){
 			sb.append(" and JE0202_ROOM_FLOOR='" + columnMap.get("JE0202_ROOM_FLOOR") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_TYPE") && !columnMap.get("JE0202_ROOM_TYPE").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_TYPE")!=null){
-			sb.append(" and JE0202_ROOM_TYPE='" + columnMap.get("JE0202_ROOM_TYPE") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_USER_TYPE")!=null && columnMap.containsKey("JE0202_USER_TYPE") && !columnMap.get("JE0202_USER_TYPE").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_USER_TYPE='" + columnMap.get("JE0202_USER_TYPE") + "' ");
 		}
-		if(null != columnMap && columnMap.containsKey("JE0202_ROOM_DES") && !columnMap.get("JE0202_ROOM_DES").equalsIgnoreCase("") && columnMap.get("JE0202_ROOM_DES")!=null){
-			sb.append(" and JE0202_ROOM_DES='" + columnMap.get("JE0202_ROOM_DES") + "' ");
+		if(null != columnMap && columnMap.get("JE0202_DES")!=null && columnMap.containsKey("JE0202_DES") && !columnMap.get("JE0202_DES").equalsIgnoreCase("") ){
+			sb.append(" and JE0202_DES='" + columnMap.get("JE0202_DES") + "' ");
 		}
 		
 		Session session = getHibernateTemplate().getSessionFactory().openSession();

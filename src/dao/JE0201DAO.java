@@ -64,20 +64,44 @@ public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
 		// TODO Auto-generated method stub
 		StringBuffer sb = new StringBuffer();
 		sb.append("from JE0201 where 1 = 1 ");
-		if(columnMap.containsKey("JE0201_ROOM_NAME") && !columnMap.get("JE0201_ROOM_NAME").equalsIgnoreCase("") && columnMap.get("JE0201_ROOM_NAME")!=null){
+		if(null != columnMap && columnMap.get("JE0201_ROOM_NAME")!=null && columnMap.containsKey("JE0201_ROOM_NAME") && !columnMap.get("JE0201_ROOM_NAME").equalsIgnoreCase("") ){
 			sb.append(" and JE0201_ROOM_NAME='" + columnMap.get("JE0201_ROOM_NAME") + "' ");
 		}
-		if(columnMap.containsKey("JE0201_ROOM_FLOOR") && !columnMap.get("JE0201_ROOM_FLOOR").equalsIgnoreCase("") && columnMap.get("JE0201_ROOM_FLOOR")!=null){
+		if(null != columnMap && columnMap.get("JE0201_ROOM_FLOOR")!=null && columnMap.containsKey("JE0201_ROOM_FLOOR") && !columnMap.get("JE0201_ROOM_FLOOR").equalsIgnoreCase("") ){
 			sb.append(" and JE0201_ROOM_FLOOR='" + columnMap.get("JE0201_ROOM_FLOOR") + "' ");
 		}
-		if(columnMap.containsKey("JE0201_ROOM_TYPE") && !columnMap.get("JE0201_ROOM_TYPE").equalsIgnoreCase("") && columnMap.get("JE0201_ROOM_TYPE")!=null){
+		if(null != columnMap && columnMap.get("JE0201_ROOM_TYPE")!=null && columnMap.containsKey("JE0201_ROOM_TYPE") && !columnMap.get("JE0201_ROOM_TYPE").equalsIgnoreCase("") ){
 			sb.append(" and JE0201_ROOM_TYPE='" + columnMap.get("JE0201_ROOM_TYPE") + "' ");
 		}
-		if(columnMap.containsKey("JE0201_ROOM_DES") && !columnMap.get("JE0201_ROOM_DES").equalsIgnoreCase("") && columnMap.get("JE0201_ROOM_DES")!=null){
+		if(null != columnMap && columnMap.get("JE0201_ROOM_DES")!=null && columnMap.containsKey("JE0201_ROOM_DES") && !columnMap.get("JE0201_ROOM_DES").equalsIgnoreCase("") ){
 			sb.append(" and JE0201_ROOM_DES='" + columnMap.get("JE0201_ROOM_DES") + "' ");
 		}
 		
 		return getHibernateTemplate().find(sb.toString());
 	}
+
+	@Override
+	public List<JE0201> findByColumnName(Map<String, String> columnMap, String order) {
+		// TODO Auto-generated method stub
+		StringBuffer sb = new StringBuffer();
+		sb.append("from JE0201 where 1 = 1 ");
+		if(null != columnMap && columnMap.get("JE0201_ROOM_NAME")!=null && columnMap.containsKey("JE0201_ROOM_NAME") && !columnMap.get("JE0201_ROOM_NAME").equalsIgnoreCase("") ){
+			sb.append(" and JE0201_ROOM_NAME='" + columnMap.get("JE0201_ROOM_NAME") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0201_ROOM_FLOOR")!=null && columnMap.containsKey("JE0201_ROOM_FLOOR") && !columnMap.get("JE0201_ROOM_FLOOR").equalsIgnoreCase("") ){
+			sb.append(" and JE0201_ROOM_FLOOR='" + columnMap.get("JE0201_ROOM_FLOOR") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0201_ROOM_TYPE")!=null && columnMap.containsKey("JE0201_ROOM_TYPE") && !columnMap.get("JE0201_ROOM_TYPE").equalsIgnoreCase("") ){
+			sb.append(" and JE0201_ROOM_TYPE='" + columnMap.get("JE0201_ROOM_TYPE") + "' ");
+		}
+		if(null != columnMap && columnMap.get("JE0201_ROOM_DES")!=null && columnMap.containsKey("JE0201_ROOM_DES") && !columnMap.get("JE0201_ROOM_DES").equalsIgnoreCase("") ){
+			sb.append(" and JE0201_ROOM_DES='" + columnMap.get("JE0201_ROOM_DES") + "' ");
+		}
 		
+		if(null != order && !order.equalsIgnoreCase("") && !order.equalsIgnoreCase("-1")){
+			sb.append(order);
+		}
+		
+		return getHibernateTemplate().find(sb.toString());
+	}
 }

@@ -1402,6 +1402,9 @@
 			<result name="success">bookOneRoom.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		<action name="delBookedRoomRecord" class="roomsMngBean" method="delBookedRoomRecord">
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
 <!-- IT Request -->
 	
 		<action name="itServiceMngInit" class="itServiceBean" method="itServiceMngInit">

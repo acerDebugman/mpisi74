@@ -8,7 +8,10 @@ public class JE0202 implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String JE0202_SEQ;
+	private String JE0202_CASE_CODE;
 	private String JE0202_ROOM_CODE;
+	private String JE0202_ROOM_NAME;
+	private String JE0202_ROOM_FLOOR;
 	private String JE0202_DATE;
 	private String JE0202_FROM_DATETIME;
 	private String JE0202_END_DATETIME;
@@ -71,5 +74,26 @@ public class JE0202 implements Serializable {
 	}
 	public void setJE0202_DES(String je0202_DES) {
 		JE0202_DES = je0202_DES;
+	}
+	public String getJE0202_CASE_CODE() {
+		return JE0202_CASE_CODE;
+	}
+	public void setJE0202_CASE_CODE(String jE0202_CASE_CODE) {
+		JE0202_CASE_CODE = jE0202_CASE_CODE;
+	}
+	public String getJE0202_ROOM_NAME() {
+		return JE0202_ROOM_NAME;
+	}
+	public void setJE0202_ROOM_NAME(String jE0202_ROOM_NAME) {
+		JE0202_ROOM_NAME = jE0202_ROOM_NAME;
+	}
+	public String getJE0202_ROOM_FLOOR() {
+		return JE0202_ROOM_FLOOR;
+	}
+	public void setJE0202_ROOM_FLOOR(String jE0202_ROOM_FLOOR) {
+		JE0202_ROOM_FLOOR = jE0202_ROOM_FLOOR;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

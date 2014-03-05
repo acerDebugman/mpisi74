@@ -81,7 +81,8 @@ public class UtilCommon {
 	public static boolean checkDirector(String empId){
 		boolean retFlg = false;
 		
-		if(empId.equals("M0001") || empId.equals("M0002") || empId.equals("M0003") || empId.equals("M0011") || empId.equals("M0198")){
+		//M0058 is Jason Huang, 20140305 added by Joe Zhang
+		if(empId.equals("M0001") || empId.equals("M0002") || empId.equals("M0003") || empId.equals("M0011") || empId.equals("M0198") || empId.equals("M0058")){
 			retFlg = true;
 		}
 		return retFlg;
