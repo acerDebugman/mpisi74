@@ -121,10 +121,16 @@ function saveOneBookedRoom(){
 	var options = {
 			url:"saveOneBookedRoom.action",
 			data:param,
-			dataType:"text",
+			dataType:"script",
 			type:"post",
 			success:function(msg){
-				alert(msg);
+				//alert(msg);
+				var flag = msg.substring(0, 1);
+				var str = msg.substring(2);
+				alert(str);
+				if("S" == flag){
+					window.close();
+				}
 			}
 	};
 	$.ajax(options);

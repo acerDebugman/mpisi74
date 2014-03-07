@@ -160,31 +160,24 @@ public class RoomsMngAction extends ActionSupport {
 			listTimeList = Constant.getHalfAnHourIntervalWorkTime();
 			floorList = Constant.getRoomFloorList();
 			
-			String order = " order by JE0202_FROM_DATETIME ";
-			//Map<String, String> prop = new HashMap<String, String>();
-			//prop.put("", value);
-			//listBookedRoomRecords = serviceJE0202.findByColumnName(null, order);
-			//pb = new PageBean();
-			//pb.setTotalPage(PageBean.countTotalPage(Integer.parseInt(pageSize), listBookedRoomRecords.size()));
 			Map<String, String> pageProperty = new HashMap<String, String>();
 			pageProperty.put("currentPageNum", currentPageNum);
 			pageProperty.put("pageSize", pageSize);
 			pb = serviceJE0202.queryForPage(pageProperty);
 			listBookedRoomRecords = pb.getList();
-			
-			/*mapProperties = new HashMap<String, String>();
-			listMap.add(e);*/
-			
-			allRoomsList = serviceJE0201.findAll();
-			mapRoomCodeObj = new HashMap<String, JE0201>();
-			for(JE0201 je0201 : allRoomsList){
-				mapRoomCodeObj.put(je0201.getJE0201_ROOM_CODE(), je0201);
+
+			for(JE0202 je0202 : listBookedRoomRecords){
+				if(je0202.getJE0202_USER_TYPE().equalsIgnoreCase("S")){
+					String empNum = je0202.getJE0202_USER_NUM();
+				}
 			}
 			
-			//allRoomsList = serviceJE0201.findAll();
+			
+			allRoomsList = serviceJE0201.findAll();
 			mapRoomCodeName = new HashMap<String, String>();
 			JE0201 old0201 = null;
 			for(JE0201 je0201 : allRoomsList){
+				//{for mapRoomCode
 				if(null != old0201){
 					if(!old0201.getJE0201_ROOM_NAME().equalsIgnoreCase(je0201.getJE0201_ROOM_NAME())){
 						mapRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
@@ -194,9 +187,9 @@ public class RoomsMngAction extends ActionSupport {
 					mapRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
 				}
 				old0201 = je0201;
+				//}
 			}
-			
-			
+
 			return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
@@ -354,7 +347,7 @@ public class RoomsMngAction extends ActionSupport {
 					//sb.append("alert('Time overlapped!Please check if the room is occupied between that period!');");
 					//sb.append("window.close();");
 					//sb.append("</script>");
-					sb.append("Time overlapped!Please check if the room is occupied between that period!");
+					sb.append("E:Time overlapped!Please check if the room is occupied between that period!");
 					out.print(sb.toString());
 					out.flush();
 					out.close();
@@ -372,7 +365,7 @@ public class RoomsMngAction extends ActionSupport {
 			//sb.append("<script type='text/javascript'>");
 			//sb.append("window.close();");
 			//sb.append("</script>");
-			sb.append("book success!");
+			sb.append("S:book success!");
 			
 			out.println(sb.toString());
 			out.flush();

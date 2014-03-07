@@ -186,10 +186,10 @@ function pageRefresh(){
             <table cellspacing="1" border="0" style="background-color:White;border-width:0px; height:22px;">
                 <tr class="table_title" align="center">
                     <th scope="col" width="200px">Room Name</th>
-                    <th scope="col" width="200px">Date</th>
                     <th scope="col" width="200px">From Time</th>
                     <th scope="col" width="200px">To Time</th>
                     <th scope="col" width="200px">Subscriber</th>
+                    <th scope="col" width="200px">Department</th>
                     <th scope="col" width="200px">Room Floor</th>
                     <th scope="col" width="200px">Operation</th>
                 </tr>
@@ -198,13 +198,13 @@ function pageRefresh(){
 	            <table cellspacing="1" border="0" style="background-color:White;border-width:0px; height:22px;">
 					<s:iterator value="listBookedRoomRecords" status="st">
 		                <tr class="row" align="center" style="height:28px;">
-		                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_NAME" /></td>
-		                    <td width="200px"><s:property value="JE0202_DATE.substring(0, 10)"/></td>
+		                    <td width="200px"><s:property value="JE0202_ROOM_NAME" /></td>
 		                    <td width="200px"><s:property value="JE0202_FROM_DATETIME.substring(0, 16)"/></td>
 		                    <td width="200px"><s:property value="JE0202_END_DATETIME.substring(0, 16)"/></td>
 		                    <td width="200px"><s:property value="JE0202_USER_NUM"/></td>
-		                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_FLOOR"/></td>
-		               		<td width="200px"><input type="button" value="Del" onclick="delRecord('<s:property value='JE0202_SEQ' />')"/></td>
+		                    <td width="200px"></td>
+		                    <td width="200px"><s:property value="JE0202_ROOM_FLOOR"/></td>
+		               		<td width="200px"><input type="button" value="Del" onclick="delRecord('<s:property value="JE0202_SEQ" />')"/></td>
 		                </tr>
 					</s:iterator>
 	            </table>
@@ -217,5 +217,6 @@ function pageRefresh(){
      </tr>
 </table>
 </s:form>
+<s:debug /> 
 </body>
 </html>

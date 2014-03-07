@@ -10,10 +10,10 @@ $(document).ready(function(){//this function for dynamicly change all pages numb
 					<s:iterator value="listBookedRoomRecords" status="st">
 					                <tr class="row" align="center" style="height:28px;">
 					                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_NAME" /></td>
-					                    <td width="200px"><s:property value="JE0202_DATE.substring(0, 10)"/></td>
 					                    <td width="200px"><s:property value="JE0202_FROM_DATETIME.substring(0, 16)"/></td>
 					                    <td width="200px"><s:property value="JE0202_END_DATETIME.substring(0, 16)"/></td>
 					                    <td width="200px"><s:property value="JE0202_USER_NUM"/></td>
+					                    <td width="200px"></td>
 					                    <td width="200px"><s:property value="mapRoomCodeObj[JE0202_ROOM_CODE].JE0201_ROOM_FLOOR"/></td>
 					                    <td width="200px"><input type="button" value="Del" onclick="delRecord('<s:property value='JE0202_SEQ' />')"/></td>
 					                </tr>

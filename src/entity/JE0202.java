@@ -20,6 +20,9 @@ public class JE0202 implements Serializable {
 	private String JE0202_USER_TYPE;
 	private String JE0202_DES;
 	
+	private String JE0202_DEPARTMENT;
+	p
+	
 	
 	public String getJE0202_SEQ() {
 		return JE0202_SEQ;
