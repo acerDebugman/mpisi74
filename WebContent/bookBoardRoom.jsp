@@ -157,7 +157,7 @@ function pageRefresh(){
                     <td class="table_body table_body_NoWidth">Room Name</td>
                     <td class="table_none table_none_NoWidth">
                         <!-- <input id="roomName" name="roomName" value="${roomName}" type="text" class="text_input" /> -->
-                        <s:select id="strRoomCode" name="strRoomCode" list="mapRoomCodeName" headerKey="-1" headerValue="---Please Select---" theme="simple"/>
+                        <s:select id="strRoomCode" name="strRoomCode" list="listRoomCodeName" headerKey="-1" headerValue="---Please Select---" theme="simple"/>
                     </td>
                     <td class="table_body table_body_NoWidth">Floor</td>
                     <td class="table_none table_none_NoWidth">

@@ -7,19 +7,12 @@ public class JE0201 implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String JE0201_ROOM_CODE;
 	private String JE0201_ROOM_NAME;
 	private String JE0201_ROOM_FLOOR;
 	private String JE0201_ROOM_TYPE;
 	private String JE0201_ROOM_DES;
-	
-	
-	public String getJE0201_ROOM_CODE() {
-		return JE0201_ROOM_CODE;
-	}
-	public void setJE0201_ROOM_CODE(String jE0201_ROOM_CODE) {
-		JE0201_ROOM_CODE = jE0201_ROOM_CODE;
-	}
+	private String JE0201_STATUS;
+
 	public String getJE0201_ROOM_NAME() {
 		return JE0201_ROOM_NAME;
 	}
@@ -43,5 +36,14 @@ public class JE0201 implements Serializable {
 	}
 	public void setJE0201_ROOM_DES(String jE0201_ROOM_DES) {
 		JE0201_ROOM_DES = jE0201_ROOM_DES;
+	}
+	public String getJE0201_STATUS() {
+		return JE0201_STATUS;
+	}
+	public void setJE0201_STATUS(String jE0201_STATUS) {
+		JE0201_STATUS = jE0201_STATUS;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

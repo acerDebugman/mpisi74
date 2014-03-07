@@ -19,10 +19,9 @@ public class JE0202 implements Serializable {
 	private String JE0202_CREATE_DATETIME;
 	private String JE0202_USER_TYPE;
 	private String JE0202_DES;
+	private String JE0202_STATUS;
 	
 	private String JE0202_DEPARTMENT;
-	p
-	
 	
 	public String getJE0202_SEQ() {
 		return JE0202_SEQ;
@@ -98,5 +97,17 @@ public class JE0202 implements Serializable {
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public String getJE0202_STATUS() {
+		return JE0202_STATUS;
+	}
+	public void setJE0202_STATUS(String jE0202_STATUS) {
+		JE0202_STATUS = jE0202_STATUS;
+	}
+	public String getJE0202_DEPARTMENT() {
+		return JE0202_DEPARTMENT;
+	}
+	public void setJE0202_DEPARTMENT(String jE0202_DEPARTMENT) {
+		JE0202_DEPARTMENT = jE0202_DEPARTMENT;
 	}
 }

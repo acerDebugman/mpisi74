@@ -61,7 +61,7 @@ public class RoomsMngAction extends ActionSupport {
 	
 	private List<String> listAllRoomNames;
 	private List<String> listAllRoomCodes;
-	private Map<String, String> mapRoomCodeName;
+	private List<String> listRoomName;
 	private Map<String, JE0201> mapRoomCodeObj;
 	private List<String> listFromTime;
 	private List<String> listToTime;
@@ -75,7 +75,8 @@ public class RoomsMngAction extends ActionSupport {
 			 * log part
 			 */
 			
-			allRoomsList = serviceJE0201.findAll();
+			//allRoomsList = serviceJE0201.findAll();
+			allRoomsList = serviceJE0201.findByColumnName(null, " order by JE0201_ROOM_NAME ");
 			floorList = Constant.getRoomFloorList();
 			
 			return SUCCESS;
@@ -125,13 +126,8 @@ public class RoomsMngAction extends ActionSupport {
 	
 	public String roomAdd(){
 		try{
-			String seq = Constant.generateSeq();
-			int number = UtilCommon.getTempSeq();
-			seq = seq + Integer.toString(number);
-			
 			JE0201 room0201 = new JE0201();
-			
-			room0201.setJE0201_ROOM_CODE(seq);
+
 			room0201.setJE0201_ROOM_NAME(roomName);
 			room0201.setJE0201_ROOM_FLOOR(floor);
 			room0201.setJE0201_ROOM_TYPE(roomType);
@@ -180,11 +176,11 @@ public class RoomsMngAction extends ActionSupport {
 				//{for mapRoomCode
 				if(null != old0201){
 					if(!old0201.getJE0201_ROOM_NAME().equalsIgnoreCase(je0201.getJE0201_ROOM_NAME())){
-						mapRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
+						listRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
 					}
 				}
 				else{
-					mapRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
+					listRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
 				}
 				old0201 = je0201;
 				//}

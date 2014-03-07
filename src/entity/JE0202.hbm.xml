@@ -9,9 +9,6 @@
         <property name="JE0202_CASE_CODE" type="java.lang.String">
             <column name="JE0202_CASE_CODE" length="30" not-null="false" />
         </property>
-        <property name="JE0202_ROOM_CODE" type="java.lang.String">
-            <column name="JE0202_ROOM_CODE" length="30" not-null="false" />
-        </property>
         <property name="JE0202_ROOM_NAME" type="java.lang.String">
             <column name="JE0202_ROOM_NAME" length="30" not-null="false" />
         </property>
@@ -21,7 +18,6 @@
         <property name="JE0202_DATE" type="java.lang.String">
             <column name="JE0202_DATE" not-null="false" />
         </property>
-        
         <property name="JE0202_FROM_DATETIME" type="java.lang.String">
             <column name="JE0202_FROM_DATETIME" not-null="false" />
         </property>
@@ -39,6 +35,9 @@
         </property>
         <property name="JE0202_DES" type="java.lang.String">
             <column name="JE0202_DES" length="200" not-null="false" />
+        </property>
+        <property name="JE0202_STATUS" type="java.lang.String">
+            <column name="JE0202_STATUS" length="2" not-null="false" />
         </property>
     </class>
 </hibernate-mapping>

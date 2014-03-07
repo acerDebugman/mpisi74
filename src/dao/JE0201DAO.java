@@ -63,7 +63,7 @@ public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
 	public List<JE0201> findByColumnName(Map<String, String> columnMap) {
 		// TODO Auto-generated method stub
 		StringBuffer sb = new StringBuffer();
-		sb.append("from JE0201 where 1 = 1 ");
+		sb.append("from JE0201 where 1 = 1 and JE0201_STATUS='1' ");
 		if(null != columnMap && columnMap.get("JE0201_ROOM_NAME")!=null && columnMap.containsKey("JE0201_ROOM_NAME") && !columnMap.get("JE0201_ROOM_NAME").equalsIgnoreCase("") ){
 			sb.append(" and JE0201_ROOM_NAME='" + columnMap.get("JE0201_ROOM_NAME") + "' ");
 		}
@@ -84,7 +84,7 @@ public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
 	public List<JE0201> findByColumnName(Map<String, String> columnMap, String order) {
 		// TODO Auto-generated method stub
 		StringBuffer sb = new StringBuffer();
-		sb.append("from JE0201 where 1 = 1 ");
+		sb.append("from JE0201 where 1 = 1 and JE0201_STATUS='1' ");
 		if(null != columnMap && columnMap.get("JE0201_ROOM_NAME")!=null && columnMap.containsKey("JE0201_ROOM_NAME") && !columnMap.get("JE0201_ROOM_NAME").equalsIgnoreCase("") ){
 			sb.append(" and JE0201_ROOM_NAME='" + columnMap.get("JE0201_ROOM_NAME") + "' ");
 		}
