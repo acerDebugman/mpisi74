@@ -15,6 +15,8 @@
 <s:form action="savePassword" method="post" theme="simple">
 <input id="optSave" name="optSave" value="${optSave}" type="hidden" />
 <input id="optCancel" name="optCancel" value="${optCancel}" type="hidden" />
+<input id="changePsdType" name="changePsdType" value="${changePsdType}" type="hidden" />
+
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
@@ -48,15 +50,17 @@
 	                    </s:fielderror>
                     </td>
                 </tr>
-                <tr>
-                    <td class="table_body">Old Password<span class="errorcss">*</span></td>
-                    <td class="table_none">
-                        <input name="oldPassword" value="${oldPassword}" maxlength="12" type="password" class="text_input" />
-                        <s:fielderror theme="simple" cssStyle="color:red;margin-left:10px;">
-	                        <s:param>oldPassword</s:param>
-	                    </s:fielderror>
-                    </td>
-                </tr>
+                <s:if test="changePsdType != 'loginChange'" >
+	                <tr>
+	                    <td class="table_body">Old Password<span class="errorcss">*</span></td>
+	                    <td class="table_none">
+	                        <input name="oldPassword" value="" maxlength="12" type="password" class="text_input" />
+	                        <s:fielderror theme="simple" cssStyle="color:red;margin-left:10px;">
+		                        <s:param>oldPassword</s:param>
+		                    </s:fielderror>
+	                    </td>
+	                </tr>
+                </s:if>
                 <tr>
                     <td class="table_body">New Password<span class="errorcss">*</span></td>
                     <td class="table_none">

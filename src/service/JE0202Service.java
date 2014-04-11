@@ -109,4 +109,8 @@ public class JE0202Service implements IJE0202Service {
 		
 		return pageBean;
 	}
+	
+	public void getSubscriberInfo(JE0202 je0202){
+		dao.getSubscriberInfo(je0202);
+	}
 }

@@ -1197,10 +1197,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="serviceMP2010">
 			<ref bean="MP2010Service" />
 		</property>
-		<property name="serviceJE0101">
-			<ref bean="JE0101Service" />
-		</property>
-		
 	</bean>
 	<bean name="requisitionFormMngBean" class="action.RequisitionFormAction" scope="prototype">
 		<property name="serviceMP1001">

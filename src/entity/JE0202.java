@@ -21,7 +21,10 @@ public class JE0202 implements Serializable {
 	private String JE0202_DES;
 	private String JE0202_STATUS;
 	
-	private String JE0202_DEPARTMENT;
+	//private String JE0202_DEPARTMENT;
+	private MP1001 SubscriberInfo;
+	private MP0002 SubscriberDepartmentInfo;
+	
 	
 	public String getJE0202_SEQ() {
 		return JE0202_SEQ;
@@ -104,10 +107,16 @@ public class JE0202 implements Serializable {
 	public void setJE0202_STATUS(String jE0202_STATUS) {
 		JE0202_STATUS = jE0202_STATUS;
 	}
-	public String getJE0202_DEPARTMENT() {
-		return JE0202_DEPARTMENT;
+	public MP1001 getSubscriberInfo() {
+		return SubscriberInfo;
 	}
-	public void setJE0202_DEPARTMENT(String jE0202_DEPARTMENT) {
-		JE0202_DEPARTMENT = jE0202_DEPARTMENT;
+	public void setSubscriberInfo(MP1001 subscriberInfo) {
+		SubscriberInfo = subscriberInfo;
+	}
+	public MP0002 getSubscriberDepartmentInfo() {
+		return SubscriberDepartmentInfo;
+	}
+	public void setSubscriberDepartmentInfo(MP0002 subscriberDepartmentInfo) {
+		SubscriberDepartmentInfo = subscriberDepartmentInfo;
 	}
 }

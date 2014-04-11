@@ -13,6 +13,8 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import entity.JE0202;
+import entity.MP0002;
+import entity.MP1001;
 
 public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 	private static final Log log = LogFactory.getLog(JE0202DAO.class);
@@ -65,6 +67,7 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 		// TODO Auto-generated method stub
 		getHibernateTemplate().update(je0202);
 	}
+	
 
 	@Override
 	public List<JE0202> findByColumnName(Map<String, String> columnMap) {
@@ -274,5 +277,23 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 		session.getTransaction().commit();
 		session.close();
 		return count;
+	}
+	
+	@Override
+	public void getSubscriberInfo(JE0202 je0202){
+		//get employee information
+		Session ss = getHibernateTemplate().getSessionFactory().openSession();
+		Query query = ss.createQuery(" from MP1001 m where m.MP1001_EMPLOYEE_NUM=:employeeNum");
+		query.setParameter("employeeNum", je0202.getJE0202_USER_NUM());
+		MP1001 mp11 = (MP1001)query.uniqueResult();
+		je0202.setSubscriberInfo(mp11);
+		
+		//get department informationa
+		Query query2 = ss.createQuery(" from MP0002 m where m.MP0002_SEQ=:departmentId");
+		query2.setParameter("departmentId", Integer.parseInt(mp11.getMP1001_DEPARTMENT_ID()));
+		MP0002 mp02 = (MP0002)query2.uniqueResult();
+		je0202.setSubscriberDepartmentInfo(mp02);
+		
+		ss.close();
 	}
 }

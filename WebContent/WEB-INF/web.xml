@@ -38,7 +38,7 @@
     <param-name>log4jRefreshInterval</param-name>
     <param-value>6000</param-value>
   </context-param>
-
+  
   <!-- struts2 过滤器 -->
   <filter>
 	<filter-name>struts2</filter-name>

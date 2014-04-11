@@ -32,4 +32,5 @@ public interface IJE0202Service {
 	
 	public abstract PageBean queryForPage(Map<String, String> pageProperty);
 	
+	public abstract void getSubscriberInfo(JE0202 je0202);
 }

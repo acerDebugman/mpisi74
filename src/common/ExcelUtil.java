@@ -1,20 +1,27 @@
 package common;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelUtil {
@@ -81,6 +88,7 @@ public class ExcelUtil {
         headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
         style = CreateBorderedStyle(wb);
         style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);//set vertical center
         style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
         style.setFont(headerFont);
@@ -194,6 +202,11 @@ public class ExcelUtil {
     		sheet.setColumnWidth(i, 256*cellsWidth[i]);
     	}
     }
+    public static void SetCellsWidth(Sheet sheet,Integer[] cellsWidth){ //static binding
+    	for(int i = 0; i<cellsWidth.length; i++){
+    		sheet.setColumnWidth(i, 256*cellsWidth[i]);
+    	}
+    }
     // 对单元格赋值
     public static void SetCellsValue(int count, Sheet sheet, Map<String, CellStyle> styles, String[] datas){
     	Row row = sheet.createRow(count);
@@ -218,5 +231,51 @@ public class ExcelUtil {
             cell.setCellValue(titles[i]);
             cell.setCellStyle(styles.get("header"));
         }
+    }
+    
+    
+    public static void GetCellContent(Workbook wb){
+    	Sheet sheet1 = wb.getSheetAt(0);
+    	System.out.println("sheet1 " + sheet1.getLastRowNum());
+	    for (Row row : sheet1) {
+	        for (Cell cell : row) {
+	            CellReference cellRef = new CellReference(row.getRowNum(), cell.getColumnIndex());
+	            System.out.print(cellRef.formatAsString());
+	            System.out.print(" - ");
+	
+	            switch (cell.getCellType()) {
+	                case Cell.CELL_TYPE_STRING:
+	                    System.out.println(cell.getRichStringCellValue().getString());
+	                    break;
+	                case Cell.CELL_TYPE_NUMERIC:
+	                    if (DateUtil.isCellDateFormatted(cell)) {
+	                        System.out.println(cell.getDateCellValue());
+	                    } else {
+	                        System.out.println(cell.getNumericCellValue());
+	                    }
+	                    break;
+	                case Cell.CELL_TYPE_BOOLEAN:
+	                    System.out.println(cell.getBooleanCellValue());
+	                    break;
+	                case Cell.CELL_TYPE_FORMULA:
+	                    System.out.println(cell.getCellFormula());
+	                    break;
+	                default:
+	                    System.out.println();
+	            }
+	        }
+	    }
+    }
+    
+    public static Workbook openExcelFile(String filePath) throws InvalidFormatException, IOException{
+    		//fileName = "shiftWorkExcelTemplate.xls";
+	        //String _path = ServletActionContext.getServletContext().getRealPath("/") + "uploadfile\\" + fileName;
+    	System.out.println(filePath);
+    	
+        InputStream inp = new FileInputStream(filePath);
+        
+        Workbook wb = WorkbookFactory.create(inp);
+        
+        return wb;
     }
 }

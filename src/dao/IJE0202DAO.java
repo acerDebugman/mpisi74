@@ -30,4 +30,6 @@ public interface IJE0202DAO {
 	public abstract List<JE0202> findByColumnName(Map<String, String> columnMap, String strOrder, boolean pageFlag);
 	
 	public abstract int getSearchConditionRowsCount(Map<String, String> columnMap);
+	
+	public abstract void getSubscriberInfo(JE0202 je0202);
 }

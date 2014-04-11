@@ -109,8 +109,7 @@ function saveOneBookedRoom(){
 		alert("Please select end time!");
 		return ;
 	}
-		
-	
+
 	var param = {"strRoomCode":roomCode, 
 			"strWhichDay":strWhichDay, 
 			"strSubscriberCode":subscriberCode,
@@ -121,14 +120,14 @@ function saveOneBookedRoom(){
 	var options = {
 			url:"saveOneBookedRoom.action",
 			data:param,
-			dataType:"script",
+			dataType:"text",
 			type:"post",
 			success:function(msg){
-				//alert(msg);
 				var flag = msg.substring(0, 1);
 				var str = msg.substring(2);
 				alert(str);
 				if("S" == flag){
+					parent.window.dialogArguments.searchBookedRoom();
 					window.close();
 				}
 			}
@@ -169,7 +168,7 @@ function saveOneBookedRoom(){
 	<tr>
 		<td class="table_body table_body_NoWidth">Room Name:&nbsp;<span style="color:red;">*</span></td>
 		<td class="table_none table_none_NoWidth">
-			<s:select id="strRoomCode" name="strRoomCode" list="mapRoomCodeName" headerKey="-1" headerValue="---Please Select---" theme="simple"/>
+			<s:select id="strRoomCode" name="strRoomCode" list="listAllRoomNames" headerKey="-1" headerValue="---Please Select---" theme="simple"/>
 		</td>
 	</tr>
 	<tr>

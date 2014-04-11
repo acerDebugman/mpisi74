@@ -44,7 +44,7 @@
 		</action>
 		<action name="loginCheck" class="loginMngBean" method="login">
 		    <result name="myorder" type="redirectAction">${prePage}</result>
-		    <result name="changePw" type="redirectAction">changePassword.action</result>
+		    <result name="changePw" type="redirectAction">changePassword.action?changePsdType=loginChange</result>
 		    <result name="success" type="redirectAction">navigationPageInit.action</result>
 			<result name="input" >login.jsp</result>
 		</action>
@@ -545,6 +545,22 @@
 			<result name="success">test.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		
+		<!-- <action name="exportShiftWorkExcelTemplate" class="applyLeaveMngBean" method="exportShiftWorkExcelTemplate">
+			<result name="success">test.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action> -->
+		
+		<action name="exportShiftWorkExcelTemplate" class="applyLeaveMngBean" method="exportShiftWorkExcelTemplate">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		 
 <!-- 出勤管理Action -->
 
 <!-- 部门职位管理Action -->

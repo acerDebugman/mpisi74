@@ -14,10 +14,12 @@ import org.apache.struts2.ServletActionContext;
 
 import service.IJE0201Service;
 import service.IJE0202Service;
+import service.IMP0011Service;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import common.Constant;
+import common.LogUtil;
 import common.PageBean;
 import common.UtilCommon;
 import common.UtilDate;
@@ -32,6 +34,7 @@ public class RoomsMngAction extends ActionSupport {
 	
 	private IJE0201Service serviceJE0201;
 	private IJE0202Service serviceJE0202;
+	private IMP0011Service serviceMP0011;
 	
 	private String currentPageNum = "1";
 	private String pageSize = "4";
@@ -43,6 +46,7 @@ public class RoomsMngAction extends ActionSupport {
 	private String roomDes;
 	private String strBookDes;
 	private String strRoomCode;
+	private String strRoomName;
 
 	private String strWhichDay;
 	private String strFromTime;
@@ -68,12 +72,19 @@ public class RoomsMngAction extends ActionSupport {
 	
 	private Map<String, String> mapProperties;
 	private List<Map> listMap;
+	private MP1001 mp1001;
+	private MP1001 subscriberInfo;
 
 	public String roomsMngInit(){
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 		try{
-			/*
-			 * log part
-			 */
+			//----------------------------Operation History------------------
+			LogUtil logUtil = new LogUtil();
+			logUtil.setServiceMP0011(serviceMP0011);
+			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"Enter function roomsMngInit");
+			//----------------------------Operation History------------------
 			
 			//allRoomsList = serviceJE0201.findAll();
 			allRoomsList = serviceJE0201.findByColumnName(null, " order by JE0201_ROOM_NAME ");
@@ -87,10 +98,16 @@ public class RoomsMngAction extends ActionSupport {
 	}
 	
 	public String roomSearch(){
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 		try{
-			/*
-			 * log part
-			 * */
+			//----------------------------Operation History------------------
+			LogUtil logUtil = new LogUtil();
+			logUtil.setServiceMP0011(serviceMP0011);
+			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"operation roomSearch");
+			//----------------------------Operation History------------------
+			
 			Map<String, String> columnMap = new HashMap<String, String>();
 			if(!floor.equalsIgnoreCase("---please select---")){
 				columnMap.put("JE0201_ROOM_FLOOR", floor);	
@@ -103,20 +120,25 @@ public class RoomsMngAction extends ActionSupport {
 			floorList = Constant.getRoomFloorList();
 			return SUCCESS;
 		}catch(Exception ex){
-			System.out.println(ex.getMessage());
+			log.info(ex.getMessage());
 			return "error";
 		}
 	}
 	
-	
 	public String roomAddInit(){
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 		try{
+			//----------------------------Operation History------------------
+			LogUtil logUtil = new LogUtil();
+			logUtil.setServiceMP0011(serviceMP0011);
+			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"roomAddInit");
+			//----------------------------Operation History------------------
+			
 			floorList = Constant.getRoomFloorList();
 			roomTypeList = Constant.getRoomTypeList();
-			
-			
-			
-			
+
 			return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
@@ -125,13 +147,23 @@ public class RoomsMngAction extends ActionSupport {
 	}
 	
 	public String roomAdd(){
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 		try{
+			//----------------------------Operation History------------------
+			LogUtil logUtil = new LogUtil();
+			logUtil.setServiceMP0011(serviceMP0011);
+			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"add one room");
+			//----------------------------Operation History------------------
+			
 			JE0201 room0201 = new JE0201();
 
 			room0201.setJE0201_ROOM_NAME(roomName);
 			room0201.setJE0201_ROOM_FLOOR(floor);
 			room0201.setJE0201_ROOM_TYPE(roomType);
 			room0201.setJE0201_ROOM_DES(roomDes);
+			room0201.setJE0201_STATUS("1");
 			serviceJE0201.save(room0201);
 
 			HttpServletResponse response = ServletActionContext.getResponse();
@@ -152,7 +184,16 @@ public class RoomsMngAction extends ActionSupport {
 	}
 
 	public String bookBoardroomMngInit(){
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 		try{
+			//----------------------------Operation History------------------
+			LogUtil logUtil = new LogUtil();
+			logUtil.setServiceMP0011(serviceMP0011);
+			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"Enter function Booking Boardroom");
+			//----------------------------Operation History------------------
+		
 			listTimeList = Constant.getHalfAnHourIntervalWorkTime();
 			floorList = Constant.getRoomFloorList();
 			
@@ -163,27 +204,13 @@ public class RoomsMngAction extends ActionSupport {
 			listBookedRoomRecords = pb.getList();
 
 			for(JE0202 je0202 : listBookedRoomRecords){
-				if(je0202.getJE0202_USER_TYPE().equalsIgnoreCase("S")){
-					String empNum = je0202.getJE0202_USER_NUM();
-				}
+				serviceJE0202.getSubscriberInfo(je0202);
 			}
 			
-			
 			allRoomsList = serviceJE0201.findAll();
-			mapRoomCodeName = new HashMap<String, String>();
-			JE0201 old0201 = null;
+			listAllRoomNames = new ArrayList<String>();
 			for(JE0201 je0201 : allRoomsList){
-				//{for mapRoomCode
-				if(null != old0201){
-					if(!old0201.getJE0201_ROOM_NAME().equalsIgnoreCase(je0201.getJE0201_ROOM_NAME())){
-						listRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
-					}
-				}
-				else{
-					listRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
-				}
-				old0201 = je0201;
-				//}
+				listAllRoomNames.add(je0201.getJE0201_ROOM_NAME());
 			}
 
 			return SUCCESS;
@@ -195,15 +222,9 @@ public class RoomsMngAction extends ActionSupport {
 
 	public String searchBookedRoom(){
 		try{
-			System.out.println(strWhichDay + "|" + strFromTime + "|" + strToTime + "|" + roomName + "|" + floor);
-			
-			
-			System.out.println("all row counts: " + serviceJE0202.getAllRowsCount());
-			
 			Map<String, String> propMap = new HashMap<String, String>();
 			propMap.put("pageSize", pageSize);
 			propMap.put("currentPageNum", currentPageNum);
-			
 			propMap.put("JE0202_DATE", strWhichDay);
 			if(null != strFromTime && !strFromTime.equalsIgnoreCase("") && !strFromTime.equalsIgnoreCase("-1")){
 				strFromTime = strWhichDay + " " + strFromTime;
@@ -213,20 +234,25 @@ public class RoomsMngAction extends ActionSupport {
 				strToTime = strWhichDay + " " + strToTime;
 				propMap.put("JE0202_END_DATETIME", strToTime);
 			}
-			propMap.put("JE0202_ROOM_CODE", strRoomCode);
-			//propMap.put("JE0202_ROOM_NAME", roomName);
+			propMap.put("JE0202_ROOM_NAME", strRoomCode); //strRoomCode is room name, room code already deleted
 			propMap.put("JE0202_ROOM_FLOOR", floor);
 			propMap.put("JE0202_USER_TYPE", "S");//only for
 
 			pb = serviceJE0202.queryForPage(propMap);
 			listBookedRoomRecords = pb.getList();
 			
+			for(JE0202 je0202 : listBookedRoomRecords){
+				serviceJE0202.getSubscriberInfo(je0202);
+			}
+			ActionContext context = ActionContext.getContext();
+			Map<String, Object> session = context.getSession();
+			mp1001 = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 			
 			//room
 			allRoomsList = serviceJE0201.findAll();
-			mapRoomCodeObj = new HashMap<String, JE0201>();
+			listAllRoomNames = new ArrayList<String>();
 			for(JE0201 je0201 : allRoomsList){
-				mapRoomCodeObj.put(je0201.getJE0201_ROOM_CODE(), je0201);
+				listAllRoomNames.add(je0201.getJE0201_ROOM_NAME());
 			}
 			
 			return SUCCESS;
@@ -238,24 +264,11 @@ public class RoomsMngAction extends ActionSupport {
 	
 	public String bookOneRoomInit(){
 		try{
-			allRoomsList = serviceJE0201.findByColumnName(null, " order by JE0201_ROOM_NAME DESC ");
-			mapRoomCodeName = new HashMap<String, String>();
-			JE0201 old0201 = null;
+			allRoomsList = serviceJE0201.findByColumnName(null, " order by JE0201_ROOM_NAME ASC ");
+			listAllRoomNames = new ArrayList<String>();
 			for(JE0201 je0201 : allRoomsList){
-				if(null != old0201){
-					if(!old0201.getJE0201_ROOM_NAME().equalsIgnoreCase(je0201.getJE0201_ROOM_NAME())){
-						mapRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
-					}
-				}
-				else{
-					mapRoomCodeName.put(je0201.getJE0201_ROOM_CODE(), je0201.getJE0201_ROOM_NAME());
-				}
-				old0201 = je0201;
+				listAllRoomNames.add(je0201.getJE0201_ROOM_NAME());
 			}
-			
-			/*strSubscriberCode = "m0432";
-			strSubscriberName = "joe_zhang";
-			strWhichDay = "2014-01-01";*/
 
 			ActionContext context = ActionContext.getContext();
 			Map<String, Object> session = context.getSession();
@@ -266,9 +279,6 @@ public class RoomsMngAction extends ActionSupport {
 			
 			//listFromTime
 			listTimeList = Constant.getHalfAnHourIntervalWorkTime();
-			
-			
-			
 
 			return SUCCESS;
 		}catch(Exception ex){
@@ -278,9 +288,16 @@ public class RoomsMngAction extends ActionSupport {
 	}
 	
 	public String saveOneBookedRoom(){
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 		try{
-			System.out.println(strRoomCode + "|" + strSubscriberCode + "|" + strWhichDay + "|" + strFromTime + "|" + strToTime + "|" + strBookDes);
-			
+			//----------------------------Operation History------------------
+			LogUtil logUtil = new LogUtil();
+			logUtil.setServiceMP0011(serviceMP0011);
+			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"Operation save one booked room");
+			//----------------------------Operation History------------------
+
 			JE0202 je0202 = new JE0202();
 			
 			String seq = Constant.generateSeq();
@@ -299,17 +316,17 @@ public class RoomsMngAction extends ActionSupport {
 			je0202.setJE0202_DES(strBookDes);
 			je0202.setJE0202_USER_NUM(strSubscriberCode);
 			je0202.setJE0202_USER_TYPE("S");
-			je0202.setJE0202_ROOM_CODE(strRoomCode);
 			JE0201 roomInfo = serviceJE0201.findByKey(strRoomCode);
 			je0202.setJE0202_ROOM_NAME(roomInfo.getJE0201_ROOM_NAME());
 			je0202.setJE0202_ROOM_FLOOR(roomInfo.getJE0201_ROOM_FLOOR());
+			je0202.setJE0202_STATUS("1");
 			
 			/*judge if time overlapped*/
 			//find which day it is
 			Map<String, String> columnMap = new HashMap<String, String>();
 			columnMap.put("JE0202_DATE", strWhichDay);
 			if(null != strRoomCode && !strRoomCode.equalsIgnoreCase("") && !strRoomCode.equalsIgnoreCase("-1")){
-				columnMap.put("JE0202_ROOM_CODE", strRoomCode);
+				columnMap.put("JE0202_ROOM_NAME", strRoomCode);
 			}
 			//.if(null != strSubscriberCode && !strSubscriberCode.equalsIgnoreCase("") && !strSubscriberCode.equalsIgnoreCase("-1")){
 				//columnMap.put("JE0202_USER_NUM", strSubscriberCode);
@@ -569,13 +586,13 @@ public class RoomsMngAction extends ActionSupport {
 		this.listAllRoomCodes = listAllRoomCodes;
 	}
 
-	public Map<String, String> getMapRoomCodeName() {
+	/*public Map<String, String> getMapRoomCodeName() {
 		return mapRoomCodeName;
 	}
 
 	public void setMapRoomCodeName(Map<String, String> mapRoomCodeName) {
 		this.mapRoomCodeName = mapRoomCodeName;
-	}
+	}*/
 
 	public List<JE0202> getListBookedRoomRecords() {
 		return listBookedRoomRecords;
@@ -639,5 +656,45 @@ public class RoomsMngAction extends ActionSupport {
 
 	public void setBookedRoomSeq(String bookedRoomSeq) {
 		this.bookedRoomSeq = bookedRoomSeq;
+	}
+
+	public String getStrRoomName() {
+		return strRoomName;
+	}
+
+	public void setStrRoomName(String strRoomName) {
+		this.strRoomName = strRoomName;
+	}
+
+	public List<String> getListRoomName() {
+		return listRoomName;
+	}
+
+	public void setListRoomName(List<String> listRoomName) {
+		this.listRoomName = listRoomName;
+	}
+
+	public MP1001 getMp1001() {
+		return mp1001;
+	}
+
+	public void setMp1001(MP1001 mp1001) {
+		this.mp1001 = mp1001;
+	}
+
+	public MP1001 getSubscriberInfo() {
+		return subscriberInfo;
+	}
+
+	public void setSubscriberInfo(MP1001 subscriberInfo) {
+		this.subscriberInfo = subscriberInfo;
+	}
+
+	public IMP0011Service getServiceMP0011() {
+		return serviceMP0011;
+	}
+
+	public void setServiceMP0011(IMP0011Service serviceMP0011) {
+		this.serviceMP0011 = serviceMP0011;
 	}
 }

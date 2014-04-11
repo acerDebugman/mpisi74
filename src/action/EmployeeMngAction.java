@@ -1929,7 +1929,7 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 			//----------------------------Operation History------------------
 			LogUtil logUtil = new LogUtil();
 			logUtil.setServiceMP0011(serviceMP0011);
-			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"Edit Employee");
+			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"Edit Employee: {" + mp1001.getMP1001_EMPLOYEE_NUM() + "}");
 			//----------------------------Operation History------------------
 			
 			Date now = new Date();
@@ -1956,6 +1956,10 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 			mp1001.setMP1001_CREATE_DATE(mp1Data.getMP1001_CREATE_DATE());
 			// 如果离职，则离职时间为当前时间
 			if(mp1001.getMP1001_STATUS().equals("3")){
+				//add log who edit this !!
+				//----------------------------Operation History------------------
+				logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"Edit Employee: Unmployee {" + mp1001.getMP1001_EMPLOYEE_NUM() + "}");
+				//----------------------------Operation History------------------
 				if(mp1001.getMP1001_RESIGN_DATE() != null && !mp1001.getMP1001_RESIGN_DATE().equals("")){
 					// nothing to do
 				}else{

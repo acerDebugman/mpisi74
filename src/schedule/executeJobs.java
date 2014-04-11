@@ -6,18 +6,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
+import java.util.Set;
 
 import common.Constant;
 import common.Mail;
 import common.UtilCommon;
 import common.UtilDate;
 
+import dto.AttendanceRecordDto;
+import dto.CheckInOutDto;
 import entity.MP1001;
 import entity.MP2003;
 
@@ -56,7 +57,7 @@ public class executeJobs {
 			System.out.println("insert finish");
 			mp2003List =CommonJobMethod.getAllData(connSql,parameter); //this time will get all mp2003 records
 			CommonJobMethod.dataConvert2003(mp2003List,connSql);
-			CommonJobMethod.mergeShiftWorkSchedule(mp2003List, connSql);
+			//CommonJobMethod.mergeShiftWorkSchedule(mp2003List, connSql);
 			System.out.println("dataConvert finish");
 			CommonJobMethod.update2003(mp2003List,connSql);
 			System.out.println("update finish");
@@ -517,7 +518,7 @@ public class executeJobs {
 			Mail mail = new Mail();
 			String to = "joe_zhang@mpisi.com";
 			mail.setSubject("Tempory Password Clean");
-			mail.setContent("Dear Colleagues,<br/>&nbsp;&nbsp;&nbsp;All tempory password had been cleaned! <br />");
+			mail.setContent("Dear Colleagues,<br/>&nbsp;&nbsp;&nbsp;All tempory password has been cleaned! <br />");
 			mail.setTo(to);
 			//mail.send();
 			mail.sendTextHtml();
@@ -532,5 +533,37 @@ public class executeJobs {
 			}
 		}
 	}
-
+	
+	//executeJob11 for shift work calculate
+	public void executeJob11() throws SQLException {
+		try{
+		//get employee number set, and which date
+		Date date = new Date();
+		
+		Set<String> employeeNumSet = CommonJobMethod.getAllShiftWorkEmployeeNums(date);
+		
+		//get specify day's employee attendance records from CHECKINOUT table
+		List<CheckInOutDto> checkInOutRecordsList = CommonJobMethod.getAllAttendanceRecords(employeeNumSet);
+		
+		List<AttendanceRecordDto> dailyRecords = CommonJobMethod.separateIntoEachDays(checkInOutRecordsList);
+		
+		//compare time and calculate attendance status
+		
+		
+		//delete old records
+		
+		//insert new records
+		
+		//send abnormal emails
+		
+		} catch (ClassNotFoundException e){
+			System.out.println(e.getMessage());
+		}
+		catch (SQLException e){
+			System.out.println(e.getMessage());
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+	}
 }

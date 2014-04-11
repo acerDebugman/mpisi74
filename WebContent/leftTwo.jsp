@@ -221,13 +221,11 @@ function showAddDocument(){
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">OverTime Application
                              </td>
                          </tr>
-<!-- 
                          <tr>
                              <td class="table_none" onclick="javascript:NowShow('M_201','shiftWorkMngInit.action');" onmousemove="javascript:TDOverORIn('M_201');" onmouseout="javascript:TDOverOROut('M_201');" id="M_201">
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Shift Work Schedule
                              </td>
                          </tr>
- -->
                      </tbody>
                  </table>
              </td>
@@ -389,6 +387,7 @@ function showAddDocument(){
      </table>
      
           <!-- ALL Report -->
+<s:if test="func001006 == 1" >          
      <table cellspacing="0" cellpadding="0" width="180" align="center" border="0">
          <tr>
              <td width="23"><img height="25" src="images/menu/box_topleft.gif" width="23"></td>
@@ -401,14 +400,14 @@ function showAddDocument(){
              <td background='images/menu/box_bg.gif' height="0px" width='180' colspan='3'>
                  <table width="178" border="0" cellpadding="2" cellspacing="1">
                      <tbody>
-<s:if test="1 == 1" >
+<s:if test="func001006001 == 1" >
                          <tr>
                              <td class="table_none" onclick="javascript:NowShow('M_61','roomsMngInit.action');" onmousemove="javascript:TDOverORIn('M_61');" onmouseout="javascript:TDOverOROut('M_61');" id="M_61">
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Room Manager
                              </td>
                          </tr>
 </s:if>
-<s:if test="1 == 1" >
+<s:if test="func001006002 == 1" >
                          <tr>
                              <td class="table_none" onclick="javascript:NowShow('M_62','bookBoardroomMngInit.action');" onmousemove="javascript:TDOverORIn('M_62');" onmouseout="javascript:TDOverOROut('M_62');" id="M_62">
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Booking Boardroom
@@ -427,7 +426,7 @@ function showAddDocument(){
              </td>
          </tr>
      </table>
-
+</s:if>
 </body>
 </html>
 

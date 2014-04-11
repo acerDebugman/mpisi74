@@ -102,7 +102,10 @@ public class Constant {
     public static String F0053001 = "F0053001";
     public static String F0053002 = "F0053002";
 	
-	
+    //book 
+    public static String F001006 = "F001006";
+    public static String F001006001 = "F001006001";
+    public static String F001006002 = "F001006002";
 	
 	
 	public static String OPT_SAVE = "OPT_SAVE";//保存
@@ -695,5 +698,14 @@ public class Constant {
 	public static String DEFAULT_WEIGHTAGE = "5";
 	public static String VALID = "Valid";
 	public static String INVALID = "Invalid";
+
+	//shift work time
+	public static String shiftWorkDayStartTime = "06:00:00";
+	public static String shiftWorkDayEndTime = "18:00:00";
+	public static String shiftWorkNightStartTime = "18:00:00";
+	public static String shiftWorkNightEndTime = "06:00:00";
 	
+	public static String shiftTypeRest = "R"; //rest
+	public static String shiftTypeDay = "D"; //day work
+	public static String shiftTypeNight = "N"; //nigth work
 }

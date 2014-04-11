@@ -157,7 +157,7 @@ function pageRefresh(){
                     <td class="table_body table_body_NoWidth">Room Name</td>
                     <td class="table_none table_none_NoWidth">
                         <!-- <input id="roomName" name="roomName" value="${roomName}" type="text" class="text_input" /> -->
-                        <s:select id="strRoomCode" name="strRoomCode" list="listRoomCodeName" headerKey="-1" headerValue="---Please Select---" theme="simple"/>
+                        <s:select id="strRoomCode" name="strRoomCode" list="listAllRoomNames" headerKey="-1" headerValue="---Please Select---" theme="simple"/>
                     </td>
                     <td class="table_body table_body_NoWidth">Floor</td>
                     <td class="table_none table_none_NoWidth">
@@ -170,7 +170,7 @@ function pageRefresh(){
                 </tr>
                 <tr>
                     <td colspan="4" align="right">
-                    	<input type="button" id="bookRoom" name="bookRoom" value="Book Boardroom" onclick="bookOneRoom()" />
+                    	<input type="button" id="bookRoom" name="bookRoom" value="Book Boardroom" onclick="bookOneRoom()" style="float:left;"/>
                         <input type="button" name="searchBtn" value="Search" id="searchBtn" class="" onclick="searchBookedRoom()"/>
                     </td>
                 </tr>
@@ -201,10 +201,10 @@ function pageRefresh(){
 		                    <td width="200px"><s:property value="JE0202_ROOM_NAME" /></td>
 		                    <td width="200px"><s:property value="JE0202_FROM_DATETIME.substring(0, 16)"/></td>
 		                    <td width="200px"><s:property value="JE0202_END_DATETIME.substring(0, 16)"/></td>
-		                    <td width="200px"><s:property value="JE0202_USER_NUM"/></td>
-		                    <td width="200px"></td>
+		                    <td width="200px"><s:property value="SubscriberInfo.MP1001_PREFERED_NAME" />&nbsp;(<s:property value="JE0202_USER_NUM"/>)</td>
+		                    <td width="200px"><s:property value="SubscriberDepartmentInfo.MP0002_DEPARTMENT_NAME" /></td>
 		                    <td width="200px"><s:property value="JE0202_ROOM_FLOOR"/></td>
-		               		<td width="200px"><input type="button" value="Del" onclick="delRecord('<s:property value="JE0202_SEQ" />')"/></td>
+		               		<td width="200px"><s:if test="mp1001.MP1001_EMPLOYEE_NUM == JE0202_USER_NUM"><input type="button" value="Del" onclick="delRecord('<s:property value="JE0202_SEQ" />')"/></s:if></td>
 		                </tr>
 					</s:iterator>
 	            </table>
@@ -217,6 +217,5 @@ function pageRefresh(){
      </tr>
 </table>
 </s:form>
-<s:debug /> 
 </body>
 </html>

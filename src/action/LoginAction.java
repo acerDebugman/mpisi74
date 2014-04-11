@@ -75,6 +75,7 @@ public class LoginAction extends ActionSupport {
 	private int pageNum;
 	private int pageCount;
 	private String errMsg;
+	private String changePsdType;
 	
 	//forget password for email
 	private String companyEmailAddr;
@@ -134,6 +135,10 @@ public class LoginAction extends ActionSupport {
 	private String func0021005 = "0";
 	private String func0021006 = "0";
 	private String func0021007 = "0";
+	
+	private String func001006 = "0";
+	private String func001006001 = "0";
+	private String func001006002 = "0";
 	
 	private String sys0001 = "0";
 	private String sys0004 = "0";
@@ -578,6 +583,16 @@ public class LoginAction extends ActionSupport {
 		}
 		
 		//--------------采购管理系统 End--------------------------//
+		
+		if(funcMap.containsKey(Constant.F001006)){
+			func001006 = "1";
+		}
+		if(funcMap.containsKey(Constant.F001006001)){
+			func001006001 = "1";
+		}
+		if(funcMap.containsKey(Constant.F001006002)){
+			func001006002 = "1";
+		}
 	}
 	
 	// 修改密码
@@ -603,7 +618,7 @@ public class LoginAction extends ActionSupport {
 			if(optMap.containsKey(Constant.OPT_CANCEL)){
 				optCancel = "1";
 			}
-			
+
 			return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
@@ -665,9 +680,9 @@ public class LoginAction extends ActionSupport {
 			addFieldError("MP1001_EMPLOYEE_NUM","user is empty.");
 		}
 		// 判断用户密码是否为空(旧)
-		if(oldPassword.equals("")){
+		if(null != oldPassword && oldPassword.equals("")){
 			addFieldError("oldPassword","old password is empty.");
-		}else if(!employeeData.getMP1001_PASSWORD().equals(oldPassword)){
+		}else if(null != oldPassword && !employeeData.getMP1001_PASSWORD().equals(oldPassword)){
 			addFieldError("oldPassword","old password is error.");
 		}
 		// 判断用户密码是否为空(新)
@@ -686,7 +701,7 @@ public class LoginAction extends ActionSupport {
 		if(newPassword1.length() < 8){
 			addFieldError("newPassword1","new password's length is less than 8.");
 		}
-		if(newPassword1.equals(oldPassword)){
+		if((null != oldPassword && newPassword1.equals(oldPassword)) || newPassword1.equals(employeeData.getMP1001_PASSWORD())){
 			addFieldError("newPassword1","new password and old password are the same.");
 		}
 	}
@@ -2193,6 +2208,38 @@ public class LoginAction extends ActionSupport {
 
 	public static Log getLog() {
 		return log;
+	}
+
+	public String getFunc001006() {
+		return func001006;
+	}
+
+	public void setFunc001006(String func001006) {
+		this.func001006 = func001006;
+	}
+
+	public String getFunc001006001() {
+		return func001006001;
+	}
+
+	public void setFunc001006001(String func001006001) {
+		this.func001006001 = func001006001;
+	}
+
+	public String getFunc001006002() {
+		return func001006002;
+	}
+
+	public void setFunc001006002(String func001006002) {
+		this.func001006002 = func001006002;
+	}
+
+	public String getChangePsdType() {
+		return changePsdType;
+	}
+
+	public void setChangePsdType(String changePsdType) {
+		this.changePsdType = changePsdType;
 	}
 
 

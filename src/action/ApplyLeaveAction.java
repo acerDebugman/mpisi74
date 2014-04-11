@@ -25,9 +25,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
@@ -38,6 +42,7 @@ import service.IAC0008Service;
 import service.IAC0009Service;
 import service.ICHECKINOUTService;
 import service.IHOLIDAYService;
+import service.IJE0101Service;
 import service.IMP0002Service;
 import service.IMP0006Service;
 import service.IMP0009Service;
@@ -53,6 +58,7 @@ import service.IMP2004Service;
 import service.IMP2007Service;
 import service.IMP2008Service;
 import service.IMP2009Service;
+import service.IMP2010Service;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -73,8 +79,10 @@ import common.Mail;
 import common.UtilCommon;
 import common.UtilDate;
 
+import dto.ShiftworkExcelRecordDto;
 import entity.CHECKINOUT;
 import entity.HOLIDAY;
+import entity.JE0101;
 import entity.MP0002;
 import entity.MP0006;
 import entity.MP0010;
@@ -88,6 +96,7 @@ import entity.MP2004;
 import entity.MP2007;
 import entity.MP2008;
 import entity.MP2009;
+import entity.MP2010;
 import entity.Overtime;
 
 public class ApplyLeaveAction extends ActionSupport implements ServletRequestAware{
@@ -112,6 +121,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	private IMP0011Service serviceMP0011;
 	private IMP1010Service serviceMP1010;
 	private ICHECKINOUTService serviceCHECKINOUT;
+	
+	//for shiftwork configuration
+	private IJE0101Service serviceJE0101;
 	
 	private IAC0006Service serviceAC0006;
 	private IAC0007Service serviceAC0007;
@@ -255,7 +267,12 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	private String func0030001;
 	private String func0030002;
 	private String func0030003;
-
+	
+	
+	//for shitwork test
+	private IMP2010Service serviceMP2010;
+	private List<ShiftworkExcelRecordDto> excelRecordsList;
+	
     /* 
 	* @getDownloadFile 此方法对应的是struts.xml文件中的： <param 
 	* name="inputName">downloadFile</param> 返回下载文件的流，可以参看struts2的源码 
@@ -1585,6 +1602,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 						result.append("HRMS Administrator");
 
 						mail.setTo(toList.toString());
+						mail.setContent(result.toString());
 						mail.send();
 					}
 					// Send Mail ------2011-10-31 Add by Tim------End
@@ -5785,8 +5803,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	public String shiftWorkMngInit(){
 		try{
 			
-			
-			
+			excelRecordsList = new ArrayList<ShiftworkExcelRecordDto>();
+			analyseExcelTemplete();
+			convertToMP2010Records();
 			
 			return SUCCESS;
 		}catch(Exception ex){
@@ -5794,7 +5813,345 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			return "error";
 		}
 	}
+	
+	public String exportShiftWorkExcelTemplate(){
+		ActionContext context = ActionContext.getContext();
+		Map<String,Object> session = context.getSession();
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
+		
+		try{
+			//----------------------------Operation History------------------
+			LogUtil logUtil = new LogUtil();
+			logUtil.setServiceMP0011(serviceMP0011);
+			logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"Create Shiftwork Excel Template Document");
+			//----------------------------Operation History------------------
+			
+			// 新建EXCEL工作表
+			Workbook wb = ExcelUtil.CreateHSSFWorkBook();
+			//createExcelSheet1(wb);
+			//createExcelSheet2(wb);
+			createShiftWorkExcelTemplate(wb);
+			
+			// 生成Excel文件
+	        fileName = "shiftWorkExcelTemplate.xls";
+	        String _path = ServletActionContext.getServletContext().getRealPath("/") + "uploadfile\\" + fileName;
+	        ExcelUtil.createExcelFile(_path, wb);
 
+	        //analyseExcelTemplete();
+	        
+			return SUCCESS;
+		}catch(Exception ex){
+			log.info(ex.getMessage());
+			if(session.containsKey("ERR_MSG")){
+				session.remove("ERR_MSG");
+				session.put("ERR_MSG", ex.getMessage());
+			}
+			return "error";
+		}
+	}
+	
+	public String analyseExcelTemplete(){
+		System.out.println("in analyseExcelTemplete()");
+		try{
+			fileName = "shiftWorkExcelTemplate.xls";
+	        //String _path = ServletActionContext.getServletContext().getRealPath("/") + "uploadfile\\" + fileName;
+			String _path = "d:\\shiftWorkExcelTemplate.xls";
+	        
+	        System.out.println(_path);
+	        
+	        Workbook wb = ExcelUtil.openExcelFile(_path);
+	        
+	        GetCellContent(wb);
+	        
+	        /*
+		    Sheet sheet = wb.getSheetAt(0);
+		    Row row = sheet.getRow(2);
+		    Cell cell = row.getCell(3);
+		    cell.getCellFormula();
+		    if (cell == null)
+		        cell = row.createCell(3);
+		    cell.setCellType(Cell.CELL_TYPE_STRING);
+		    cell.setCellValue("a test");
+		
+		    // Write the output to a file
+		    FileOutputStream fileOut = new FileOutputStream("workbook.xls");
+		    wb.write(fileOut);
+		    fileOut.close();
+	        */
+			
+			return SUCCESS;
+		}catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+	
+	public String convertToMP2010Records(){
+		try{
+			JE0101 je11 = serviceJE0101.findByKey("shiftworkMonth");
+			String workDate = je11.getJE0101_VALUE(); //which month
+			System.out.println(workDate);
+			
+			Date d = new Date();
+			System.out.println("date: " + d.toString());
+			
+			Calendar cal = Calendar.getInstance();
+			//cal.set(Calendar.da, value);
+			//SampleDateFormat sdf = new SimpleDateFormat("");
+			//DateFormat df = DateFormat.getDateInstance();
+			//Date date = df.parse("2014/04/01");
+			//System.out.println("last : " + date.toString());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = sdf.parse("2014-04-01");
+			cal.setTime(date);
+			System.out.println("last : " + date.toString());
+			System.out.println("last again : " + sdf.format(date));
+			System.out.println("String format 2: " + String.format("%02d", 8));
+			System.out.println("String format 2: " + String.format("%02d", 18));
+			
+			for(ShiftworkExcelRecordDto recordDto : excelRecordsList){
+				/**
+				 * get all days here
+				 */
+				int size = recordDto.getArrangementMap().size();
+				for(int i = 1; i <= size;i++){
+					if(recordDto.getArrangementMap().get(i).equalsIgnoreCase("R")){ //if that day is rest
+						continue ;
+					}
+					MP2010 mp21 = new MP2010();
+					mp21.setMP2010_BRANCH_SITE(recordDto.getBranchSite());
+					MP1001 shiftEmployee = new MP1001();
+					shiftEmployee.setMP1001_EMPLOYEE_NUM(recordDto.getEmployeeNum());
+					//mp21.setShiftEmployee(shiftEmployee);
+					mp21.setMP2010_DATE(workDate + "-" + String.format("%02d", i));
+					
+					String shiftType = recordDto.getArrangementMap().get(i);
+					mp21.setMP2010_TYPE(shiftType);
+					
+					if(shiftType.equalsIgnoreCase("N")){
+						mp21.setMP2010_FROM_DATETIME(workDate + "-" + String.format("%02d", i) + Constant.shiftWorkNightStartTime);
+						//UtilDate.get12DateTime();
+						Date nextDate = sdf.parse(workDate + "-" + String.format("%02d", i));
+						nextDate = UtilDate.afterNDay(nextDate, 1);
+						System.out.println(sdf.format(nextDate));
+						mp21.setMP2010_END_DATETIME(sdf.format(nextDate) + Constant.shiftWorkNightEndTime);
+					}
+					if(shiftType.equalsIgnoreCase("D")){
+						mp21.setMP2010_FROM_DATETIME(workDate + "-" + String.format("%02d", i) + Constant.shiftWorkDayStartTime);
+						mp21.setMP2010_END_DATETIME(workDate + "-" + String.format("%02d", i) + Constant.shiftWorkDayEndTime);
+					}
+					serviceMP2010.save(mp21);
+				}
+			}
+			System.out.println("in method : convertToMP2010Records()");
+			return SUCCESS;
+		}catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+	
+	public String hibernateTest(){
+		try{
+			MP2010 mp21 = new MP2010();
+			mp21.setMP2010_BRANCH_SITE("head office");
+			mp21.setMP2010_DATE("2014-04-02");
+			mp21.setMP2010_END_DATETIME("2014-04-03 06:00:00");
+			mp21.setMP2010_FROM_DATETIME("2014-04-02 18:00:00");
+			//mp21.setMP2010_ID(mP2010_ID);
+			mp21.setMP2010_TYPE("N");
+			MP1001 mp11 = new MP1001();
+			mp11.setMP1001_EMPLOYEE_NUM("M0432");
+			//mp21.setShiftEmployee(mp11);
+			
+			serviceMP2010.save(mp21);
+
+			return SUCCESS;
+		}catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+
+	public String hibernateLoadTest(){
+		try{
+			MP2010 mp21 = serviceMP2010.findByKey("1");
+			
+			String _path = ServletActionContext.getServletContext().getRealPath("\\uploadfile");
+			
+			System.out.println("real path: " + _path);
+			//System.out.println("employee name: " + mp21.getShiftEmployee().getMP1001_PREFERED_NAME());
+			
+			return SUCCESS;
+		}catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+		
+	public void createShiftWorkExcelTemplate(Workbook wb){
+				// 新建一个SHEET页面
+		Sheet sheet = ExcelUtil.CreateSheet(wb, "Overtime Application");
+		// 设置SHEET页面属性
+		ExcelUtil.SetSheetPropertyHSSF(sheet);
+		// 获取预定的样式
+		Map<String, CellStyle> styles = ExcelUtil.CreateStyles(wb);
+
+		//get next month template 
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		int month = cal.get(Calendar.MONTH) + 1;
+		cal.set(Calendar.MONTH, month);
+		int next_month = month + 1;
+		
+		List<String> headNameList = new ArrayList<String>();
+		headNameList.add("BRANCH_SITE");
+		headNameList.add("EMPLOYEE_NMAE");
+		headNameList.add("EMPLOYEE_NUM");
+		List<Integer> headCellWidth = new ArrayList<Integer>();
+		headCellWidth.add(20);
+		headCellWidth.add(20);
+		headCellWidth.add(20);
+
+		while(month != next_month){
+			headNameList.add(Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
+			headCellWidth.add(10);
+			
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			month = cal.get(Calendar.MONTH);
+		}
+		// Header标题
+		String[] titles = new String[headNameList.size()];
+		int i = 0;
+		for(String s : headNameList){
+			titles[i] = s;
+			i++;
+		}
+				
+		// 生成标题行
+		float rowHeight = 27f;
+		ExcelUtil.CreateHeadRow(sheet, titles, rowHeight, styles);
+        // 冻结第一行
+        sheet.createFreezePane(0, 1);
+        
+        Integer[] cellsWidth = new Integer[headCellWidth.size()];
+        i = 0;
+        for(Integer it : headCellWidth){
+        	cellsWidth[i] = it;
+        	i++;
+        }
+        
+        // 设置单元格的宽度
+        ExcelUtil.SetCellsWidth(sheet, cellsWidth); //static binding
+        
+      //---------------------------主报表-----------------------------------------------------------------------------------------
+        // 取得报表数据
+        /*int count;
+        mp2008InfoList = getDataForExcel();
+        String[] datas = new String[15];
+        for(int i=0,j=mp2008InfoList.size(); i<j; i++){
+        	MP2008 mp2008Obj = mp2008InfoList.get(i);
+        	count = i + 1;
+        	datas = new String[15];
+        	datas[0] = String.valueOf(count);
+        	datas[1] = mp2008Obj.getMP2008_PAYROLL_NUM();
+        	datas[2] = mp2008Obj.getMP2008_EMPLOYEE_NUM();
+        	datas[3] = mp2008Obj.getMP2008_EMPLOYEE_NAME();
+        	datas[4] = mp2008Obj.getMP2008_DEPARTMENT_NAME();
+        	//add @20140211, just change name, for different company, if time is enough, need to add subcompany concept
+        	if(datas[4].equalsIgnoreCase("TRANSPORT")){
+        		datas[4] = "JAYCEPT";
+        	}
+        	datas[5] = mp2008Obj.getMP2008_DATE();
+        	datas[6] = mp2008Obj.getMP2008_HOURS();
+        	datas[7] = mp2008Obj.getMP2008_RATING();
+        	datas[8] = mp2008Obj.getMP2008_FROM_DATETIME() + ":" + mp2008Obj.getMP2008_FROM_MINUTE();
+        	datas[9] = mp2008Obj.getMP2008_TO_DATETIME() + ":" + mp2008Obj.getMP2008_TO_MINUTE();
+        	datas[10] = mp2008Obj.getMP2008_CLOCK_IN();
+        	datas[11] = mp2008Obj.getMP2008_CLOCK_OUT();
+        	datas[12] = mp2008Obj.getMP2008_COMMENT();
+        	datas[13] = mp2008Obj.getMP2008_APP_STATUS_NAME();
+        	if(mp2008Obj.getMP2008_APPROVAL_DATETIME() != null && !mp2008Obj.getMP2008_APPROVAL_DATETIME().equals("")){
+        		datas[14] = mp2008Obj.getMP2008_APPROVAL_DATETIME().substring(0,16);
+        	}else{
+        		datas[14] = "-";
+        	}
+        	
+        	
+        	ExcelUtil.SetCellsValue(count, sheet, styles, datas);
+        }*/
+
+	}
+	
+	public void GetCellContent(Workbook wb){
+		Sheet sheet1 = wb.getSheetAt(0);
+		//sheet1.iterator().next(); //skip header line
+    	System.out.println("sheet1 " + sheet1.getLastRowNum());
+    	int cellCount = 0;
+    	ShiftworkExcelRecordDto recordDto = null;
+    	Map<Integer, String> arrangeMap = null;
+    	boolean firstFlag = false;
+	    for (Row row : sheet1) {
+	    	cellCount = 0;
+	    	recordDto = new ShiftworkExcelRecordDto();
+	    	arrangeMap = new HashMap<Integer, String>();
+	    	
+	       innerLoop: for (Cell cell : row) {
+	            CellReference cellRef = new CellReference(row.getRowNum(), cell.getColumnIndex());
+	            System.out.print(cellRef.formatAsString());
+	            System.out.print(" - ");
+
+	            switch (cell.getCellType()) {
+	                case Cell.CELL_TYPE_STRING:
+	                	String cellString = cell.getRichStringCellValue().getString();
+	                	cellCount++;
+	                	//skip head row
+	                	if(cellString.equalsIgnoreCase("BRANCH_SITE")){
+	                		firstFlag = true;
+	                		break innerLoop;
+	                	}
+	                	
+	                	if(1 == cellCount){
+	                		recordDto.setBranchSite(cellString);
+	                		break ;
+	                	}
+	                	if(2 == cellCount){
+	                		break ;
+	                	}
+	                	if(3 == cellCount){
+	                		recordDto.setEmployeeNum(cellString);
+	                		break ;
+	                	}
+	                	
+	                	arrangeMap.put(cellCount - 3, cellString);
+	                	
+	                    break;
+	                case Cell.CELL_TYPE_NUMERIC:
+	                    if (DateUtil.isCellDateFormatted(cell)) {
+	                        System.out.println(cell.getDateCellValue());
+	                    } else {
+	                        System.out.println(cell.getNumericCellValue());
+	                    }
+	                    break;
+	                case Cell.CELL_TYPE_BOOLEAN:
+	                    System.out.println(cell.getBooleanCellValue());
+	                    break;
+	                case Cell.CELL_TYPE_FORMULA:
+	                    System.out.println(cell.getCellFormula());
+	                    break;
+	                default:
+	                    System.out.println();
+	            }
+	        }
+	    	if(true == firstFlag){
+	    		firstFlag = false;
+	    		continue ;
+	    	}
+	    	recordDto.setArrangementMap(arrangeMap);
+	    	excelRecordsList.add(recordDto);
+	    }
+	}
+	
 	/**
 	 * @return the service
 	 */
@@ -7751,5 +8108,45 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	 */
 	public void setParam8(String param8) {
 		this.param8 = param8;
+	}
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public static Log getLog() {
+		return log;
+	}
+
+	public IMP2010Service getServiceMP2010() {
+		return serviceMP2010;
+	}
+
+	public void setServiceMP2010(IMP2010Service serviceMP2010) {
+		this.serviceMP2010 = serviceMP2010;
+	}
+
+	public IJE0101Service getServiceJE0101() {
+		return serviceJE0101;
+	}
+
+	public void setServiceJE0101(IJE0101Service serviceJE0101) {
+		this.serviceJE0101 = serviceJE0101;
+	}
+
+	public List<ShiftworkExcelRecordDto> getExcelRecordsList() {
+		return excelRecordsList;
+	}
+
+	public void setExcelRecordsList(List<ShiftworkExcelRecordDto> excelRecordsList) {
+		this.excelRecordsList = excelRecordsList;
 	}
 }

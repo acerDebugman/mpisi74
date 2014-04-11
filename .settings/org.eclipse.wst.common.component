@@ -3,6 +3,7 @@
     <wb-module deploy-name="mpisi74">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
         <property name="context-root" value="mpisi74"/>
         <property name="java-output-path" value="/mpisi74/build/classes"/>
     </wb-module>

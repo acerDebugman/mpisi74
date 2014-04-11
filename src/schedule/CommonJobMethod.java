@@ -12,28 +12,33 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import common.Constant;
 import common.Mail;
 import common.UtilCommon;
 import common.UtilDate;
 
+import dto.AttendanceRecordDto;
+import dto.CheckInOutDto;
 import entity.CHECKINOUT;
 import entity.MP0010;
 import entity.MP1001;
 import entity.MP2001;
 import entity.MP2003;
 import entity.MP2008;
+import entity.MP2010;
 import entity.Overtime;
 
 public class CommonJobMethod {
 	// 取得人资系统数据库的链接
 	public static Connection getDBConnection() throws ClassNotFoundException, SQLException{
 		//String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr";
-		String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.141:1433/mpisiHr;instance=JOE";
-		//String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.141:1433/mpisiHr_test;instance=JOE";
+		String sqlUrl = "jdbc:jtds:sqlserver://192.168.53.71:1433/mpisiHr;instance=JOE";
+		//String sqlUrl = "jdbc:jtds:sqlserver://192.168.53.71:1433/mpisiHr_test;instance=JOE";
 		String classforname = "net.sourceforge.jtds.jdbc.Driver";
 		String uid = "sa";
 		String pwd = "IDpt463";
@@ -1158,6 +1163,138 @@ public class CommonJobMethod {
 		System.out.println(_totalH);
 		return _totalTo - _totalFrom;
 	}
+
+	//{ //here for shift execute jobs
+	public static Set<String> getAllShiftWorkEmployeeNums(Date date) throws ClassNotFoundException, SQLException{
+		Set<String> employeeNumSet = new HashSet<String>();
+		
+		Connection conn = getDBConnection();
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * from MP2010 where 1=1 and MP2010_DATE='" + date.toString() + "'");
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(sb.toString());
+		
+		while(rs.next()){
+			employeeNumSet.add(rs.getString("MP2010_EMPLOYEE_NUM"));
+		}
+		
+		rs.close();
+		conn.close();
+		
+		return employeeNumSet;
+	}
 	
+	public static List<CheckInOutDto> getAllAttendanceRecords(Set<String> employeeNums) throws ClassNotFoundException, SQLException {
+		Connection conn = getDBConnection2();
+				
+		List<CheckInOutDto> recordsList = new ArrayList<CheckInOutDto>();
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("select u.SSN, c.CHECKTIME, c.SENSORID from CHECKTIME c, USERINFO u where 1=1 and c.CHECKTIME>=DATEADD(DD, DATEDIFF(DD,0,getdate()), -14) and c.USERID=u.USERID and u.SSN in (");
+		for(String employeeNum : employeeNums){
+			sb.append("'" + employeeNum + "',");
+		}
+		sb.append(sb.substring(0,sb.length() - 1));
+		sb.append(")");
+		sb.append(" order by c.CHECKTIME DESC;");
+		
+		ResultSet rs = conn.createStatement().executeQuery(sb.toString());
+		while(rs.next()){
+			CheckInOutDto cioDto = new CheckInOutDto();
+			
+			cioDto.setEmployeeNum(rs.getString("SSN"));
+			cioDto.setCheckTime(rs.getString("CHECKTIME"));
+			cioDto.setDoorId(rs.getString("SENSORID"));
+			
+			recordsList.add(cioDto);
+		}
+		rs.close();
+		conn.close();
+		
+		return recordsList;
+	}
 	
+	public static List<AttendanceRecordDto> separateIntoEachDays(List<CheckInOutDto> checkInOutRecords){
+		List<AttendanceRecordDto> dailyRecordslist = new ArrayList<AttendanceRecordDto>();
+		
+		for(CheckInOutDto dto : checkInOutRecords){
+			String checkDateTime = dto.getCheckTime();
+			String whichDay = checkDateTime.substring(0, 10);
+			String employeeNum = dto.getEmployeeNum();
+			
+			for(AttendanceRecordDto arDto : dailyRecordslist){
+				//if find that day and employee, then add this record
+				if(arDto.getWhichDate().equalsIgnoreCase(whichDay) && arDto.getEmployeeNum().equalsIgnoreCase(employeeNum)){
+					arDto.getCheckRecordsList().add(dto);
+				}
+				else{//if can't find that day, create a new AttendanceRecordDto 
+					AttendanceRecordDto newArDto = new AttendanceRecordDto();
+					
+					newArDto.setEmployeeNum(employeeNum);
+					newArDto.setWhichDate(whichDay);
+					newArDto.getCheckRecordsList().add(dto);
+					
+					dailyRecordslist.add(newArDto);
+				}
+			}
+		}
+		
+		return dailyRecordslist;
+	}
+
+	public static void calculateAttendanceRecordStatus(List<AttendanceRecordDto> dailyRecords, Set<String> employeeNumSet){
+		//this method will execute at 2:00AM
+		//get all work day first!
+		/*
+		 * compare each work day with their check records
+		 */
+		/*for(employeeNum : employeeNumSet){
+			for(day:workday){ //shift work day is permanent
+				for(AttendanceRecordDto dto : dailyRecords){
+					if(dto.getWhichDate().equalsIgnoreCase(day) && dto.getEmployeeNum().equalsIgnoreCase(employeeNum)){ //find that day and employee
+						//compare shift work time
+						
+					}
+					else{ //insert into an empty one, comments is abnormal
+						//just need to confirm did he apply for leave ? 
+					}
+				}
+				
+			}	
+		}*/
+		
+		//get whole month records
+		Map<String, MP2010> mp2010Maps = new HashMap<String, MP2010>();
+		
+		
+		Date today = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(today);
+		cal.add(Calendar.DAY_OF_MONTH, -14);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		while(!cal.getTime().equals(today)){
+			
+			for(String employeeNum : employeeNumSet){
+				boolean flag = false;
+				for(AttendanceRecordDto dto : dailyRecords){
+					if(dto.getEmployeeNum().equalsIgnoreCase(employeeNum) && dto.getWhichDate().equalsIgnoreCase(sdf.format(cal.getTime()))){
+						
+						//java
+						
+						
+						flag = true;
+					}
+				}
+				if(false == flag){
+					//check if he apply for leave
+					
+				}
+			}
+			
+			
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		
+	}
 }
