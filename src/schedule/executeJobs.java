@@ -21,6 +21,7 @@ import dto.AttendanceRecordDto;
 import dto.CheckInOutDto;
 import entity.MP1001;
 import entity.MP2003;
+import entity.MP2010;
 
 public class executeJobs {
 	//private static final Log log = LogFactory.getLog(AuthorityAction.class);
@@ -545,16 +546,22 @@ public class executeJobs {
 		//get specify day's employee attendance records from CHECKINOUT table
 		List<CheckInOutDto> checkInOutRecordsList = CommonJobMethod.getAllAttendanceRecords(employeeNumSet);
 		
-		List<AttendanceRecordDto> dailyRecords = CommonJobMethod.separateIntoEachDays(checkInOutRecordsList);
+		Map<String, MP2010> mapShiftworkRecords = CommonJobMethod.getAllShiftArrangeRecords(); //get all mp2010 records
+		List<AttendanceRecordDto> dailyRecords = CommonJobMethod.separateIntoEachDays(checkInOutRecordsList); //get all checkInOut records
 		
 		//compare time and calculate attendance status
+		List<MP2003> calculatedAttendanceRcdList= CommonJobMethod.calculateAttendanceRecordStatus(dailyRecords, employeeNumSet, mapShiftworkRecords); //compare all daily clock in out records 
 		
+		//listMP2003
 		
 		//delete old records
+		CommonJobMethod.deleteOldAttendanceRcd(employeeNumSet);
 		
 		//insert new records
+		CommonJobMethod.insertCalculatedAttendanceRcd(calculatedAttendanceRcdList);
 		
 		//send abnormal emails
+		CommonJobMethod.sendAbnormalEmails(calculatedAttendanceRcdList);
 		
 		} catch (ClassNotFoundException e){
 			System.out.println(e.getMessage());

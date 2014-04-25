@@ -1,14 +1,12 @@
 package dto;
 
-import java.util.Date;
 import java.util.List;
 
 public class AttendanceRecordDto {
 	private String employeeNum; //key
 	private String whichDate;			//key
-	private List<CheckInOutDto> checkRecordsList;
-	
-	
+	private List<CheckInOutDto> checkRecordsList = null;
+
 	public String getEmployeeNum() {
 		return employeeNum;
 	}

@@ -272,6 +272,8 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	//for shitwork test
 	private IMP2010Service serviceMP2010;
 	private List<ShiftworkExcelRecordDto> excelRecordsList;
+	private List<String> branchSiteList = new ArrayList<String>();
+	private String branchSiteId;
 	
     /* 
 	* @getDownloadFile 此方法对应的是struts.xml文件中的： <param 
@@ -5850,6 +5852,21 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		}
 	}
 	
+	public String importShiftworkScheduleExcelInit(){
+		//save upload file
+		
+		
+		return SUCCESS;
+	}
+	
+	public String addShiftWorkLeaveInit(){
+		//initialize leave part
+		
+		
+		return SUCCESS;
+	}
+	
+	
 	public String analyseExcelTemplete(){
 		System.out.println("in analyseExcelTemplete()");
 		try{
@@ -8148,5 +8165,21 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 
 	public void setExcelRecordsList(List<ShiftworkExcelRecordDto> excelRecordsList) {
 		this.excelRecordsList = excelRecordsList;
+	}
+
+	public List<String> getBranchSiteList() {
+		return branchSiteList;
+	}
+
+	public void setBranchSiteList(List<String> branchSiteList) {
+		this.branchSiteList = branchSiteList;
+	}
+
+	public String getBranchSiteId() {
+		return branchSiteId;
+	}
+
+	public void setBranchSiteId(String branchSiteId) {
+		this.branchSiteId = branchSiteId;
 	}
 }
