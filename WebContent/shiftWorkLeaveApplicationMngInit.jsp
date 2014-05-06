@@ -136,9 +136,8 @@ function downloadMonthlyExcel(){
 }
 
 function openAddWindow(){
-	var popstyle="dialogTop:300px;dialogLeft:600px;dialogRight:600px;help:no;center:yes;dialogHeight:550px;dialogWidth:800px;status:no;resizable:no;scroll:no";
-	//window.showModalDialog("addShiftWorkLeaveInit.action?pageType=add", window, popstyle);
-	window.open("addShiftWorkLeaveInit.action?pageType=add", "_blank", popstyle);
+	var popstyle="dialogTop:300px;dialogLeft:600px;dialogRight:600px;help:no;center:yes;dialogHeight:350px;dialogWidth:600px;status:no;resizable:no;scroll:no";
+	window.showModalDialog("addShiftWorkLeaveInit.action?pageType=add", window, popstyle);
 }
 
 function openImportExcelWindow(){

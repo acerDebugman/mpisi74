@@ -1,5 +1,6 @@
 package action;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;
@@ -34,6 +36,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
+import org.jfree.io.FileUtilities;
 
 import schedule.CommonJobMethod;
 import service.IAC0006Service;
@@ -272,8 +275,12 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	//for shitwork test
 	private IMP2010Service serviceMP2010;
 	private List<ShiftworkExcelRecordDto> excelRecordsList;
-	private List<String> branchSiteList = new ArrayList<String>();
+	private List<String> branchSiteList; //= new ArrayList<String>();
 	private String branchSiteId;
+	private File shiftworkExcel;
+	private String shiftworkExcelName;
+	private String shiftworkExcelContentType;
+	private String shiftWorkRadio;
 	
     /* 
 	* @getDownloadFile 此方法对应的是struts.xml文件中的： <param 
@@ -508,6 +515,38 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		//dateHoursList.clear();
 		//dateHoursList = Constant.getDateHoursList();
 	}
+	
+		// 初始化页面List信息
+	private void shiftworkListinit(){
+		// 签证类型
+		leaveTypeList.clear();
+		//leaveTypeList = Constant.getLeaveTypeList();
+		leaveTypeList = Constant.getShiftWorkLeaveTypeList();
+		
+		// 批准类型
+		approvalTypeList.clear();
+		approvalTypeList = Constant.getApprovalTypeList();
+		
+		// 工作时间
+		workingHoursFromList.clear();
+		workingHoursFromList = Constant.getWorkingFromHour();
+		
+		workingHoursToList.clear();
+		workingHoursToList = Constant.getWorkingToHour();
+		
+		// 分钟
+		workingMinuteList.clear();
+		workingMinuteList = Constant.getWorkingMinute();
+		
+		// 职位
+		jobTitleList.clear();
+		jobTitleList = Constant.getJobTitleList();
+		
+		//天/小时
+		//dateHoursList.clear();
+		//dateHoursList = Constant.getDateHoursList();
+	}
+
 	
 	public String refreshLeaveInfo(){
 		ActionContext context = ActionContext.getContext();
@@ -1267,7 +1306,8 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 				
 			    MP1001 mp1 = serviceMP1001.findById(mp2001.getMP2001_EMPLOYEE_NUM());
 			    mp2001.setMP2001_EMPLOYEE_NAME(mp1.getMP1001_PREFERED_NAME());
-		    }else{
+		    }
+		    else{
 		    	//mp2001.setMP2001_EMPLOYEE_NUM(employeeData.getMP1001_EMPLOYEE_NUM());
 		    	//mp2001.setMP2001_EMPLOYEE_NAME(employeeData.getMP1001_PREFERED_NAME());
 		    	mp2001.setMP2001_ACTING_APPLICATION_PERSON(employeeData.getMP1001_EMPLOYEE_NUM());
@@ -2027,10 +2067,17 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	 */
 	public void validateAddLeaveApply() throws Exception{
 		//validLeaveApply();
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		
+		System.out.println("validate: " + shiftWorkRadio);
+		if(shiftWorkRadio.equalsIgnoreCase("shiftwork")){
+			session.put("shiftwork", "true");
+		}
 	}
 	
 	private boolean validLeaveApply(){
-		boolean ret = true;
+		boolean ret = true;	
 		try{
 			// 验证请假天数
 			if(days.equals("") && Hours.equals("")){
@@ -5802,18 +5849,22 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		}
 	}
 	
+	//-------shift work----------
 	public String shiftWorkMngInit(){
 		try{
 			
-			excelRecordsList = new ArrayList<ShiftworkExcelRecordDto>();
-			analyseExcelTemplete();
-			convertToMP2010Records();
+			branchSiteList = Constant.getBranchSiteList();
+			actingType = "shiftwork";
 			
 			return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
 			return "error";
 		}
+	}
+	
+	public void validateShiftWorkMngInit(){
+		System.out.println("in validateShiftWorkMngInit() function");
 	}
 	
 	public String exportShiftWorkExcelTemplate(){
@@ -5853,16 +5904,62 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	}
 	
 	public String importShiftworkScheduleExcelInit(){
-		//save upload file
-		
 		
 		return SUCCESS;
 	}
 	
+	public String uploadExcelFile(){
+		//save upload file
+		try{
+			String _path = ServletActionContext.getServletContext().getRealPath("/") + "uploadFile\\" + "shiftWorkExcelTemplate.xls";
+			File destFile = new File(_path);
+			FileUtils.copyFile(shiftworkExcel, destFile);
+			
+			excelRecordsList = new ArrayList<ShiftworkExcelRecordDto>();
+			analyseExcelTemplete();
+			convertToMP2010Records();
+			//shiftworkExcel = 
+			
+			HttpServletResponse response = ServletActionContext.getResponse();
+	        response.setCharacterEncoding("utf-8");
+	        PrintWriter out = response.getWriter();
+	        out.append("S:success");
+	        //out.println("S:success");
+	        out.flush();
+	        out.close();
+			
+			return NONE;
+		}catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+	
 	public String addShiftWorkLeaveInit(){
 		//initialize leave part
+		ActionContext ct = ActionContext.getContext();
+		Map<String,Object> session = ct.getSession();
+
+		//leaveTypeList
+    	//listInit();
+		shiftworkListinit();
 		
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 		
+		mp2001.setMP2001_ACTING_APPLICATION_PERSON(employeeData.getMP1001_EMPLOYEE_NUM());
+    	mp2001.setMP2001_ACTING_APPLICATION_PERSON_NAME(employeeData.getMP1001_PREFERED_NAME());
+    	actingType = "self";
+    	
+    	// 个人假期剩余天数
+	    MP2002 mp2002 = serviceMp2002.findById(employeeData.getMP1001_EMPLOYEE_NUM());
+	    if(mp2002 != null){
+	    	annualDays = mp2002.getMP2002_ANNUAL();
+	    	sickDays = mp2002.getMP2002_SICK();
+	    	familyDays = mp2002.getMP2002_FAMILY_RESP();
+	    	maternityDays = mp2002.getMP2002_MATERNITY();
+	    	study = mp2002.getMP2002_STUDY();
+	    }
+
 		return SUCCESS;
 	}
 	
@@ -5871,8 +5968,8 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		System.out.println("in analyseExcelTemplete()");
 		try{
 			fileName = "shiftWorkExcelTemplate.xls";
-	        //String _path = ServletActionContext.getServletContext().getRealPath("/") + "uploadfile\\" + fileName;
-			String _path = "d:\\shiftWorkExcelTemplate.xls";
+	        String _path = ServletActionContext.getServletContext().getRealPath("/") + "uploadfile\\" + fileName;
+			//String _path = "d:\\shiftWorkExcelTemplate.xls";
 	        
 	        System.out.println(_path);
 	        
@@ -5903,16 +6000,18 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		}
 	}
 	
-	public String convertToMP2010Records(){
-		try{
+	public void convertToMP2010Records() throws Exception{
 			JE0101 je11 = serviceJE0101.findByKey("shiftworkMonth");
-			String workDate = je11.getJE0101_VALUE(); //which month
-			System.out.println(workDate);
+			String workDateMonth = je11.getJE0101_VALUE(); //which month
+			System.out.println(workDateMonth);
 			
 			Date d = new Date();
+			SimpleDateFormat yearSDF = new SimpleDateFormat("yyyy");
+			String thisYear = yearSDF.format(d);
 			System.out.println("date: " + d.toString());
 			
 			Calendar cal = Calendar.getInstance();
+			
 			//cal.set(Calendar.da, value);
 			//SampleDateFormat sdf = new SimpleDateFormat("");
 			//DateFormat df = DateFormat.getDateInstance();
@@ -5932,40 +6031,34 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 				 */
 				int size = recordDto.getArrangementMap().size();
 				for(int i = 1; i <= size;i++){
-					if(recordDto.getArrangementMap().get(i).equalsIgnoreCase("R")){ //if that day is rest
-						continue ;
-					}
 					MP2010 mp21 = new MP2010();
 					mp21.setMP2010_BRANCH_SITE(recordDto.getBranchSite());
-					MP1001 shiftEmployee = new MP1001();
-					shiftEmployee.setMP1001_EMPLOYEE_NUM(recordDto.getEmployeeNum());
-					//mp21.setShiftEmployee(shiftEmployee);
-					mp21.setMP2010_DATE(workDate + "-" + String.format("%02d", i));
+					mp21.setMP2010_EMPLOYEE_NUM(recordDto.getEmployeeNum());
+					mp21.setMP2010_DATE(thisYear + "-" + workDateMonth + "-" + String.format("%02d", i));
 					
 					String shiftType = recordDto.getArrangementMap().get(i);
 					mp21.setMP2010_TYPE(shiftType);
 					
 					if(shiftType.equalsIgnoreCase("N")){
-						mp21.setMP2010_FROM_DATETIME(workDate + "-" + String.format("%02d", i) + Constant.shiftWorkNightStartTime);
+						mp21.setMP2010_FROM_DATETIME(thisYear + "-" + workDateMonth + "-" + String.format("%02d", i) + " " + Constant.shiftWorkNightStartTime);
 						//UtilDate.get12DateTime();
-						Date nextDate = sdf.parse(workDate + "-" + String.format("%02d", i));
+						Date nextDate = sdf.parse(thisYear + "-" + workDateMonth + "-" + String.format("%02d", i));
 						nextDate = UtilDate.afterNDay(nextDate, 1);
 						System.out.println(sdf.format(nextDate));
-						mp21.setMP2010_END_DATETIME(sdf.format(nextDate) + Constant.shiftWorkNightEndTime);
+						mp21.setMP2010_END_DATETIME(sdf.format(nextDate) + " " + Constant.shiftWorkNightEndTime);
 					}
 					if(shiftType.equalsIgnoreCase("D")){
-						mp21.setMP2010_FROM_DATETIME(workDate + "-" + String.format("%02d", i) + Constant.shiftWorkDayStartTime);
-						mp21.setMP2010_END_DATETIME(workDate + "-" + String.format("%02d", i) + Constant.shiftWorkDayEndTime);
+						mp21.setMP2010_FROM_DATETIME(thisYear + "-" + workDateMonth + "-" + String.format("%02d", i) + " " + Constant.shiftWorkDayStartTime);
+						mp21.setMP2010_END_DATETIME(thisYear + "-" + workDateMonth + "-" + String.format("%02d", i) + " " + Constant.shiftWorkDayEndTime);
 					}
+					/*if(recordDto.getArrangementMap().get(i).equalsIgnoreCase("R")){ 
+					  //if that day is rest, then insert one empty record(no from and end time) into that table
+						
+					}*/
 					serviceMP2010.save(mp21);
 				}
 			}
 			System.out.println("in method : convertToMP2010Records()");
-			return SUCCESS;
-		}catch(Exception ex){
-			log.info(ex.getMessage());
-			return "error";
-		}
 	}
 	
 	public String hibernateTest(){
@@ -6017,9 +6110,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		//get next month template 
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DAY_OF_MONTH, 1);
-		int month = cal.get(Calendar.MONTH) + 1;
+		int month = cal.get(Calendar.MONTH) + 1; //next month information
 		cal.set(Calendar.MONTH, month);
-		int next_month = month + 1;
+		int next_month = month + 1;  //next next month
 		
 		List<String> headNameList = new ArrayList<String>();
 		headNameList.add("BRANCH_SITE");
@@ -6167,6 +6260,315 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	    	recordDto.setArrangementMap(arrangeMap);
 	    	excelRecordsList.add(recordDto);
 	    }
+	}
+	
+	public String shiftworkAddLeaveApply(){
+		try{
+			HttpServletResponse resp = ServletActionContext.getResponse();
+			PrintWriter out = resp.getWriter();
+			
+			StringBuffer sb = new StringBuffer();
+
+			sb.append("<script type='text/javascript'>");
+			sb.append("alert('From date and to date should be the same day! Please select again!');");
+			sb.append("window.location.href='addShiftWorkLeaveInit.action?type=add'");
+			//sb.append("window.close();");
+			sb.append("</script>");
+
+			out.append(sb.toString());
+			out.flush();
+			out.close();
+			
+			return NONE;
+		}
+		catch(Exception e){
+			log.info(e.getMessage());
+			return ERROR;
+		}
+	}
+/*	public String shiftworkAddLeaveApply(){
+		return "fail";
+		System.out.println("in validateShiftworkAddLeaveApply function");
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		// 取得登陆人信息
+		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
+		listInit();
+		
+		try{
+		    String _empNo = (employeeData.getMP1001_EMPLOYEE_NUM()).toUpperCase();//强制转换字母为大写字母
+		    
+			if(actingType.equals("self")){
+				mp2001.setMP2001_EMPLOYEE_NUM(_empNo);
+			}else{
+				String _tempNum = mp2001.getMP2001_EMPLOYEE_NUM().toUpperCase();//强制转换字母为大写
+				mp2001.setMP2001_EMPLOYEE_NUM(_tempNum);
+			}
+		    
+			String _from = mp2001.getMP2001_FROM_DATETIME() + " " + String.format("%02d", Integer.parseInt(workingHours1)) + ":" + String.format("%02d", Integer.parseInt(workingMinute1))+":00";
+			String _to = mp2001.getMP2001_TO_DATETIME() + " " + String.format("%02d", Integer.parseInt(workingHours2)) + ":" + String.format("%02d", Integer.parseInt(workingMinute2))+":00";
+			String _id = "";
+			
+			if(actingType.equals("self")){
+				_id = (employeeData.getMP1001_EMPLOYEE_NUM()).toUpperCase();
+			}else{
+				String _tempNum = mp2001.getMP2001_EMPLOYEE_NUM().toUpperCase();//强制转换字母为大写
+				mp2001.setMP2001_EMPLOYEE_NUM(_tempNum);
+			}
+			log.info("ID:" + _id);
+			// 判断请假时间是否有重复
+			boolean checkValue = service.checkLeaveDay(_from, _to, mp2001.getMP2001_EMPLOYEE_NUM());
+			// 判断是否跨年
+			boolean checkValue2 = false;
+			//年假、病假、家庭假不能跨年
+			if(mp2001.getMP2001_LEAVE_TYPE().equals("1") || mp2001.getMP2001_LEAVE_TYPE().equals("2") || mp2001.getMP2001_LEAVE_TYPE().equals("3")){
+				checkValue2 = checkLeaveTime();
+			}
+			
+			if(true == checkValue){
+				StringBuffer sb = new StringBuffer();
+
+				sb.append("<script type='text/javascript'>");
+				sb.append("alert('请假时间有重复，请重新填写起始时间。');");
+				sb.append("window.location.href='applyLeaveInit.action?type=add&MP2001_NUM='");
+				//sb.append("window.close();");
+				sb.append("</script>");
+			    
+				HttpServletResponse response = ServletActionContext.getResponse();
+				response.setContentType("text/html;charset=UTF-8");
+				response.setCharacterEncoding("utf-8");
+				PrintWriter out = response.getWriter();
+				out.println(sb.toString());
+		        out.flush();
+		        out.close();
+		        
+				//addActionMessage("<script>alert('保存失败，因为请假日期重复，请重新填写起始日期.');</script>");
+				return null;
+			}else if(true == checkValue2){
+				StringBuffer sb = new StringBuffer();
+
+				sb.append("<script type='text/javascript'>");
+				sb.append("alert('不能跨年请假。');");
+				sb.append("window.location.href='applyLeaveInit.action?type=add&MP2001_NUM='");
+				//sb.append("window.close();");
+				sb.append("</script>");
+			    
+				HttpServletResponse response = ServletActionContext.getResponse();
+				response.setContentType("text/html;charset=UTF-8");
+				response.setCharacterEncoding("utf-8");
+				PrintWriter out = response.getWriter();
+				out.println(sb.toString());
+		        out.flush();
+		        out.close();
+
+				return null;
+			}
+			else{				
+				// 生成请假单编号
+				// 取得部门信息
+				int departmentId = Integer.parseInt(employeeData.getMP1001_DEPARTMENT_ID());
+				MP0002 mp02 = serviceMp0002.findById(departmentId);
+				
+				//if(type.equals("add")){
+					// 取得请假单的当前编号
+					List<MP0006> mp06List = serviceMP0006.findByProperty("MP0006_CODE", "LEAVE_NUM");
+				    MP0006 mp6 = mp06List.get(0);
+				    int maxNum = Integer.parseInt(mp6.getMP0006_VALUE()) + 1;
+				    java.text.DecimalFormat format = new java.text.DecimalFormat("00");
+				    mp6.setMP0006_VALUE(String.valueOf(maxNum));
+				    
+					Date now = new Date();
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+					SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					String addtime = sdf.format(now);
+					String addtime1 = sdf1.format(now);
+				    
+					//----------------------------------MP2001---------------------------------------
+				    // 请假单编号：日月年+部门编码+两位流水号
+				    String leaveNum = addtime + mp02.getMP0002_DEPARTMENT_NUM() + format.format(maxNum);
+					
+					mp2001.setMP2001_NUM(leaveNum);
+					//mp2001.setMP2001_EMPLOYEE_NUM(employeeData.getMP1001_EMPLOYEE_NUM()); //设定员工编码
+					mp2001.setMP2001_APPROVAL("1");
+					mp2001.setMP2001_STATUS("0"); // 0:正常数据     1:废止数据
+					mp2001.setMP2001_DAYS(getLeaveHours()); // 设定请假时间
+					mp2001.setMP2001_ACTING_APPLICATION_PERSON(_empNo);
+					mp2001.setMP2001_APPLIY_TYPE(actingType);
+					mp2001.setMP2001_CREATE_DATETIME(addtime1);
+					mp2001.setMP2001_CREATE_USER(employeeData.getMP1001_EMPLOYEE_NUM());
+					mp2001.setMP2001_FROM_DATETIME(_from);
+					mp2001.setMP2001_TO_DATETIME(_to);
+					mp2001.setMP2001_SICK_CERTIFICATION("");
+					//----------------------------------MP2001---------------------------------------
+					
+					// 申请假期的同时会减去请假天数，批准后，不再减去请假天数；如果不批准，则会返还请假天数。--------------------2012-02-24 Start
+					String _type = mp2001.getMP2001_LEAVE_TYPE();
+					int _hours = Integer.parseInt(mp2001.getMP2001_DAYS());
+					
+					MP2002 mp22 = serviceMp2002.findById(mp2001.getMP2001_EMPLOYEE_NUM());
+					int _annualHours = Integer.parseInt(mp22.getMP2002_ANNUAL());
+					int _sickHours = Integer.parseInt(mp22.getMP2002_SICK());
+					int _familyHours = Integer.parseInt(mp22.getMP2002_FAMILY_RESP());
+					int _studyHours = Integer.parseInt(mp22.getMP2002_STUDY());
+					int _maternityHours = Integer.parseInt(mp22.getMP2002_MATERNITY());
+
+					String _leaveHours = "0";
+					if(_type.equals(Constant.ANNUAL)){//年假
+						_leaveHours = String.valueOf(_annualHours - _hours);
+					    mp22.setMP2002_ANNUAL(_leaveHours);
+					}else if(_type.equals(Constant.SICK)){//病假
+						_leaveHours = String.valueOf(_sickHours - _hours);
+						mp22.setMP2002_SICK(_leaveHours);
+					}else if(_type.equals(Constant.FAMILY)){//家庭假
+						_leaveHours = String.valueOf(_familyHours - _hours);
+						mp22.setMP2002_FAMILY_RESP(_leaveHours);
+					}else if(_type.equals(Constant.STUDY)){//学习假
+						_leaveHours = String.valueOf(_studyHours - _hours);
+						mp22.setMP2002_STUDY(_leaveHours);
+					}else if(_type.equals(Constant.MATERNITY)){//产假
+						_leaveHours = String.valueOf(_maternityHours - _hours);
+						mp22.setMP2002_MATERNITY(_leaveHours);
+					}
+					
+					if(Integer.parseInt(_leaveHours) < 0){
+						StringBuffer sb = new StringBuffer();
+
+						sb.append("<script type='text/javascript'>");
+						sb.append("alert('The number of vacation days is not enough。');");
+						sb.append("window.location.href='applyLeaveInit.action?type=add&MP2001_NUM='");
+						//sb.append("window.close();");
+						sb.append("</script>");
+					    
+						HttpServletResponse response = ServletActionContext.getResponse();
+						response.setContentType("text/html;charset=UTF-8");
+						response.setCharacterEncoding("utf-8");
+						PrintWriter out = response.getWriter();
+						out.println(sb.toString());
+				        out.flush();
+				        out.close();
+
+						return null;
+					}
+					
+					service.save(mp2001);
+					serviceMP0006.update(mp6);
+					
+					serviceMp2002.update(mp22);
+					//----------------------------Operation History------------------
+					LogUtil logUtil = new LogUtil();
+					logUtil.setServiceMP0011(serviceMP0011);
+					logUtil.writeOperationLog(employeeData.getMP1001_EMPLOYEE_NUM(),employeeData.getMP1001_PREFERED_NAME(),"Add Leave Application, Key{" + mp2001.getMP2001_NUM() + "}");
+					//----------------------------Operation History------------------
+					
+					if(_type.equals(Constant.STUDY)){//学习假
+						MP2004 mp24 = serviceMp2004.findById(mp2001.getMP2001_MAJOR_SEQ());
+						int _majorDays = Integer.parseInt(mp24.getMP2004_TIME());
+						_majorDays = _majorDays - _hours;
+						
+						mp24.setMP2004_TIME(String.valueOf(_majorDays));
+						
+						serviceMp2004.update(mp24);
+					}
+					
+					//---------------------------------------------------------------------------------2012-02-24 End
+					
+					// Send Mail ------2011-10-31 Add by Tim------Start
+					if(mp2001.getMP2001_ACTING_PERSON()!=null && !mp2001.getMP2001_ACTING_PERSON().equals("")){
+						MP1001 emp01 = serviceMP1001.findById(mp2001.getMP2001_ACTING_PERSON());
+						MP1001 emp02 = serviceMP1001.findById(mp2001.getMP2001_EMPLOYEE_NUM());
+						int _leaveDays = Integer.parseInt(mp2001.getMP2001_DAYS());
+						
+						Map<String, String> propertyMap = new LinkedHashMap<String, String>();
+						propertyMap.put("DEPARTMENT", emp02.getMP1001_DEPARTMENT_ID());
+						propertyMap.put("JOB_TITLE", "1");
+						propertyMap.put("STATUS", "99");
+						List<MP1001> emp11List = serviceMP1001.findByProperty(propertyMap);
+
+						//String result = MessageFormat.format(Constant.MESSAGE_LEAVE_BODY,emp01.getMP1001_PREFERED_NAME(), emp02.getMP1001_PREFERED_NAME());
+
+						Mail mail = new Mail();
+						MP1001 mp11 = serviceMP1001.findById(mp2001.getMP2001_ACTING_PERSON());
+						StringBuffer toList = new StringBuffer();
+						toList.append(mp11.getMP1001_COMPANY_EMAIL());
+						toList.append("," + emp02.getMP1001_COMPANY_EMAIL());
+						
+						//if(emp02.getMP1001_GROUP().equals("2") || emp02.getMP1001_GROUP().equals("3")){
+						if(emp02.getMP1001_POSITION() != null && !emp02.getMP1001_POSITION().equals("") && emp02.getMP1001_POSITION().equals("1")){
+							List<MP0006> directorMialList = serviceMP0006.findByProperty("MP0006_CODE", "DIRECTOR_LIST");
+							if(directorMialList.size() >0){
+								MP0006 mp06 = directorMialList.get(0);
+								
+								toList.append("," + mp06.getMP0006_VALUE());
+							}
+						}else{
+							for(int i=0,j=emp11List.size(); i<j; i++){
+								MP1001 obj1001 = emp11List.get(i);
+								toList.append("," + obj1001.getMP1001_COMPANY_EMAIL());					
+							}
+						}
+						
+						mail.setSubject(Constant.MESSAGE_LEAVE_TITLE);
+						
+						StringBuffer result = new StringBuffer();
+						//text/plain
+						result.append("Dear " + emp01.getMP1001_PREFERED_NAME() + "(" + emp01.getMP1001_EMPLOYEE_NUM() + ")" + ",\r\n \r\n ");
+						result.append("Please note that " + emp02.getMP1001_PREFERED_NAME() + " have apply for leave, you are the acting person.\r\n \r\n ");
+						
+						result.append("Employee Number:" + emp02.getMP1001_EMPLOYEE_NUM() + " " + emp02.getMP1001_PREFERED_NAME() + "\r\n ");
+						result.append("Acting Person:" + mp2001.getMP2001_ACTING_PERSON() + " " + mp11.getMP1001_PREFERED_NAME() + "\r\n ");
+						result.append("Type of Leave:" + leaveTypeList.get(mp2001.getMP2001_LEAVE_TYPE()) + "\r\n ");
+						result.append("From Date:" + mp2001.getMP2001_FROM_DATETIME().substring(0,16) + "\r\n ");
+						result.append("To Date:" + mp2001.getMP2001_TO_DATETIME().substring(0,16) + "\r\n ");
+						result.append("Days:" + _leaveDays/8 + "D " + _leaveDays%8 + "H" + "\r\n ");
+						result.append("Comment:" + mp2001.getMP2001_COMMENT() + "\r\n ");
+						
+						result.append("Thank you very much! \r\n \r\n\r\n ");
+						result.append("Your Faithfully, \r\n ");
+						result.append("HRMS Administrator");
+
+						mail.setTo(toList.toString());
+						mail.setContent(result.toString());
+						mail.send();
+					}
+					// Send Mail ------2011-10-31 Add by Tim------End
+
+					session.put("LEAVE_NUM", leaveNum);
+				}else if(type.equals("edit")){
+					MP2001 editData = new MP2001();
+					editData = service.findById(MP2001_NUM);
+					
+					editData.setMP2001_DAYS(getLeaveHours());// 设定请假时间
+					editData.setMP2001_LEAVE_TYPE(mp2001.getMP2001_LEAVE_TYPE());// 设定请假类型
+					editData.setMP2001_ACTING_PERSON(mp2001.getMP2001_ACTING_PERSON());// 设定代理人
+					editData.setMP2001_FROM_DATETIME(mp2001.getMP2001_FROM_DATETIME());// 开始时间
+					editData.setMP2001_TO_DATETIME(mp2001.getMP2001_TO_DATETIME());// 结束时间
+					
+					// 2011-10-28 Add by Tim
+					editData.setMP2001_ACTING_PERSON(employeeData.getMP1001_EMPLOYEE_NUM());
+					editData.setMP2001_APPLIY_TYPE(actingType);
+					editData.setMP2001_COMMENT(mp2001.getMP2001_COMMENT());
+					
+					if(actingType == "self"){
+						editData.setMP2001_EMPLOYEE_NUM(employeeData.getMP1001_EMPLOYEE_NUM());
+					}else if(actingType == "acting"){
+						editData.setMP2001_EMPLOYEE_NUM(mp2001.getMP2001_EMPLOYEE_NUM());
+					}
+					
+					service.update(editData);
+				}
+				
+				return SUCCESS;
+			}
+			
+		}catch(Exception ex){
+			System.out.println(ex.getLocalizedMessage());
+			return INPUT;
+		}
+	}
+*/	
+	public String validateShiftworkAddLeaveApply(){
+		System.out.println("in validateShiftworkAddLeaveApply function");
+		return SUCCESS;
 	}
 	
 	/**
@@ -8181,5 +8583,37 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 
 	public void setBranchSiteId(String branchSiteId) {
 		this.branchSiteId = branchSiteId;
+	}
+
+	public File getShiftworkExcel() {
+		return shiftworkExcel;
+	}
+
+	public void setShiftworkExcel(File shiftworkExcel) {
+		this.shiftworkExcel = shiftworkExcel;
+	}
+
+	public String getShiftworkExcelName() {
+		return shiftworkExcelName;
+	}
+
+	public void setShiftworkExcelName(String shiftworkExcelName) {
+		this.shiftworkExcelName = shiftworkExcelName;
+	}
+
+	public String getShiftworkExcelContentType() {
+		return shiftworkExcelContentType;
+	}
+
+	public void setShiftworkExcelContentType(String shiftworkExcelContentType) {
+		this.shiftworkExcelContentType = shiftworkExcelContentType;
+	}
+
+	public String getShiftWorkRadio() {
+		return shiftWorkRadio;
+	}
+
+	public void setShiftWorkRadio(String shiftWorkRadio) {
+		this.shiftWorkRadio = shiftWorkRadio;
 	}
 }

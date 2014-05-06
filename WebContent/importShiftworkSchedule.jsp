@@ -10,25 +10,41 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-
-<link rel='stylesheet' type='text/css' href='dist/fullcalendar-1.6.4/fullcalendar/fullcalendar.css' />
-<script type='text/javascript' src='dist/fullcalendar-1.6.4/lib/jquery.min.js'></script>
-<script type='text/javascript' src='dist/fullcalendar-1.6.4/fullcalendar/fullcalendar.js'></script>
-<script type="text/javascript" src="js/jquery.form.js"></script>
+<script src="js/checkform.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery1.4.2.js" type="text/javascript" ></script>
+<script src="js/jquery.form.js" type="text/javascript" ></script>
 
 <title></title>
 <script type="text/javascript">
 $(document).ready(function(){
 	
 });
+
+function uploadFile(){
+	var options = {
+		url : "uploadExcelFile.action",
+		type : "post",
+		dataType : "script",
+		success : function(msg){
+			var rs = msg.substring(0, 1);
+			if(rs == "S"){
+				alert("Upload success!");
+				window.close();
+			}
+			else{
+				alert("Please upload correct file !");
+			}
+		}
+	};
+	$("#form1").ajaxSubmit(options);
+}
 </script>
 </head>
 <body>
-<form method="POST" enctype="multipart/form-data" action="importShiftworkScheduleExcelInit.action">
-  File to upload: <input type="file" name="upfile"><br/>
-  Notes about the file: <input type="text" name="note"><br/>
+<form id="form1" name="form1" method="POST" enctype="multipart/form-data">
+  File to upload: <input type="file" name="shiftworkExcel">
   <br/>
-  <input type="submit" value="Press"> to upload the file!
+  <input type="button" value="Upload File" onclick="uploadFile()">
 </form>
 </body>
 </html>

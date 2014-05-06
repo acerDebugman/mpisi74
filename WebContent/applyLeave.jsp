@@ -726,7 +726,7 @@ function showMjorLeftDays(){
 <body>
 <s:actionmessage cssStyle="list-style-type:none;" escape="false"/>
 	<div>
-		<s:form id="from2" action="leaveSubmit" method="post" theme="simple">
+		<s:form id="from2" action="shiftworkLeaveSubmit" method="post" theme="simple">
 		    <input id="type" name="type" value="${type}" type="hidden" />
 		    <input id="roleGroup" name="roleGroup" value="${roleGroup}" type="hidden" />
 		    <input id="MP2001_NUM" name="MP2001_NUM" value="${MP2001_NUM}" type="hidden" />

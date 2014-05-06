@@ -223,7 +223,12 @@ function showAddDocument(){
                          </tr>
                          <tr>
                              <td class="table_none" onclick="javascript:NowShow('M_201','shiftWorkMngInit.action');" onmousemove="javascript:TDOverORIn('M_201');" onmouseout="javascript:TDOverOROut('M_201');" id="M_201">
-                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Shift Work Schedule
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Shift work Schedule
+                             </td>
+                         </tr>
+                         <tr>
+                             <td class="table_none" onclick="javascript:NowShow('M_202','shiftWorkLeaveApplicationInit.action');" onmousemove="javascript:TDOverORIn('M_202');" onmouseout="javascript:TDOverOROut('M_202');" id="M_202">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Shift work leave application
                              </td>
                          </tr>
                      </tbody>
