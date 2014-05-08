@@ -156,7 +156,7 @@ response.setDateHeader("Expires", 0);
 		<tr>
 			<td class="menubar_button" id="button_0" align="center">
 <s:if test="type != 'view'" >
-                <input type="button" onclick="window.location.href='applyLeaveListInit.action'" name="cancel" value="OK" />
+                <input type="button" onclick="window.close();'" name="cancel" value="OK" />
 </s:if>
 			</td>
 		</tr>

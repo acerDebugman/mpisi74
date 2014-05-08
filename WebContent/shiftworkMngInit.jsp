@@ -146,6 +146,15 @@ function openImportExcelWindow(){
 	window.showModalDialog("importShiftworkScheduleExcelInit.action", window, popstyle);
 }
 
+function searchSubmit(){
+	var fromDate = $('#fromDate').val();
+	var toDate = $('#toDate').val();
+	var employeeNum = $('#employeeNum').val();
+	var employeeName = $('#employeeName').val();
+	var branchSiteId = $('#branchSiteId').val();
+	
+	$('#shiftWorkInfoList').load('');
+}
 </script>
 </head>
 <body>
@@ -211,7 +220,7 @@ function openImportExcelWindow(){
             <input id="shiftWorkAddLeave" name="shiftWorkAddLeave" type="button" value="Add Shiftwork Leave" onclick="openAddWindow()" style="float:left"/>
         </td>
         <td align="center">
-        	<input type="submit" name="searchBtn" value="Search" id="searchBtn" />
+        	<input type="button" name="searchBtn" value="Search" id="searchBtn" onclick="searchSubmit()"/>
             <input id="refreshData" name="refreshData" type="button" value="" onclick="refresh()" style="display:none;"/>
         </td>
     </tr>

@@ -123,10 +123,18 @@ $(document).ready(function(){
 		
 		//if(!multiDayCal && val == "multiDays"){
 		if(val == "multiDays"){
-			document.getElementById("workingHours1").value = "08";
-			document.getElementById("workingMinute1").value = "08";
-			document.getElementById("workingHours2").value = "08";
-			document.getElementById("workingMinute2").value = "08";
+			/* $("#workingHours1").val("09");
+			$("#workingMinute1").val("09");
+			$("#workingHours2").val("09");
+			$("#workingMinute2").val("09");
+			
+	    	var hour1 = document.getElementById("workingHours1").value;
+			var hour2 = document.getElementById("workingHours2").value;
+			var minute1 = document.getElementById("workingMinute1").value;
+			var minute2 = document.getElementById("workingMinute2").value;
+		
+			alert(hour1 + " " + hour2 + " " + minute1 + " " + minute2); */
+		
 			calcTime();
 			//multiDayCal = true;
 		}
@@ -302,7 +310,8 @@ $(document).ready(function(){
 		return false;
 	});
 	
-	
+	//defualt is single day, so hide to day
+	//$("#toDay").hide();
 });
 </script>
 
@@ -369,7 +378,6 @@ function showApplyFor(obj){
 }
 // 计算请假时间
 function calcTime(){
-
 	document.getElementById("warnMessage").firstChild.nodeValue = "";
 	if(document.getElementById("fromDay") && document.getElementById("toDay")){
 		var _fromDay = document.getElementById("fromDay").value;
@@ -760,11 +768,20 @@ function chooseDayType(){
 		changeProperty("workingHours2",true);
 		changeProperty("workingMinute2",true);
 		*/
-		document.getElementById("fromDay").value = "";
-		document.getElementById("workingHours1").value = "08";
-		document.getElementById("workingMinute1").value = "00";
-		document.getElementById("workingHours2").value = "09";
-		document.getElementById("workingMinute2").value = "00";
+		//$("#fromDay").val("");
+		//$("#to").val("");
+		$("#workingHours1").val("08");
+		$("#workingMinute1").val("00");
+		$("#workingHours2").val("09");
+		$("#workingMinute2").val("00");
+		
+		//$("#toDay").hide();
+		$("#labelHours1").show();
+		$("#labelHours2").show();
+		$("#workingHours1").show();
+		$("#workingMinute1").show();
+		$("#workingHours2").show();
+		$("#workingMinute2").show();
 		
 		document.getElementById("workingHours1").disabled = false;
 		document.getElementById("workingMinute1").disabled = false;
@@ -772,28 +789,29 @@ function chooseDayType(){
 		document.getElementById("workingMinute2").disabled = false;
 	}
 	if('multiDays' == val){
-	 	/* document.getElementById("workingHours1").style.display = "none";
-		document.getElementById("workingMinute1").style.display = "none";
-		document.getElementById("workingHours2").style.display = "none";
-		document.getElementById("workingMinute2").style.display = "none"; 
-		changeProperty("workingHours1",false);
-		changeProperty("workingMinute1",false);
-		changeProperty("workingHours2",false);
-		changeProperty("workingMinute2",false); */
+		//$("#toDay").val("");
+		$("#workingHours1").val("16");
+		$("#workingMinute1").val("30");
+		$("#workingHours2").val("16");
+		$("#workingMinute2").val("30");
 		
-		document.getElementById("toDay").value = "";
-		document.getElementById("workingHours1").value = "00";
-		document.getElementById("workingMinute1").value = "00";
-		document.getElementById("workingHours2").value = "00";
-		document.getElementById("workingMinute2").value = "00";
+		//$("#toDay").show();
+		$("#labelHours1").hide();
+		$("#labelHours2").hide();
+		$("#workingHours1").hide();
+		$("#workingMinute1").hide();
+		$("#workingHours2").hide();
+		$("#workingMinute2").hide();
 		
-		document.getElementById("workingHours1").disabled = true;
+		/* document.getElementById("workingHours1").disabled = true;
 		document.getElementById("workingMinute1").disabled = true;
 		document.getElementById("workingHours2").disabled = true;
-		document.getElementById("workingMinute2").disabled = true;
-		
-		
+		document.getElementById("workingMinute2").disabled = true; */
 	}
+}
+
+function joeTest(){
+	alert($("#toDay").val());
 }
 
 </script>
@@ -804,7 +822,7 @@ function chooseDayType(){
 <body>
 <s:actionmessage cssStyle="list-style-type:none;" escape="false"/>
 	<div>
-		<s:form id="from2" action="leaveSubmit" method="post" theme="simple">
+		<s:form id="from2" action="shiftworkLeaveSubmit" method="post" theme="simple">
 		    <input id="type" name="type" value="${type}" type="hidden" />
 		    <input id="roleGroup" name="roleGroup" value="${roleGroup}" type="hidden" />
 		    <input id="MP2001_NUM" name="MP2001_NUM" value="${MP2001_NUM}" type="hidden" />
@@ -925,7 +943,7 @@ function chooseDayType(){
                             	<td class="table_body">Days Apply<span class="errorcss">*</span></td>
                                 <td class="table_none">
                                 	<input id="days_0" type="radio" name="dayTypeChoose" checked="checked" onclick="chooseDayType()" value="singleDay"/>Single Day&nbsp;&nbsp;
-                                	<input id="days_1" type="radio" name="dayTypeChoose" onclick="chooseDayType()" value="multiDays"/>Several Days&nbsp;&nbsp;
+                                	<input id="days_1" type="radio" name="dayTypeChoose" value="multiDays" onclick="chooseDayType()" />Several Days&nbsp;&nbsp;
                                 </td>
                             </tr>
                             <tr>
@@ -933,8 +951,8 @@ function chooseDayType(){
                                 <td class="table_none">
 <s:if test="MP2001_NUM == '' || type == 'edit'" >
 	                                    <input id="fromDay" name="mp2001.MP2001_FROM_DATETIME" value="${mp2001.MP2001_FROM_DATETIME}" type="text" style="width:70px;" class="text_input" onclick="calendar(this);" onchange="" disabled="disabled"/>
-	                                    Time&nbsp;<s:select id="workingHours1" name="workingHours1" list="workingHoursFromList" style="height:20px;" theme="simple" onchange="calcTime()" disabled="true"/>:
-	                                    <s:select id="workingMinute1" name="workingMinute1" list="workingMinuteList" style="height:20px;" theme="simple" onchange="calcTime()" disabled="true"/>
+	                                    <span id="labelHours1">Time&nbsp;<s:select id="workingHours1" name="workingHours1" list="workingHoursFromList" style="height:20px;" theme="simple" onchange="calcTime()" disabled="true"/>:
+	                                    <s:select id="workingMinute1" name="workingMinute1" list="workingMinuteList" style="height:20px;" theme="simple" onchange="calcTime()" disabled="true"/></span>
 	                                    <s:fielderror theme="simple" cssStyle="color:red;margin-left:10px;">
 	                                        <s:param>mp2001.MP2001_FROM_DATETIME</s:param>
 	                                    </s:fielderror>
@@ -951,8 +969,8 @@ function chooseDayType(){
                                 <td class="table_none">
 <s:if test="MP2001_NUM == '' || type == 'edit'" >
 	                                    <input id="toDay" name="mp2001.MP2001_TO_DATETIME" value="${mp2001.MP2001_TO_DATETIME}" type="text" style="width:70px;" class="text_input" onclick="calendar(this);" disabled="disabled"/>
-	                                    Time&nbsp;<s:select id="workingHours2" name="workingHours2" list="workingHoursToList" theme="simple" onchange="calcTime()" disabled="true"/>:
-	                                    <s:select id="workingMinute2" name="workingMinute2" list="workingMinuteList" style="height:20px;" theme="simple" onchange="calcTime()" disabled="true"/>
+	                                    <span id="labelHours2">Time&nbsp;<s:select id="workingHours2" name="workingHours2" list="workingHoursToList" theme="simple" onchange="calcTime()" disabled="true"/>:
+	                                    <s:select id="workingMinute2" name="workingMinute2" list="workingMinuteList" style="height:20px;" theme="simple" onchange="calcTime()" disabled="true"/></span>
 	                                    <label id="warnMessage" style="color:red;">&nbsp;</label>
 	                                    <s:fielderror theme="simple" cssStyle="color:red;margin-left:10px;">
 	                                        <s:param>mp2001.MP2001_TO_DATETIME</s:param>

@@ -281,6 +281,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	private String shiftworkExcelName;
 	private String shiftworkExcelContentType;
 	private String shiftWorkRadio;
+	private String dayTypeChoose;
 	
     /* 
 	* @getDownloadFile 此方法对应的是struts.xml文件中的： <param 
@@ -2067,13 +2068,13 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	 */
 	public void validateAddLeaveApply() throws Exception{
 		//validLeaveApply();
-		ActionContext context = ActionContext.getContext();
+		/*ActionContext context = ActionContext.getContext();
 		Map<String, Object> session = context.getSession();
 		
 		System.out.println("validate: " + shiftWorkRadio);
 		if(shiftWorkRadio.equalsIgnoreCase("shiftwork")){
 			session.put("shiftwork", "true");
-		}
+		}*/
 	}
 	
 	private boolean validLeaveApply(){
@@ -5852,9 +5853,10 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	//-------shift work----------
 	public String shiftWorkMngInit(){
 		try{
-			
 			branchSiteList = Constant.getBranchSiteList();
 			actingType = "shiftwork";
+			
+			
 			
 			return SUCCESS;
 		}catch(Exception ex){
@@ -5948,6 +5950,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		
 		mp2001.setMP2001_ACTING_APPLICATION_PERSON(employeeData.getMP1001_EMPLOYEE_NUM());
     	mp2001.setMP2001_ACTING_APPLICATION_PERSON_NAME(employeeData.getMP1001_PREFERED_NAME());
+    	//actingType = "shiftwork";
     	actingType = "self";
     	
     	// 个人假期剩余天数
@@ -6263,6 +6266,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	}
 	
 	public String shiftworkAddLeaveApply(){
+		/*
 		try{
 			HttpServletResponse resp = ServletActionContext.getResponse();
 			PrintWriter out = resp.getWriter();
@@ -6284,11 +6288,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		catch(Exception e){
 			log.info(e.getMessage());
 			return ERROR;
-		}
-	}
-/*	public String shiftworkAddLeaveApply(){
-		return "fail";
-		System.out.println("in validateShiftworkAddLeaveApply function");
+		}*/
 		ActionContext context = ActionContext.getContext();
 		Map<String, Object> session = context.getSession();
 		// 取得登陆人信息
@@ -6305,6 +6305,17 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 				mp2001.setMP2001_EMPLOYEE_NUM(_tempNum);
 			}
 		    
+			if(null != dayTypeChoose && dayTypeChoose.equalsIgnoreCase("singleDay")){
+				//mp2001.MP2001_TO_DATETIME = mp2001.MP2001_FROM_DATETIME;
+				mp2001.setMP2001_TO_DATETIME(mp2001.getMP2001_FROM_DATETIME());
+			}
+			if(null != dayTypeChoose && dayTypeChoose.equalsIgnoreCase("multiDays")){
+				workingHours1 = "0";
+				workingMinute1 = "0";
+				workingHours2 = "0";
+				workingMinute2 = "0";
+			}
+			
 			String _from = mp2001.getMP2001_FROM_DATETIME() + " " + String.format("%02d", Integer.parseInt(workingHours1)) + ":" + String.format("%02d", Integer.parseInt(workingMinute1))+":00";
 			String _to = mp2001.getMP2001_TO_DATETIME() + " " + String.format("%02d", Integer.parseInt(workingHours2)) + ":" + String.format("%02d", Integer.parseInt(workingMinute2))+":00";
 			String _id = "";
@@ -6393,7 +6404,8 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 					mp2001.setMP2001_STATUS("0"); // 0:正常数据     1:废止数据
 					mp2001.setMP2001_DAYS(getLeaveHours()); // 设定请假时间
 					mp2001.setMP2001_ACTING_APPLICATION_PERSON(_empNo);
-					mp2001.setMP2001_APPLIY_TYPE(actingType);
+					//mp2001.setMP2001_APPLIY_TYPE(actingType);
+					mp2001.setMP2001_APPLIY_TYPE("shiftwork"); //change to shift work type directly
 					mp2001.setMP2001_CREATE_DATETIME(addtime1);
 					mp2001.setMP2001_CREATE_USER(employeeData.getMP1001_EMPLOYEE_NUM());
 					mp2001.setMP2001_FROM_DATETIME(_from);
@@ -6533,7 +6545,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 					// Send Mail ------2011-10-31 Add by Tim------End
 
 					session.put("LEAVE_NUM", leaveNum);
-				}else if(type.equals("edit")){
+	/*			}else if(type.equals("edit")){
 					MP2001 editData = new MP2001();
 					editData = service.findById(MP2001_NUM);
 					
@@ -6555,7 +6567,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 					}
 					
 					service.update(editData);
-				}
+				}*/
 				
 				return SUCCESS;
 			}
@@ -6564,8 +6576,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			System.out.println(ex.getLocalizedMessage());
 			return INPUT;
 		}
+
 	}
-*/	
+
 	public String validateShiftworkAddLeaveApply(){
 		System.out.println("in validateShiftworkAddLeaveApply function");
 		return SUCCESS;
@@ -8615,5 +8628,13 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 
 	public void setShiftWorkRadio(String shiftWorkRadio) {
 		this.shiftWorkRadio = shiftWorkRadio;
+	}
+
+	public String getDayTypeChoose() {
+		return dayTypeChoose;
+	}
+
+	public void setDayTypeChoose(String dayTypeChoose) {
+		this.dayTypeChoose = dayTypeChoose;
 	}
 }
