@@ -10,12 +10,13 @@ public class MP2010 implements Serializable {
 	
 	private int MP2010_ID;
 	private String MP2010_EMPLOYEE_NUM;
-	//private MP1001 shiftEmployee; 
 	private String MP2010_DATE;
 	private String MP2010_FROM_DATETIME;
 	private String MP2010_END_DATETIME;
 	private String MP2010_TYPE;
 	private String MP2010_BRANCH_SITE;
+	
+	private MP1001 employeeInfo;
 	
 	public int getMP2010_ID() {
 		return MP2010_ID;
@@ -62,6 +63,12 @@ public class MP2010 implements Serializable {
 	}
 	public void setMP2010_EMPLOYEE_NUM(String mP2010_EMPLOYEE_NUM) {
 		MP2010_EMPLOYEE_NUM = mP2010_EMPLOYEE_NUM;
+	}
+	public MP1001 getEmployeeInfo() {
+		return employeeInfo;
+	}
+	public void setEmployeeInfo(MP1001 employeeInfo) {
+		this.employeeInfo = employeeInfo;
 	}
 	
 }

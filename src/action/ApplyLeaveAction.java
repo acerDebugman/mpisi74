@@ -36,7 +36,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
-import org.jfree.io.FileUtilities;
 
 import schedule.CommonJobMethod;
 import service.IAC0006Service;
@@ -282,6 +281,10 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	private String shiftworkExcelContentType;
 	private String shiftWorkRadio;
 	private String dayTypeChoose;
+	
+	//private String ;
+	private List<MP2010> shiftworkScheduleList;
+//	private IMP2010Service serviceMP2010;
 	
     /* 
 	* @getDownloadFile 此方法对应的是struts.xml文件中的： <param 
@@ -2068,13 +2071,6 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	 */
 	public void validateAddLeaveApply() throws Exception{
 		//validLeaveApply();
-		/*ActionContext context = ActionContext.getContext();
-		Map<String, Object> session = context.getSession();
-		
-		System.out.println("validate: " + shiftWorkRadio);
-		if(shiftWorkRadio.equalsIgnoreCase("shiftwork")){
-			session.put("shiftwork", "true");
-		}*/
 	}
 	
 	private boolean validLeaveApply(){
@@ -5856,10 +5852,34 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			branchSiteList = Constant.getBranchSiteList();
 			actingType = "shiftwork";
 			
+			shiftworkScheduleList = serviceMP2010.findAll();
 			
+			for(MP2010 tmpRcd : shiftworkScheduleList){
+				MP1001 mp11 = serviceMP1001.findById(tmpRcd.getMP2010_EMPLOYEE_NUM());
+				tmpRcd.setEmployeeInfo(mp11);
+			}
 			
 			return SUCCESS;
 		}catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+	
+	public String shiftWorkSearch(){
+		try{
+			System.out.println("in shiftWordSearch function");
+			
+			shiftworkScheduleList = serviceMP2010.findAll();
+			
+			for(MP2010 tmpRcd : shiftworkScheduleList){
+				MP1001 mp11 = serviceMP1001.findById(tmpRcd.getMP2010_EMPLOYEE_NUM());
+				tmpRcd.setEmployeeInfo(mp11);
+			}
+			
+			return SUCCESS;
+		}
+		catch(Exception ex){
 			log.info(ex.getMessage());
 			return "error";
 		}
@@ -8636,5 +8656,13 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 
 	public void setDayTypeChoose(String dayTypeChoose) {
 		this.dayTypeChoose = dayTypeChoose;
+	}
+
+	public List<MP2010> getShiftworkScheduleList() {
+		return shiftworkScheduleList;
+	}
+
+	public void setShiftworkScheduleList(List<MP2010> shiftworkScheduleList) {
+		this.shiftworkScheduleList = shiftworkScheduleList;
 	}
 }

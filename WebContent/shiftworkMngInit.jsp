@@ -153,7 +153,14 @@ function searchSubmit(){
 	var employeeName = $('#employeeName').val();
 	var branchSiteId = $('#branchSiteId').val();
 	
-	$('#shiftWorkInfoList').load('');
+	var param = {'fromDate' : fromDate,
+				 'toDate' : toDate,
+				 'employeeNum' : employeeNum,
+				 'employeeName' : employeeName,
+				 'branchSiteId' : branchSiteId 
+				 };
+	
+	$('#shiftWorkInfoList').load('shiftWorkSearch.action', param);
 }
 </script>
 </head>
@@ -210,16 +217,16 @@ function searchSubmit(){
         <td colspan="4" align="right"></td>
     </tr>
 </table>
-<table width="100%" border="0" cellspacing="1" cellpadding="3" align="center">
+<table width="100%" border="0" color="red" cellspacing="1" cellpadding="3" align="center">
 	<tr>                                 
-       	<td align="center">
+       	<td align="left" width="38%">
        		<input type="button" value="Download Next Month Excel Template" onclick="downloadMonthlyExcel()"/>
             <input id="ImportExcel" name="ImportExcel" value="Import Excel" onclick="openImportExcelWindow()" type="button"/>
 		</td>
-		<td align="left" width="100px">
+		<td align="left" width="30%">
             <input id="shiftWorkAddLeave" name="shiftWorkAddLeave" type="button" value="Add Shiftwork Leave" onclick="openAddWindow()" style="float:left"/>
         </td>
-        <td align="center">
+        <td align="right" width="30%">
         	<input type="button" name="searchBtn" value="Search" id="searchBtn" onclick="searchSubmit()"/>
             <input id="refreshData" name="refreshData" type="button" value="" onclick="refresh()" style="display:none;"/>
         </td>
@@ -237,28 +244,14 @@ function searchSubmit(){
         <th scope="col">Branch Site</th>
     </tr>
 
-<s:iterator value="mp2007InfoList" status="st">
-    <tr id="<s:property value="MP2007_SEQ"/>" class="row" align="center" style="height:28px;" onmousedown="rowClick('<s:property value="MP2007_SEQ"/>')">
-        <td width="30px">
-            <input id="Approval" name="Approval" type="button" value="▼" style="width:30px;border:none; background-color:transparent" onclick="ApprovalLeave('<s:property value="MP2007_SEQ"/>','<s:property value="MP2007_STATUS"/>')"/>
-        </td>
-        <td width="30px">${st.index+1}</td>
-        <td width="150px"><s:property value="MP2007_EMPLOYEE_NUM"/></td>
-        <td><s:property value="MP2007_EMPLOYEE_NAME"/></td>
-        <td width="200px"><s:property value="MP2007_DEPARTMENT_NAME"/></td>
-        <td width=100px"><s:property value="MP2007_DAYS"/></td>
-<s:if test="MP2007_STATUS == 1" >
-        <td style="color:blue;width:100px;"><s:property value="MP2007_STATUS_NAME"></s:property></td>
-</s:if>
-<s:elseif test="MP2007_STATUS == 2" >
-        <td style="color:green;width:100px;"><s:property value="MP2007_STATUS_NAME"></s:property></td>
-</s:elseif>
-<s:elseif test="MP2007_STATUS == 3" >
-        <td style="color:red;width:100px;"><s:property value="MP2007_STATUS_NAME"></s:property></td>
-</s:elseif>
-        <td width="100px"><s:property value="MP2007_TYPE_NAME"/></td>
+<s:iterator value="shiftworkScheduleList" status="st">
+    <tr id="<s:property value="MP2010_ID"/>" class="row" align="center" style="height:28px;" >
+        <td width="80px"><s:property value="MP2010_EMPLOYEE_NUM" /></td>
+        <td width="80px"><s:property value="employeeInfo.MP1001_PREFERED_NAME" /></td>
+        <td width="80px"><s:property value="MP2010_DATE.substring(0, 10)" /></td>
+        <td width="40px"><s:property value="MP2010_TYPE" /></td>
+        <td width="100px"><s:property value="MP2010_BRANCH_SITE" /></td>
     </tr>
-    
 </s:iterator>
 </table>
 </div>

@@ -548,15 +548,11 @@
 			<result name="success">shiftworkMngInit.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
-		<action name="shiftWordSearch" class="applyLeaveMngBean" method="shiftWordSearch">
+		<action name="shiftWorkSearch" class="applyLeaveMngBean" method="shiftWorkSearch">
 			<result name="success">shiftworkSearch_list.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
 		
-		<action name="shiftWorkLeaveApplicationInit" class="applyLeaveMngBean" method="shiftWorkLeaveApplicationInit">
-			<result name="success">shiftWorkLeaveApplicationMngInit.jsp</result>
-		    <interceptor-ref name="sessioncheck"/>
-		</action>
 		<action name="shiftworkLeaveSubmit" class="applyLeaveMngBean" >
 		    <result name="success" type="redirect">shiftworkApplyLeaveDis.action</result>
 			<result name="approve" >applyLeave.jsp</result>

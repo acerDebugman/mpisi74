@@ -18,11 +18,16 @@
         <th scope="col">Branch Site</th>
     </tr>
 
-<s:iterator value="mp2007InfoList" status="st">
-        
+<s:iterator value="shiftworkScheduleList" status="st">
+    <tr id="<s:property value="MP2010_ID"/>" class="row" align="center" style="height:28px;" >
+        <td width="80px"><s:property value="MP2010_EMPLOYEE_NUM" /></td>
+        <td width="80px"><s:property value="employeeInfo.MP1001_PREFERED_NAME" /></td>
+        <td width="80px"><s:property value="MP2010_DATE.substring(0, 10)" /></td>
+        <td width="40px"><s:property value="MP2010_TYPE" /></td>
+        <td width="100px"><s:property value="MP2010_BRANCH_SITE" /></td>
+    </tr>
 </s:iterator>
 </table>
-
 </body>
 
 </html>
