@@ -560,8 +560,9 @@ public class executeJobs {
 		//insert new records
 		CommonJobMethod.insertCalculatedAttendanceRcd(calculatedAttendanceRcdList);
 		
-		//send abnormal emails
-		CommonJobMethod.sendAbnormalEmails(calculatedAttendanceRcdList);
+		//send abnormal emails, as shift workers have no emails, so send to their manager. 
+		//get all yesterday Abnormal email to manager, not only for shiftworker
+		CommonJobMethod.sendAbnormalEmails();
 		
 		} catch (ClassNotFoundException e){
 			System.out.println(e.getMessage());

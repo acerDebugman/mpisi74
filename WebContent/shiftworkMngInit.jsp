@@ -136,7 +136,7 @@ function downloadMonthlyExcel(){
 }
 
 function openAddWindow(){
-	var popstyle="dialogTop:300px;dialogLeft:600px;dialogRight:600px;help:no;center:yes;dialogHeight:550px;dialogWidth:800px;status:no;resizable:no;scroll:no";
+	var popstyle="dialogTop:300px;dialogLeft:600px;dialogRight:600px;help:no;center:yes;dialogHeight:550px;dialogWidth:600px;status:no;resizable:no;scroll:no";
 	//window.showModalDialog("addShiftWorkLeaveInit.action?pageType=add", window, popstyle);
 	window.open("addShiftWorkLeaveInit.action?pageType=add", "_blank", popstyle);
 }
@@ -161,6 +161,13 @@ function searchSubmit(){
 				 };
 	
 	$('#shiftWorkInfoList').load('shiftWorkSearch.action', param);
+}
+function shiftWorkCalculate(){
+	var options = {
+			url: 'shiftWorkCalculate.action',
+			dataType : 'html'
+	};
+	$.ajax(options);
 }
 </script>
 </head>
@@ -225,6 +232,9 @@ function searchSubmit(){
 		</td>
 		<td align="left" width="30%">
             <input id="shiftWorkAddLeave" name="shiftWorkAddLeave" type="button" value="Add Shiftwork Leave" onclick="openAddWindow()" style="float:left"/>
+        </td>
+        <td align="left" width="30%">
+            <input id="shiftWorkCalculate" name="shiftWorkCalculate" type="button" value="implement calculate" onclick="shiftWorkCalculate()" style="float:left"/>
         </td>
         <td align="right" width="30%">
         	<input type="button" name="searchBtn" value="Search" id="searchBtn" onclick="searchSubmit()"/>

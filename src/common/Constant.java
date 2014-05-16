@@ -704,7 +704,7 @@ public class Constant {
 		List<String> rs = new ArrayList<String>();
 
 		rs.add("---Please Select---");
-		rs.add("Head Office");
+		rs.add("Headquarter");
 		rs.add("Roodekop");
 		rs.add("Citydeep");
 		rs.add("Durban");

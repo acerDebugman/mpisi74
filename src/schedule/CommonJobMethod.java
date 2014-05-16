@@ -40,7 +40,8 @@ public class CommonJobMethod {
 		//String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr";
 		//String sqlUrl = "jdbc:jtds:sqlserver://192.168.53.71:1433/mpisiHr;instance=JOE";
 		//String sqlUrl = "jdbc:jtds:sqlserver://192.168.53.71:1433/mpisiHr_test;instance=JOE";
-		String sqlUrl = "jdbc:jtds:sqlserver://192.168.53.62:1433/mpisiHr;instance=JOE";
+		String sqlUrl = "jdbc:jtds:sqlserver://192.168.53.66:1433/mpisiHr;instance=JOE";
+		//String sqlUrl = "jdbc:jtds:sqlserver://MPC050141:1433/mpisiHr;instance=JOE";
 		String classforname = "net.sourceforge.jtds.jdbc.Driver";
 		String uid = "sa";
 		String pwd = "IDpt463";
@@ -52,7 +53,8 @@ public class CommonJobMethod {
 		return connSql;
 	}
 	public static Connection getDBConnection2() throws ClassNotFoundException, SQLException{
-		String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.172:1433/finger";
+		//String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.172:1433/finger";
+		String sqlUrl = "jdbc:jtds:sqlserver://192.168.53.66:1433/testFinger;instance=JOE";
 		String classforname = "net.sourceforge.jtds.jdbc.Driver";
 		String uid = "sa";
 		String pwd = "IDpt463";
@@ -1172,10 +1174,10 @@ public class CommonJobMethod {
 	//{ //here for shift execute jobs
 	public static Set<String> getAllShiftWorkEmployeeNums(Date date) throws ClassNotFoundException, SQLException{
 		Set<String> employeeNumSet = new HashSet<String>();
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Connection conn = getDBConnection();
 		StringBuffer sb = new StringBuffer();
-		sb.append("select * from MP2010 where 1=1 and MP2010_DATE='" + date.toString() + "'");
+		sb.append("select distinct(MP2010_EMPLOYEE_NUM) from MP2010 where 1=1");
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(sb.toString());
 		
@@ -1190,20 +1192,26 @@ public class CommonJobMethod {
 	}
 	
 	public static List<CheckInOutDto> getAllAttendanceRecords(Set<String> employeeNums) throws ClassNotFoundException, SQLException, ParseException {
-		Connection conn = getDBConnection2();
-				
 		List<CheckInOutDto> recordsList = new ArrayList<CheckInOutDto>();
 		
+		if(null == employeeNums || 0 == employeeNums.size()){
+			System.out.println("Employee set is null !");
+			return null;
+		}
+		Connection conn = getDBConnection2();
+		
 		StringBuffer sb = new StringBuffer();
-		sb.append("select u.SSN, c.CHECKTIME, c.SENSORID from CHECKTIME c, USERINFO u where 1=1 and c.CHECKTIME>=DATEADD(DD, DATEDIFF(DD,0,getdate()), -14) and c.USERID=u.USERID and u.SSN in (");
+		sb.append("select u.SSN, c.CHECKTIME, c.SENSORID from CHECKINOUT c, USERINFO u where 1=1 and c.CHECKTIME>=DATEADD(DD, DATEDIFF(DD,0,getdate()), -14) and c.USERID=u.USERID and u.SSN in (");
 		for(String employeeNum : employeeNums){
 			sb.append("'" + employeeNum + "',");
 		}
-		sb.append(sb.substring(0,sb.length() - 1));
-		sb.append(")");
-		sb.append(" order by c.CHECKTIME ASC;"); //here records are ordered, from morning to night
 		
-		ResultSet rs = conn.createStatement().executeQuery(sb.toString());
+		//sb.append(")");
+		//sb.append(" order by c.CHECKTIME ASC;"); //here records are ordered, from morning to night
+		
+		String str = sb.substring(0,sb.length() - 1) + ") order by c.CHECKTIME ASC;";
+		
+		ResultSet rs = conn.createStatement().executeQuery(str);
 		while(rs.next()){
 			CheckInOutDto cioDto = new CheckInOutDto();
 			
@@ -1222,26 +1230,31 @@ public class CommonJobMethod {
 	//if that day no any records, then no AttendanceRecordDto in the list
 	public static List<AttendanceRecordDto> separateIntoEachDays(List<CheckInOutDto> checkInOutRecords){
 		List<AttendanceRecordDto> dailyRecordslist = new ArrayList<AttendanceRecordDto>();
+		//Map<String, AttendanceRecordDto> mapCacheAttendanceRecord = new HashMap<String, AttendanceRecordDto>();		
 		
 		for(CheckInOutDto dto : checkInOutRecords){
 			String checkDateTime = dto.getCheckTime();
 			String whichDay = checkDateTime.substring(0, 10);
 			String employeeNum = dto.getEmployeeNum();
-			
+
+			boolean flag = false;
 			for(AttendanceRecordDto arDto : dailyRecordslist){
 				//if find that day and employee, then add this record
 				if(arDto.getWhichDate().equalsIgnoreCase(whichDay) && arDto.getEmployeeNum().equalsIgnoreCase(employeeNum)){
 					arDto.getCheckRecordsList().add(dto);
+					flag = true;
 				}
-				else{//if can't find that day, create a new AttendanceRecordDto
-					AttendanceRecordDto newArDto = new AttendanceRecordDto();
-					
-					newArDto.setEmployeeNum(employeeNum);
-					newArDto.setWhichDate(whichDay);
-					newArDto.getCheckRecordsList().add(dto);
-					
-					dailyRecordslist.add(newArDto);
-				}
+			}
+			
+			if(false == flag){
+				AttendanceRecordDto newArDto = new AttendanceRecordDto();
+				
+				newArDto.setEmployeeNum(employeeNum);
+				newArDto.setWhichDate(whichDay);
+				newArDto.setCheckRecordsList(new ArrayList<CheckInOutDto>());
+				newArDto.getCheckRecordsList().add(dto);
+				
+				dailyRecordslist.add(newArDto);
 			}
 		}
 		//if the records are not sorted, sort it from morning to night
@@ -1288,7 +1301,7 @@ public class CommonJobMethod {
 		Date today = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(today);
-		cal.add(Calendar.DAY_OF_MONTH, -14);
+		cal.add(Calendar.DAY_OF_MONTH, -3); //the past weeks
 		
 		
 		while(!cal.getTime().equals(today)){  //which day
@@ -1297,7 +1310,8 @@ public class CommonJobMethod {
 				String strKey_0 = employeeNum + "#" + sdf.format(cal.getTime());
 				MP2003 mp23 = new MP2003();
 				mp23.setMP2003_EMPLOYEE_NUM(employeeNum);
-				mp23.setMP2003_DATETIME(sdf.format(today));
+				//mp23.setMP2003_DATETIME(sdf.format(today));
+				mp23.setMP2003_DATETIME(sdf.format(cal.getTime()));
 				
 				if(mapCacheAttendanceRecord.containsKey(strKey_0)){
 						AttendanceRecordDto dto = mapCacheAttendanceRecord.get(strKey_0);
@@ -1319,7 +1333,7 @@ public class CommonJobMethod {
 								}
 								List<CheckInOutDto> listNextDayCheckTime = null; 
 								if(null != nextDayDto){
-									listNextDayCheckTime = dto.getCheckRecordsList();
+									listNextDayCheckTime = nextDayDto.getCheckRecordsList();
 								}
 								
 								//that night attendance records
@@ -1335,7 +1349,8 @@ public class CommonJobMethod {
 										}
 									}	
 								}
-								if(null != listNextDayCheckTime && 0 != listNextDayCheckTime.size()){
+								if(null != listNextDayCheckTime && 0 != listNextDayCheckTime.size()){ 
+									//******** there some problems about night leave, if leave start at 01:00:00 next day mornig, then it doesn't work any more 
 									for(CheckInOutDto tmpCheckInOutTime : listNextDayCheckTime){
 										if(tmpCheckInOutTime.getCheckTime().substring(11, 19).compareToIgnoreCase("12:00:00") < 0){ //next day before noon
 											theNightCheckTimeList.add(tmpCheckInOutTime); //add to whole list
@@ -1350,13 +1365,15 @@ public class CommonJobMethod {
 									Integer minutes = getNightLeaveMinutes(employeeNum, sdf.format(cal.getTime()));
 									if(minutes < 480){
 										mp23.setMP2003_COMMENT("Abnormal");
+										mp23.setMP2003_STATUS("1");
 									}
 								}
 								else if(1 == theNightCheckTimeList.size()){
 									//get leave application, and tell
 									Integer minutes = getNightLeaveMinutes(employeeNum, sdf.format(cal.getTime()));
-									if(minutes < 480){
+									if(minutes < 720){ //12 hours
 										mp23.setMP2003_COMMENT("Abnormal");
+										mp23.setMP2003_STATUS("1");
 									}
 									//tell it's in or out
 									CheckInOutDto c = theNightCheckTimeList.get(0);
@@ -1372,7 +1389,7 @@ public class CommonJobMethod {
 								else{
 									//
 									long el = cal.getTimeInMillis();
-									el += 1000*60*60;
+									el += 1000*60*60*24;
 									Date followingDay = new Date();
 									followingDay.setTime(el);
 									String firstDay = sdf.format(cal.getTime());
@@ -1381,72 +1398,78 @@ public class CommonJobMethod {
 									CheckInOutDto firstCheckRcd = theNightCheckTimeList.get(0); //get first record
 									CheckInOutDto lastCheckRcd = theNightCheckTimeList.get(theNightCheckTimeList.size() - 1);
 									
+									mp23.setMP2003_START_TIME(firstCheckRcd.getCheckTime());
+									mp23.setMP2003_START_TIME_DOOR(firstCheckRcd.getDoorId());
+									mp23.setMP2003_FINISH_TIME(lastCheckRcd.getCheckTime());
+									mp23.setMP2003_FINISH_TIME_DOOR(lastCheckRcd.getDoorId());
+									
 									if(firstCheckRcd.getCheckTime().compareToIgnoreCase(firstDay + " " + Constant.shiftWorkNightStartTime) > 0 &&
 											lastCheckRcd.getCheckTime().compareToIgnoreCase(strFollowingDay + " " + Constant.shiftWorkNightEndTime) >= 0){
 										List<MP2001> listRcd = getNightLeavesByDate(employeeNum, firstDay);
 										MP2001 tmpFirstLeaveRcd = listRcd.get(0);
-										if(tmpFirstLeaveRcd.getMP2001_FROM_DATETIME().equalsIgnoreCase(firstDay + " " + Constant.shiftWorkNightStartTime)){
-											if(firstCheckRcd.getCheckTime().compareToIgnoreCase(tmpFirstLeaveRcd.getMP2001_TO_DATETIME()) > 0){
-												mp23.setMP2003_COMMENT("Late Clock In");
+										if(tmpFirstLeaveRcd.getMP2001_FROM_DATETIME().substring(0, 19).equalsIgnoreCase(firstDay + " " + Constant.shiftWorkNightStartTime)){
+											if(firstCheckRcd.getCheckTime().substring(0, 19).compareToIgnoreCase(tmpFirstLeaveRcd.getMP2001_TO_DATETIME().substring(0, 19)) > 0){
+												mp23.setMP2003_COMMENT("Late");
+												mp23.setMP2003_STATUS("3");
 											}
 											/*else{//it's working normally
 												
 											}*/
 										}
 										else{ //leave application doesn't start from shiftwork time, so it's Abnormal
-											mp23.setMP2003_COMMENT("Late Clock In");
+											mp23.setMP2003_COMMENT("Late");
+											mp23.setMP2003_STATUS("3");
 										}
 									}
 									else if(firstCheckRcd.getCheckTime().compareToIgnoreCase(firstDay + " " + Constant.shiftWorkNightStartTime) <= 0 &&
 												lastCheckRcd.getCheckTime().compareToIgnoreCase(strFollowingDay + " " + Constant.shiftWorkNightEndTime) < 0){
 										List<MP2001> listRcd = getNightLeavesByDate(employeeNum, firstDay);
 										MP2001 tmpLastLeaveRcd = listRcd.get(listRcd.size() - 1);
-										if(tmpLastLeaveRcd.getMP2001_TO_DATETIME().equalsIgnoreCase(followingDay + " " + Constant.shiftWorkNightEndTime)){
-											if(lastCheckRcd.getCheckTime().compareToIgnoreCase(tmpLastLeaveRcd.getMP2001_FROM_DATETIME()) < 0){
-												mp23.setMP2003_COMMENT("Early Clock Out");
+										if(tmpLastLeaveRcd.getMP2001_TO_DATETIME().substring(0, 19).equalsIgnoreCase(followingDay + " " + Constant.shiftWorkNightEndTime)){
+											if(lastCheckRcd.getCheckTime().substring(0, 19).compareToIgnoreCase(tmpLastLeaveRcd.getMP2001_FROM_DATETIME().substring(0, 19)) < 0){
+												mp23.setMP2003_COMMENT("Early");
+												mp23.setMP2003_STATUS("2");
 											}
 											/*else{//it's working normally
 												
 											}*/
 										}
 										else{ //leave application doesn't start from shiftwork time, so it's Abnormal
-											mp23.setMP2003_COMMENT("Early Clock Out");
+											mp23.setMP2003_COMMENT("Early");
+											mp23.setMP2003_STATUS("2");
 										}
 									}
 									else if(firstCheckRcd.getCheckTime().compareToIgnoreCase(firstDay + " " + Constant.shiftWorkNightStartTime) > 0 &&
 												lastCheckRcd.getCheckTime().compareToIgnoreCase(strFollowingDay + " " + Constant.shiftWorkNightEndTime) < 0){
 										List<MP2001> listRcd = getNightLeavesByDate(employeeNum, firstDay);
-										MP2001 tmpFirstLeaveRcd = listRcd.get(0);
-										MP2001 tmpLastLeaveRcd = listRcd.get(listRcd.size() - 1);
-										if(tmpFirstLeaveRcd.getMP2001_FROM_DATETIME().equalsIgnoreCase(firstDay + " " + Constant.shiftWorkNightStartTime)){
-											if(firstCheckRcd.getCheckTime().compareToIgnoreCase(tmpFirstLeaveRcd.getMP2001_TO_DATETIME()) > 0){
-												mp23.setMP2003_COMMENT("Late Clock In");
-											}
+										if(0 == listRcd.size()){
+											mp23.setMP2003_COMMENT("Late/Early");
 										}
 										else{
-											mp23.setMP2003_COMMENT("Late Clock In");
-										}
-										
-										if(tmpLastLeaveRcd.getMP2001_TO_DATETIME().equalsIgnoreCase(followingDay + " " + Constant.shiftWorkNightEndTime)){
-											if(lastCheckRcd.getCheckTime().compareToIgnoreCase(tmpLastLeaveRcd.getMP2001_FROM_DATETIME()) < 0){
-												if(!mp23.getMP2003_COMMENT().equals("") || null != mp23.getMP2003_COMMENT()){
-													mp23.setMP2003_COMMENT(mp23.getMP2003_COMMENT() + " and " + "Early Clock Out");
+											MP2001 tmpFirstLeaveRcd = listRcd.get(0);
+											MP2001 tmpLastLeaveRcd = listRcd.get(listRcd.size() - 1);
+											if(tmpFirstLeaveRcd.getMP2001_FROM_DATETIME().substring(0, 19).equalsIgnoreCase(firstDay + " " + Constant.shiftWorkNightStartTime)){
+												if(firstCheckRcd.getCheckTime().substring(0, 19).compareToIgnoreCase(tmpFirstLeaveRcd.getMP2001_TO_DATETIME().substring(0, 19)) > 0){
+													mp23.setMP2003_COMMENT("Late");
+													mp23.setMP2003_STATUS("3");
+													if(lastCheckRcd.getCheckTime().substring(0, 19).compareToIgnoreCase(followingDay + " " + Constant.shiftWorkNightEndTime) < 0){
+														mp23.setMP2003_COMMENT("Late/Early");
+													}
 												}
-												else{
-													mp23.setMP2003_COMMENT("Early Clock Out");
-												}
-											}
-										}
-										else{
-											if(mp23.getMP2003_COMMENT().equalsIgnoreCase("") || null != mp23.getMP2003_COMMENT()){
-												mp23.setMP2003_COMMENT(mp23.getMP2003_COMMENT() + " and " + "Early Clock Out");
-											}
-											else{
-												mp23.setMP2003_COMMENT("Early Clock Out");
 											}
 											
-										}
+											if(tmpLastLeaveRcd.getMP2001_TO_DATETIME().equalsIgnoreCase(followingDay + " " + Constant.shiftWorkNightEndTime)){
+												if(lastCheckRcd.getCheckTime().substring(0, 19).compareToIgnoreCase(tmpLastLeaveRcd.getMP2001_FROM_DATETIME().substring(0, 19)) < 0){
+													mp23.setMP2003_COMMENT("Early");
+													mp23.setMP2003_STATUS("2");
+													if(firstCheckRcd.getCheckTime().substring(0, 19).compareToIgnoreCase(firstDay + " " + Constant.shiftWorkNightStartTime) > 0){
+														mp23.setMP2003_COMMENT("Late/Early");
+													}
+												}
+											}
+										}		
 									}
+									
 								}
 								
 								
@@ -1565,7 +1588,7 @@ public class CommonJobMethod {
 											lastCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(Constant.shiftWorkDayEndTime) < 0){
 										List<MP2001> leaveApplications = getLeaveApplications(employeeNum, sdf.format(cal.getTime()));
 										if(0 == leaveApplications.size()){
-											mp23.setMP2003_COMMENT("Early and Late");
+											mp23.setMP2003_COMMENT("Late/Early");
 										}
 										else{
 											MP2001 tmpMP21 = leaveApplications.get(0); //first record, it's the earliest record
@@ -1574,22 +1597,36 @@ public class CommonJobMethod {
 											
 											if(fromTime.equalsIgnoreCase(Constant.shiftWorkDayStartTime)){
 												if(firstCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(endTime) > 0){
-													mp23.setMP2003_COMMENT("Late Clock In");
+													mp23.setMP2003_COMMENT("Late");
+													mp23.setMP2003_STATUS("3");
+													if(lastCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(Constant.shiftWorkDayEndTime) < 0){
+														mp23.setMP2003_COMMENT("Late/Early");
+													}
 												}
 												else{ //normal
-													mp23.setMP2003_COMMENT("");
+													if(lastCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(Constant.shiftWorkDayEndTime) < 0){
+														mp23.setMP2003_COMMENT("Early");
+														mp23.setMP2003_STATUS("2");
+													}
 												}
 											}
 											
-											tmpMP21 = leaveApplications.get(leaveApplications.size()); //last record, it's the latest record
+											tmpMP21 = leaveApplications.get(leaveApplications.size() - 1); //last record, it's the latest record
 											fromTime = tmpMP21.getMP2001_FROM_DATETIME().substring(11, 19);
 											endTime = tmpMP21.getMP2001_TO_DATETIME().substring(11, 19);
 											if(endTime.equalsIgnoreCase(Constant.shiftWorkDayEndTime)){
 												if(lastCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(fromTime) < 0){
-													mp23.setMP2003_COMMENT("Early Leave");
+													mp23.setMP2003_COMMENT("Early");
+													mp23.setMP2003_STATUS("2");
+													if(firstCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(Constant.shiftWorkDayStartTime) > 0){
+														mp23.setMP2003_COMMENT("Late/Early");
+													}
 												}
 												else{
-													mp23.setMP2003_COMMENT("");
+													if(firstCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(Constant.shiftWorkDayStartTime) > 0){
+														mp23.setMP2003_COMMENT("Late");
+														mp23.setMP2003_STATUS("3");
+													}
 												}
 											}
 										}
@@ -1599,7 +1636,8 @@ public class CommonJobMethod {
 										//calculate application time
 										List<MP2001> leaveApplications = getLeaveApplications(employeeNum, sdf.format(cal.getTime()));
 										if(0 == leaveApplications.size()){
-											mp23.setMP2003_COMMENT("Late Clock In");
+											mp23.setMP2003_COMMENT("Late");
+											mp23.setMP2003_STATUS("3");
 										}
 										else{
 											MP2001 tmpMP21 = leaveApplications.get(0); //first record, it's the earliest record
@@ -1608,7 +1646,8 @@ public class CommonJobMethod {
 											
 											if(fromTime.equalsIgnoreCase(Constant.shiftWorkDayStartTime)){
 												if(firstCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(endTime) > 0){
-													mp23.setMP2003_COMMENT("Late Clock In");
+													mp23.setMP2003_COMMENT("Late");
+													mp23.setMP2003_STATUS("3");
 												}
 												else{ //normal
 													mp23.setMP2003_COMMENT("");
@@ -1622,7 +1661,8 @@ public class CommonJobMethod {
 										
 										List<MP2001> leaveApplications = getLeaveApplications(employeeNum, sdf.format(cal.getTime()));
 										if(0 == leaveApplications.size()){
-											mp23.setMP2003_COMMENT("Early and Late");
+											mp23.setMP2003_COMMENT("Early");
+											mp23.setMP2003_STATUS("2");
 										}
 										else{
 											MP2001 tmpMP21 = leaveApplications.get(leaveApplications.size() - 1); //get last record, it's the earliest record
@@ -1631,7 +1671,8 @@ public class CommonJobMethod {
 											
 											if(endTime.equalsIgnoreCase(Constant.shiftWorkDayEndTime)){
 												if(lastCheckInOutRcd.getCheckTime().substring(11, 19).compareToIgnoreCase(fromTime) < 0){
-													mp23.setMP2003_COMMENT("Early Leave");
+													mp23.setMP2003_COMMENT("Early");
+													mp23.setMP2003_STATUS("2");
 												}
 												else{
 													mp23.setMP2003_COMMENT("");
@@ -1663,31 +1704,37 @@ public class CommonJobMethod {
 						//the granule is day, can't calculate hours and minutes now. 2014/04/16
 						if(type.equalsIgnoreCase("N")){
 							//find the whole day records
-							Integer hours = getThatDayLeaveHours(employeeNum, sdf.format(cal.getTime()));
-							if(hours == 12){ //the whole day.
+							double hours = getThatDayLeaveHours(employeeNum, cal.getTime());
+							if(hours >= 12){ //the whole day.
 								//tmpRecord.
 								mp23.setMP2003_COMMENT("Night ShiftWork Leave 12H");
+								mp23.setMP2003_STATUS("2");
 							}
 							else if(hours < 12 && hours > 0){
 								mp23.setMP2003_COMMENT("Abnormal"); //also set to abnormal current
+								mp23.setMP2003_STATUS("1");
 							}
 							else{ //because no records and didn't apply for whole day, , if he applies
 								mp23.setMP2003_COMMENT("Abnormal");
+								mp23.setMP2003_STATUS("1");
 							}
 							
 						}
 						else if(type.equalsIgnoreCase("D")){
 							//find the whole day records
-							Integer hours = getThatDayLeaveHours(employeeNum, sdf.format(cal.getTime()));
-							if(hours == 12){ //the whole day.
+							double hours = getThatDayLeaveHours(employeeNum, cal.getTime());
+							if(hours >= 12){ //the whole day.
 								//tmpRecord.
 								mp23.setMP2003_COMMENT("Shiftwork Leave 12H");
+								mp23.setMP2003_STATUS("2");
 							}
 							else if(hours < 12 && hours > 0){
 								mp23.setMP2003_COMMENT("Abnormal"); //also set to abnormal
+								mp23.setMP2003_STATUS("1");
 							}
 							else{ //because no records and didn't apply for whole day, , if he applies
 								mp23.setMP2003_COMMENT("Abnormal");
+								mp23.setMP2003_STATUS("1");
 							}
 							
 						}
@@ -1699,9 +1746,9 @@ public class CommonJobMethod {
 						}
 						//
 					}
-					/*else{//no arrangement find, this part is useless, because I have no time 
-						
-					}*/
+					else{//no arrangement find, this part is useless, because I have no time 
+						mp23.setMP2003_COMMENT("No arrangement");
+					}
 				}
 				mp2003ShiftWorkRecordList.add(mp23);
 			}
@@ -1716,7 +1763,7 @@ public class CommonJobMethod {
 		Map<String, MP2010> dataMap = new HashMap<String, MP2010>();
 		
 		Connection conn = getDBConnection();
-		String query = "select * from MP2010;"; 
+		String query = "select * from MP2010;"; //add a time limitation get
 		PreparedStatement pst =  conn.prepareStatement(query);
 		
 		ResultSet rs = pst.executeQuery();
@@ -1733,12 +1780,10 @@ public class CommonJobMethod {
 			shiftworkRecord.setMP2010_ID(rs.getInt("MP2010_ID"));
 			shiftworkRecord.setMP2010_TYPE(rs.getString("MP2010_TYPE"));
 			
-			String strKey = employeeNum + "#" + strDate;
+			String strKey = employeeNum + "#" + strDate.substring(0, 10);
 			dataMap.put(strKey, shiftworkRecord);
 		}
-		
-		
-		
+
 		return dataMap;
 	}
 	
@@ -1756,12 +1801,48 @@ public class CommonJobMethod {
 		conn.close();
 		return listMP2001;
 	}
-	public static int getThatDayLeaveHours(String empNum, String date) throws ClassNotFoundException, SQLException { //from day is that day
-		int rt = 0;
+	public static double getThatDayLeaveHours(String empNum, Date date) throws ClassNotFoundException, SQLException, ParseException{ //Day application, not for the night
+		double rt = 0;
 		Connection conn = getDBConnection();
-		List<MP2001> mp21List = findByDate(empNum, date, conn);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		//SimpleDateFormat sdf_1 = new SimpleDateFormat("hh");
+		//SimpleDateFormat sdf_2 = new SimpleDateFormat("mm");
+		Calendar cal_day = Calendar.getInstance();
+		Calendar cal_from = Calendar.getInstance();
+		Calendar cal_to = Calendar.getInstance();
+		cal_day.setTime(date);
+		
+		List<MP2001> mp21List = findByDate(empNum, new SimpleDateFormat("yyyy-MM-dd").format(date), conn);
 		for(MP2001 mp21 : mp21List){
-			
+			cal_from.setTime(sdf.parse(mp21.getMP2001_FROM_DATETIME()));
+			cal_to.setTime(sdf.parse(mp21.getMP2001_TO_DATETIME()));
+			if(cal_from.get(Calendar.DAY_OF_YEAR) == cal_to.get(Calendar.DAY_OF_YEAR)){ // the same day
+				int h = cal_to.get(Calendar.HOUR_OF_DAY) - cal_from.get(Calendar.HOUR_OF_DAY);
+				int toMin = cal_to.get(Calendar.MINUTE);
+				int fromMin = cal_from.get(Calendar.MINUTE);
+				if(toMin - fromMin < 0){
+					h--;
+					h += 0.5;
+				}
+				if(toMin - fromMin > 0){
+					h += 0.5;
+				}
+				rt += h;
+			}
+			else{ //not the same day
+				if(cal_from.get(Calendar.DAY_OF_YEAR) == cal_day.get(Calendar.DAY_OF_YEAR)){
+					int h = cal_from.get(Calendar.HOUR_OF_DAY);
+					rt += h - 8; //8 clock
+				}
+				if(cal_to.get(Calendar.DAY_OF_YEAR) == cal_day.get(Calendar.DAY_OF_YEAR)){
+					int h = cal_to.get(Calendar.HOUR_OF_DAY);
+					rt += h - 8;
+				}
+				else{
+					rt = 12;
+					break;
+				}
+			}
 		}
 		return rt;
 	}
@@ -1795,8 +1876,8 @@ public class CommonJobMethod {
 		queryString.append(" and ((Convert(char(10),MP2001_FROM_DATETIME,120) <= '" + date + "' ");
 		queryString.append(" and Convert(char(10),MP2001_TO_DATETIME,120) >= '" + date + "') ");
 		//and next day leave application
-		queryString.append(" or (Convert(char(10),MP2001_FROM_DATETIME,120) <=" + followDay + "' ");
-		queryString.append(" and Convert(char(10),MP2001_FROM_DATETIME,120) <=" + followDay + "')) ");
+		queryString.append(" or (Convert(char(10),MP2001_FROM_DATETIME,120) <='" + followDay + "' ");
+		queryString.append(" and Convert(char(10),MP2001_TO_DATETIME,120) >='" + followDay + "')) ");
 		queryString.append(" order by MP2001_FROM_DATETIME ASC"); //here is important, so I can merge them later.
 		
 		//test
@@ -1850,6 +1931,7 @@ public class CommonJobMethod {
 		
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdfM = new SimpleDateFormat("yyyy-MM-dd");
 		Date d = sdf.parse(date);
 		cal.setTime(d);
 		cal.add(Calendar.DAY_OF_MONTH, 1);
@@ -1864,30 +1946,30 @@ public class CommonJobMethod {
 			String workEndDateTime = followingDay + " " + Constant.shiftWorkNightEndTime; 
 			if(mp21.getMP2001_FROM_DATETIME().compareToIgnoreCase(workStartDateTime) <= 0 && 
 					mp21.getMP2001_TO_DATETIME().compareToIgnoreCase(workEndDateTime) >= 0){
-				rt = 8;
+				rt = 12 * 60;
 				break;
 			}
 			else if(mp21.getMP2001_FROM_DATETIME().compareToIgnoreCase(workStartDateTime) > 0 && 
 					mp21.getMP2001_TO_DATETIME().compareToIgnoreCase(workEndDateTime) >= 0){
 				//mp21.getMP2001_FROM_DATETIME();
-				long startEl = sdf.parse(mp21.getMP2001_FROM_DATETIME()).getTime();
-				long endEl = sdf.parse(workEndDateTime).getTime();
+				long startEl = sdfM.parse(mp21.getMP2001_FROM_DATETIME()).getTime();
+				long endEl = sdfM.parse(workEndDateTime).getTime();
 				double db = endEl - startEl;
 				double mins = db/(1000*60);
 				rt += mins;
 			}
 			else if(mp21.getMP2001_FROM_DATETIME().compareToIgnoreCase(workStartDateTime) <= 0 && 
 					mp21.getMP2001_TO_DATETIME().compareToIgnoreCase(workEndDateTime) < 0){
-				long startEl = sdf.parse(mp21.getMP2001_TO_DATETIME()).getTime();
-				long endEl = sdf.parse(workEndDateTime).getTime();
+				long startEl = sdfM.parse(workStartDateTime).getTime();
+				long endEl = sdfM.parse(mp21.getMP2001_TO_DATETIME()).getTime();
 				double db = endEl - startEl;
 				double mins = db/(1000*60);
 				
 				rt += mins;
 			}
 			else{
-				long startEl = sdf.parse(mp21.getMP2001_TO_DATETIME()).getTime();
-				long endEl = sdf.parse(mp21.getMP2001_TO_DATETIME()).getTime();
+				long startEl = sdfM.parse(mp21.getMP2001_FROM_DATETIME()).getTime();
+				long endEl = sdfM.parse(mp21.getMP2001_TO_DATETIME()).getTime();
 				double db = endEl - startEl;
 				double mins = db/(1000*60);
 				
@@ -1899,15 +1981,242 @@ public class CommonJobMethod {
 		return (int)rt;
 	}
 	
-	public static void deleteOldAttendanceRcd(Set<String> employeeSet){// two weeks records
+	public static void deleteOldAttendanceRcd(Set<String> employeeSet) throws ClassNotFoundException, SQLException{// two weeks records
+		Connection conn = getDBConnection();
 		
+		StringBuffer sb = new StringBuffer();
+		sb.append("delete from MP2003 where MP2003_DATETIME>=DATEADD(DD, DATEDIFF(DD,0,getdate()), -14) and MP2003_EMPLOYEE_NUM in (");
+		for(String num : employeeSet){
+			sb.append("'");
+			sb.append(num);
+			sb.append("',");
+		}
+		String sql = sb.substring(0, sb.length() - 1);
+		
+		PreparedStatement st = conn.prepareStatement(sql + ")");
+		st.executeUpdate();
+		st.close();
+		conn.close();
 	}
 	
-	public static void insertCalculatedAttendanceRcd(List<MP2003> calculatedAttendanceRcdList){
+	public static void insertCalculatedAttendanceRcd(List<MP2003> calculatedAttendanceRcdList) throws SQLException, ClassNotFoundException {
+		Connection conn = getDBConnection();
+		Statement st = conn.createStatement();
 		
+		for(MP2003 mp23 : calculatedAttendanceRcdList){
+			StringBuffer sb = new StringBuffer();
+			sb.append("insert into MP2003(");
+			sb.append("MP2003_EMPLOYEE_NUM,");
+			sb.append("MP2003_DATETIME,");
+			sb.append("MP2003_START_TIME,");
+			sb.append("MP2003_FINISH_TIME,");
+			sb.append("MP2003_START_TIME_DOOR,");
+			sb.append("MP2003_FINISH_TIME_DOOR,");
+			sb.append("MP2003_START_TIME_E,");
+			sb.append("MP2003_FINISH_TIME_E,");
+			sb.append("MP2003_COMMENT,");
+			sb.append("MP2003_STATUS)");
+			
+			sb.append(" values('");
+			sb.append(mp23.getMP2003_EMPLOYEE_NUM());
+			sb.append("','");
+			sb.append(mp23.getMP2003_DATETIME());
+			sb.append("','");
+			if("" == mp23.getMP2003_START_TIME() || null == mp23.getMP2003_START_TIME()){
+				sb.delete(sb.length() - 1, sb.length());
+				sb.append("null");
+				sb.append(",'");
+			}
+			else{
+				sb.append(mp23.getMP2003_START_TIME());
+				sb.append("','");
+			}
+			
+			if("" == mp23.getMP2003_FINISH_TIME() || null == mp23.getMP2003_FINISH_TIME()){
+				sb.delete(sb.length() - 1, sb.length());
+				sb.append("null");
+				sb.append(",'");
+			}
+			else{
+				sb.append(mp23.getMP2003_FINISH_TIME());
+				sb.append("','");
+			}
+			
+			if("" == mp23.getMP2003_START_TIME_DOOR() || null == mp23.getMP2003_START_TIME_DOOR()){
+				sb.delete(sb.length() - 1, sb.length());
+				sb.append("null");
+				sb.append(",'");
+			}
+			else{
+				sb.append(mp23.getMP2003_START_TIME_DOOR());
+				sb.append("','");
+			}
+			
+			if("" == mp23.getMP2003_FINISH_TIME_DOOR() || null == mp23.getMP2003_FINISH_TIME_DOOR()){
+				sb.delete(sb.length() - 1, sb.length());
+				sb.append("null");
+				sb.append(",'");
+			}
+			else{
+				sb.append(mp23.getMP2003_FINISH_TIME_DOOR());
+				sb.append("','");
+			}
+			
+			//sb.append(mp23.getMP2003_START_TIME()); //the  MP2003_START_TIME_E is the same as MP2003_START_TIME
+			if("" == mp23.getMP2003_START_TIME_E() || null == mp23.getMP2003_START_TIME_E()){
+				sb.delete(sb.length() - 1, sb.length());
+				sb.append("null");
+				sb.append(",'");
+			}
+			else{
+				sb.append(mp23.getMP2003_START_TIME());	//the  MP2003_START_TIME_E is the same as MP2003_START_TIME
+				sb.append("','");
+			}
+			
+			//sb.append(mp23.getMP2003_FINISH_TIME());
+			if("" == mp23.getMP2003_FINISH_TIME_E() || null == mp23.getMP2003_FINISH_TIME_E()){
+				sb.delete(sb.length() - 1, sb.length());
+				sb.append("null");
+				sb.append(",'");
+			}
+			else{
+				sb.append(mp23.getMP2003_FINISH_TIME());	//the  MP2003_START_TIME_E is the same as MP2003_START_TIME
+				sb.append("','");
+			}
+			
+			if("" == mp23.getMP2003_COMMENT() || null == mp23.getMP2003_COMMENT()){
+				sb.delete(sb.length() - 1, sb.length());
+				sb.append("null");
+				sb.append(",'");
+			}
+			else{
+				sb.append(mp23.getMP2003_COMMENT()); //the  MP2003_START_TIME_E is the same as MP2003_START_TIME
+				sb.append("','");
+			}
+			
+			if("" == mp23.getMP2003_STATUS() || null == mp23.getMP2003_STATUS()){
+				sb.delete(sb.length() - 1, sb.length());
+				sb.append("null");
+				//sb.append(",");
+			}
+			else{
+				sb.append(mp23.getMP2003_STATUS()); 
+				sb.append("'");
+			}
+			sb.append(")");
+			st.executeUpdate(sb.toString());
+		}
+		
+		st.close();
+		conn.close();
 	}
 	
-	public static void sendAbnormalEmails(List<MP2003> calculatedAttendanceRcdList){
+	//for whole company
+	//MP2003_STATUS: == 1 : Abnormal, == 2 : Leave
+	public static void sendAbnormalEmails() throws ClassNotFoundException, SQLException{
+		Connection conn = getDBConnection();
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * from MP2003 where MP2003_STATUS='1' and MP2003_DATETIME='");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DAY_OF_MONTH, -1); //yesterday
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sb.append(sdf.format(cal.getTime()));
+		sb.append("'");
 		
+		List<MP1001> manangerList = new ArrayList<MP1001>();
+		List<MP1001> employeeList = new ArrayList<MP1001>();
+		List<MP2003> attendanceRecordList = new ArrayList<MP2003>();
+		//PreparedStatement st = conn.prepareStatement(sb.toString());
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(sb.toString());
+		while(rs.next()){
+			MP2003 mp23 = new MP2003();
+			mp23.setMP2003_EMPLOYEE_NUM(rs.getString("MP2003_EMPLOYEE_NUM"));
+			mp23.setMP2003_DATETIME(rs.getString("MP2003_DATETIME"));
+			mp23.setMP2003_COMMENT(rs.getString("MP2003_COMMENT"));
+			mp23.setMP2003_START_TIME(rs.getString("MP2003_START_TIME"));
+			mp23.setMP2003_FINISH_TIME(rs.getString("MP2003_FINISH_TIME"));
+			mp23.setMP2003_START_TIME_DOOR(rs.getString("MP2003_START_TIME_DOOR"));
+			mp23.setMP2003_FINISH_TIME_DOOR(rs.getString("MP2003_FINISH_TIME_DOOR"));
+			mp23.setMP2003_EDIT_DATETIME(rs.getString("MP2003_EDIT_DATETIME"));
+			mp23.setMP2003_EDIT_USER(rs.getString("MP2003_EDIT_USER"));
+			
+			attendanceRecordList.add(mp23);
+		}
+		
+		if(0 == attendanceRecordList.size()){
+			return ; //no abnormal records found
+		}
+		
+		sb.delete(0, sb.length());
+		sb.append("select * from MP1001 where MP1001_EMPLOYEE_NUM in (");
+		for(MP2003 mp23 : attendanceRecordList){
+			sb.append("'");
+			sb.append(mp23.getMP2003_EMPLOYEE_NUM());
+			sb.append("',");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append(")");
+		rs = st.executeQuery(sb.toString());
+		while(rs.next()){
+			MP1001 mp11 = new MP1001();
+			mp11.setMP1001_EMPLOYEE_NUM(rs.getString("MP1001_EMPLOYEE_NUM"));
+			mp11.setMP1001_SURNAME(rs.getString("MP1001_SURNAME"));
+			mp11.setMP1001_PREFERED_NAME(rs.getString("MP1001_PREFERED_NAME"));
+			mp11.setMP1001_DEPARTMENT_ID(rs.getString("MP1001_DEPARTMENT_ID"));
+			employeeList.add(mp11);
+		}
+		
+		sb.delete(0, sb.length());
+		sb.append("select * from MP1001 where MP1001_POSITION='1' and MP1001_STATUS in ('1', '2')");
+		rs = st.executeQuery(sb.toString());
+		while(rs.next()){
+			MP1001 mnger = new MP1001();
+			mnger.setMP1001_EMPLOYEE_NUM(rs.getString("MP1001_EMPLOYEE_NUM"));
+			mnger.setMP1001_DEPARTMENT_ID(rs.getString("MP1001_DEPARTMENT_ID"));
+			mnger.setMP1001_COMPANY_EMAIL(rs.getString("MP1001_COMPANY_EMAIL"));
+			manangerList.add(mnger);
+		}
+		
+		st.close();
+		conn.close();
+
+
+		Mail mail = new Mail();
+		mail.setSubject("Department Abnormal");
+		sb.delete(0, sb.length());
+		sb.append("As attendance records hook up with employee's salary, please pay more attention !");
+		sb.append("Date : " + sdf.format(cal.getTime()));
+		sb.append("\n");
+		sb.append("Abnormal employee list : ");
+		sb.append("\n");
+		int length = sb.length();
+		
+		List<MP1001> dptEmps = new ArrayList<MP1001>();
+		boolean flag = true;
+		for(MP1001 mger : manangerList){
+			for(MP1001 emp : employeeList){
+				if(mger.getMP1001_DEPARTMENT_ID().equalsIgnoreCase((emp.getMP1001_DEPARTMENT_ID()))){
+					sb.append(emp.getMP1001_EMPLOYEE_NUM());
+					sb.append("\t");
+					sb.append(emp.getMP1001_PREFERED_NAME());
+					sb.append("    ");
+					sb.append(emp.getMP1001_SURNAME());
+					sb.append("\n");
+					flag = false;
+				}
+			}
+
+			if(!flag){
+				mail.setContent(sb.toString());
+				mail.setTo(mger.getMP1001_COMPANY_EMAIL());
+				mail.send();
+				System.out.println("abnormal email send!");
+				dptEmps.clear();
+				sb.delete(length, sb.length());
+				flag = true;
+			}
+		}
 	}
 }

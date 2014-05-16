@@ -38,6 +38,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import schedule.CommonJobMethod;
+import schedule.executeJobs;
 import service.IAC0006Service;
 import service.IAC0007Service;
 import service.IAC0008Service;
@@ -5859,6 +5860,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 				tmpRcd.setEmployeeInfo(mp11);
 			}
 			
+			
+			//
+			
 			return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
@@ -6025,7 +6029,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	
 	public void convertToMP2010Records() throws Exception{
 			JE0101 je11 = serviceJE0101.findByKey("shiftworkMonth");
-			String workDateMonth = je11.getJE0101_VALUE(); //which month
+			String workDateMonth = je11.getJE0101_VALUE().substring(5, 7); //which month
 			System.out.println(workDateMonth);
 			
 			Date d = new Date();
@@ -6134,8 +6138,17 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		int month = cal.get(Calendar.MONTH) + 1; //next month information
+		month -= 1; //for test this month
 		cal.set(Calendar.MONTH, month);
 		int next_month = month + 1;  //next next month
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		//save it into system dictionary
+		JE0101 je11 = new JE0101();
+		je11.setJE0101_PROPERTY("shiftworkMonth");
+		serviceJE0101.delete(je11);
+		je11.setJE0101_VALUE(new SimpleDateFormat("yyyy-MM").format(cal.getTime()));
+		je11.setJE0101_TYPE("shiftwork");
+		serviceJE0101.save(je11);
 		
 		List<String> headNameList = new ArrayList<String>();
 		headNameList.add("BRANCH_SITE");
@@ -6147,8 +6160,8 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		headCellWidth.add(20);
 
 		while(month != next_month){
-			headNameList.add(Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
-			headCellWidth.add(10);
+			headNameList.add(sdf.format(cal.getTime()));
+			headCellWidth.add(15);
 			
 			cal.add(Calendar.DAY_OF_MONTH, 1);
 			month = cal.get(Calendar.MONTH);
@@ -6602,6 +6615,19 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	public String validateShiftworkAddLeaveApply(){
 		System.out.println("in validateShiftworkAddLeaveApply function");
 		return SUCCESS;
+	}
+	
+	
+	public String shiftWorkCalculate(){
+		try{
+			executeJobs jb = new executeJobs();
+			jb.executeJob11();
+			return NONE;
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			return NONE;
+		}
 	}
 	
 	/**

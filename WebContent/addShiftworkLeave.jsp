@@ -811,7 +811,7 @@ function chooseDayType(){
 }
 
 function joeTest(){
-	alert($("#toDay").val());
+	alert($("#toDay").val() == $("#fromDay").val());
 }
 
 </script>
