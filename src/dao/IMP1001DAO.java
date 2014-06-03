@@ -35,4 +35,6 @@ public interface IMP1001DAO {
 	
 	// 自定义查询条件及排序方式
 	public abstract List<MP1001> findData(String search,String order, int pageNum, int pageCount);
+	
+	//public abstract MP1001 findByEmployeeName(String name);
 }

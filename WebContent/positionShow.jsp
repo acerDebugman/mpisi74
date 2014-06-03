@@ -9,9 +9,10 @@
 
 <body bgColor="#FFFFFF" topMargin="5" theme="simple">
 
-<div id="departmentEmpDiv">
+<%-- <div id="departmentEmpDiv">
     <s:select id="param4" name="param4" value="param4" list="departmentEmpList" theme="simple"/>
 </div>
-
+ --%>
+<s:select name="mp1001.MP1001_POSITION" list="positionList" theme="simple"/>
 </body>
 </html>

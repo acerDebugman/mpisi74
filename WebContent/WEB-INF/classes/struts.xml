@@ -594,6 +594,16 @@
 			<result name="success">addShiftworkLeave.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		<action name="abnormalEarlyLateReport" class="applyLeaveMngBean" method="abnormalEarlyLateReport">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;fileName="abnormalEarlyLated.xlsx"</param>
+			   	<!-- <param name="contentDisposition">inline;fileName="abnormalEarlyLated.xlsx"</param> -->
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
 		
 		
 		 
@@ -1468,5 +1478,26 @@
 			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		
+<!-- some tools -->
+		<action name="joeTools" class="itServiceBean" method="joeTools">
+			<result name="success">pages/itService/main.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<!-- <action name="lateAndEarlyExcel" class="itServiceBean" method="lateAndEarlyExcel">
+			<result name="success">pages/itService/main.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action> -->
+		
+		<action name="downloadLateAndEarlyExcel" class="itServiceBean" method="downloadLateAndEarlyExcel">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="late-and-early3.xlsx"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+				
 	</package>
 </struts>

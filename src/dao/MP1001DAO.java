@@ -478,5 +478,5 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 		log.info("Count:" + retList.size());
 		return retList;
 	}
-
+	
 }

@@ -1,25 +1,45 @@
 package action;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.struts2.ServletActionContext;
 
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.FilteredTextRenderListener;
 import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
 import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import com.itextpdf.text.pdf.parser.RegionTextRenderFilter;
 import com.itextpdf.text.pdf.parser.RenderFilter;
-import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
+import com.mchange.v2.sql.filter.RecreatePackage;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import common.ExcelUtil;
+
+import dto.LateEarlyDto;
+import entity.JE0101;
 
 public class ItService extends ActionSupport {
 	private static final Log log = LogFactory.getLog(LoginAction.class);
@@ -27,6 +47,11 @@ public class ItService extends ActionSupport {
 	public static String pdfFile = "";
 	public static String toTextFile = "";
 	public static String textFile2 = "";
+	
+	public String filename;
+	public String downloadFile;
+	
+	private List<LateEarlyDto> lateEarlyList = new ArrayList<LateEarlyDto>();
 	
 	public String itServiceMngInit(){
 		try{
@@ -164,8 +189,361 @@ public class ItService extends ActionSupport {
 	}
 	
 	
+	public String joeTools(){
+		try{
+			System.out.println("joe tools");
+			
+			return SUCCESS;
+		}
+		catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+
+	public InputStream getDownloadFile(){
+		try {
+			//System.out.println("in getDownloadFile() function");
+			//filename = "late-and-early2.xlsx";
+			//InputStream is = ServletActionContext.getServletContext().getResourceAsStream("d:\\" + filename);
+			InputStream is;
+			
+			is = new FileInputStream(new File("d:\\late-and-early3.xlsx"));
+			return is;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	public String documentDownload(){
+		System.out.println("in documentDownload() function");
+		return SUCCESS;
+	}
+	
+	public String downloadLateAndEarlyExcel(){
+		try{
+			System.out.println("in downloadLateAndEarlyExcel() function");
+			String _path = "d:\\late-and-early2.xlsx";
+			String _path_save = "d:\\late-and-early3.xls";
+			//File f = new File("d:\\late-and-early2.xls");
+			//InputStream is = new FileInputStream(f);
+			
+			
+			Workbook wb = ExcelUtil.openExcelFile(_path);
+			GetCellContent(wb);
+			//is.close();
+			
+			Workbook wb2 = ExcelUtil.CreateXSSFWorkBook();
+			createShiftWorkExcelTemplate(wb2);
+	        ExcelUtil.createExcelFile(_path_save, wb2);
+	        
+			return SUCCESS;
+		}
+		catch(Exception ex){
+			log.info(ex.getMessage());
+			return "error";
+		}
+	}
+	
+	public void GetCellContent(Workbook wb) throws ParseException {
+		Sheet sheet1 = wb.getSheetAt(0);
+		//sheet1.iterator().next(); //skip header line
+    	System.out.println("sheet1 " + sheet1.getLastRowNum());
+    	SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+    	Calendar cal = Calendar.getInstance();
+    	Calendar calInOut = Calendar.getInstance();
+    	int cellCount = 0;
+    	LateEarlyDto recordDto = null;
+    	boolean firstRowFlag = true;
+	    outterLoop: for (Row row : sheet1) {
+	    	cellCount = 0;
+	    	recordDto = new LateEarlyDto();
+	    	
+	       innerLoop: for (Cell cell : row) {
+	            CellReference cellRef = new CellReference(row.getRowNum(), cell.getColumnIndex());
+	            System.out.print(cellRef.formatAsString());
+	            System.out.print(" - ");
+	            cellCount++;
+	            switch (cell.getCellType()) {
+	                case Cell.CELL_TYPE_STRING:
+	                	String cellString = cell.getRichStringCellValue().getString();
+	                	//skip head row
+	                	if(firstRowFlag){
+	                		firstRowFlag = false;
+	                		break innerLoop;
+	                	}
+	                	
+	                	if(1 == cellCount){
+	                		recordDto.setEmployeeNum(cellString);
+	                		break ;
+	                	}
+	                	if(2 == cellCount){
+	                		recordDto.setDate(sdfDate.parse(cellString));
+	                		break ;
+	                	}
+	                	if(3 == cellCount){
+	                		recordDto.setClockInTime(sdfDateTime.parse(cellString));
+	                		break ;
+	                	}
+	                	if(4 == cellCount){
+	                		recordDto.setClockOutTime(sdfDateTime.parse(cellString));
+	                		break ;
+	                	}
+	                	if(5 == cellCount){
+	                		recordDto.setPreferedName(cellString);
+	                		break ;
+	                	}
+	                	if(6 == cellCount){
+	                		recordDto.setSurname(cellString);
+	                		break ;
+	                	}
+	                	if(7 == cellCount){
+	                		recordDto.setDepartmentName(cellString);
+	                		break ;
+	                	}
+	                	if(8 == cellCount){
+	                		recordDto.setStatus(cellString);
+	                		break ;
+	                	}
+	                	
+	                    break;
+	                case Cell.CELL_TYPE_NUMERIC:
+		                    if (DateUtil.isCellDateFormatted(cell)) {
+		                    	Date d = cell.getDateCellValue();
+		                    	if(2 == cellCount){
+		                		recordDto.setDate(d);
+		                		break ;
+		                	}
+		                	if(3 == cellCount){
+		                		recordDto.setClockInTime(d);
+		                		break ;
+		                	}
+		                	if(4 == cellCount){
+		                		recordDto.setClockOutTime(d);
+		                		break ;
+		                	}
+	                        System.out.println(cell.getDateCellValue());
+	                    } else {
+	                        System.out.println(cell.getNumericCellValue());
+	                    }
+	                    break;
+	                case Cell.CELL_TYPE_BOOLEAN:
+	                    System.out.println(cell.getBooleanCellValue());
+	                    break;
+	                case Cell.CELL_TYPE_FORMULA:
+	                    System.out.println(cell.getCellFormula());
+	                    break;
+	                default:
+	                    System.out.println();
+	            }
+	        }
+	    	if(null != recordDto.getDate()){
+		    	Date in = recordDto.getClockInTime();
+		                		
+	    		cal.setTime(recordDto.getDate()); //this is start
+	    		cal.set(Calendar.HOUR_OF_DAY, 8);
+	    		cal.set(Calendar.MINUTE, 0);
+	    		cal.set(Calendar.SECOND, 0);
+	    		
+	    		calInOut.setTime(in);
+	    		//Date startTime = cal.getTime();
+	    		//if(in.after(startTime)){
+	    		if(cal.before(calInOut)){
+	    			Long s = cal.getTime().getTime();
+	    			Long i = in.getTime();
+	    			recordDto.setLateMins((int)((i - s)/(1000*60)));
+	    		}
+		    	
+	    		Date out = recordDto.getClockOutTime();
+		         
+	    		calInOut.setTime(out);
+	    		cal.setTime(recordDto.getDate()); //this is end
+	    		cal.set(Calendar.HOUR_OF_DAY, 16);
+	    		cal.set(Calendar.MINUTE, 30);
+	    		cal.set(Calendar.SECOND, 0);
+	    		//Date startTime = cal.getTime();
+	    		//if(in.after(startTime)){
+	    		if(cal.after(calInOut)){
+	    			Long s = cal.getTime().getTime();
+	    			Long o = out.getTime();
+	    			recordDto.setEarlyMins((int)((s - o)/(1000*60)));
+	    		}
+	    		
+	    		int e = recordDto.getEarlyMins();
+	    		int l = recordDto.getLateMins();
+	    		
+	    		recordDto.setAllMins(l + e);
+	    		
+	    		lateEarlyList.add(recordDto);
+	    	}
+	    }
+	}
+	public void createShiftWorkExcelTemplate(Workbook wb){
+		// 新建一个SHEET页面
+		Sheet sheet = ExcelUtil.CreateSheet(wb, "Late And Early");
+		// 设置SHEET页面属性
+		ExcelUtil.SetSheetPropertyHSSF(sheet);
+		// 获取预定的样式
+		Map<String, CellStyle> styles = ExcelUtil.CreateStyles(wb);
+
+		List<String> headNameList = new ArrayList<String>();
+		headNameList.add("EMPLOYEE_NUM");
+		headNameList.add("DATE");
+		headNameList.add("CLOCK IN");
+		headNameList.add("CLOCK OUT");
+		headNameList.add("EMPLOYEE NAME");
+		headNameList.add("SURNAME");
+		headNameList.add("DEPARTMENT");
+		headNameList.add("STATUS");
+		headNameList.add("LATE MINUTES");
+		headNameList.add("EARLY MINUTES");
+		headNameList.add("TOTAL MINUTES");
+
+		List<Integer> headCellWidth = new ArrayList<Integer>();
+		headCellWidth.add(20);
+		headCellWidth.add(30);
+		headCellWidth.add(30);
+		headCellWidth.add(30);
+		headCellWidth.add(20);
+		headCellWidth.add(20);
+		headCellWidth.add(20);
+		headCellWidth.add(10);
+		headCellWidth.add(18);
+		headCellWidth.add(18);
+		headCellWidth.add(18);
+
+		// Header标题
+		String[] titles = new String[headNameList.size()];
+		int i = 0;
+		for(String s : headNameList){
+			titles[i] = s;
+			i++;
+		}
+				
+		// 生成标题行
+		float rowHeight = 27f;
+		ExcelUtil.CreateHeadRow(sheet, titles, rowHeight, styles);
+        // 冻结第一行
+        sheet.createFreezePane(0, 1);
+        
+        Integer[] cellsWidth = new Integer[headCellWidth.size()];
+        i = 0;
+        for(Integer it : headCellWidth){
+        	cellsWidth[i] = it;
+        	i++;
+        }
+        
+        // 设置单元格的宽度
+        ExcelUtil.SetCellsWidth(sheet, cellsWidth); //static binding
+        
+      //---------------------------主报表-----------------------------------------------------------------------------------------
+        // 取得报表数据
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String[] datas = new String[11];
+        int total = 0;
+        String dptName = null;
+        String oldDptName = null;
+        int rowNum = 0;
+        for(int c = 0, j = lateEarlyList.size(); c < j; c++){
+        	dptName = lateEarlyList.get(c).getDepartmentName();
+        	if(lateEarlyList.get(c).getAllMins() > 480){
+        		continue;
+        	}
+        	if(null != oldDptName && !dptName.equals(oldDptName)){
+        		for(int k = 0; k < 9; k++){
+        			datas[k] = "";
+        		}
+        		datas[9] = "Minutes";
+        		datas[10] = Integer.toString(total);
+        		oldDptName = dptName;
+        		total = 0;
+        		rowNum++;
+        		c--; //must do this, back forwad one record
+        	}
+        	else{
+	        	//lateEarlyList.get(c);
+	        	datas[0] = lateEarlyList.get(c).getEmployeeNum();
+	        	datas[1] = sdf.format(lateEarlyList.get(c).getDate());
+	        	datas[2] = sdf.format(lateEarlyList.get(c).getClockInTime());
+	        	datas[3] = sdf.format(lateEarlyList.get(c).getClockOutTime());
+	        	datas[4] = lateEarlyList.get(c).getPreferedName();
+	        	datas[5] = lateEarlyList.get(c).getSurname();
+	        	datas[6] = lateEarlyList.get(c).getDepartmentName();
+	        	datas[7] = lateEarlyList.get(c).getStatus();
+	        	datas[8] = Integer.toString(lateEarlyList.get(c).getLateMins());
+	        	datas[9] = Integer.toString((lateEarlyList.get(c).getEarlyMins()));
+	        	datas[10] = Integer.toString(lateEarlyList.get(c).getAllMins());
+
+	        	rowNum++;
+	        	total += lateEarlyList.get(c).getAllMins();
+        		oldDptName = dptName;
+        	}
+        	
+        	ExcelUtil.SetCellsValue(rowNum, sheet, styles, datas);
+        }
+        
+        //last total minutes records
+        for(int k = 0; k < 9; k++){
+			datas[k] = "";
+		}
+		datas[9] = "Minutes";
+		datas[10] = Integer.toString(total);
+		rowNum++;
+		ExcelUtil.SetCellsValue(rowNum, sheet, styles, datas);
+		
+  	}
 
 	public static Log getLog() {
 		return log;
+	}
+
+	public static String getPdfFile() {
+		return pdfFile;
+	}
+
+	public static void setPdfFile(String pdfFile) {
+		ItService.pdfFile = pdfFile;
+	}
+
+	public static String getToTextFile() {
+		return toTextFile;
+	}
+
+	public static void setToTextFile(String toTextFile) {
+		ItService.toTextFile = toTextFile;
+	}
+
+	public static String getTextFile2() {
+		return textFile2;
+	}
+
+	public static void setTextFile2(String textFile2) {
+		ItService.textFile2 = textFile2;
+	}
+
+	
+
+	public void setDownloadFile(String downloadFile) {
+		this.downloadFile = downloadFile;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public List<LateEarlyDto> getLateEarlyList() {
+		return lateEarlyList;
+	}
+
+	public void setLateEarlyList(List<LateEarlyDto> lateEarlyList) {
+		this.lateEarlyList = lateEarlyList;
 	}
 }

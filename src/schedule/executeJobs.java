@@ -65,7 +65,14 @@ public class executeJobs {
 			
 			connSql.close();
 			
-			// 发邮件通知本人密码已经重置
+			
+			//job 11
+			executeJob11();
+			
+			//job 12
+			executeJob12();
+			
+			//email info all success did
 			Mail mail = new Mail();
 			String to = Constant.ADMIN_MAIL;
 			mail.setSubject("Auto Calculate Attendance Records");
@@ -574,4 +581,14 @@ public class executeJobs {
 			System.out.println(ex.getMessage());
 		}
 	}
+	public void executeJob12(){
+		try{
+			
+			System.out.println("security shift work schedule arrangement!");
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+	}
+	
 }

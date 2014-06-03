@@ -13,6 +13,8 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import common.Constant;
 import common.UtilDate;
+import dto.AbnormalReptRecdDto;
+import dto.LateEarlyDto;
 
 import entity.CHECKINOUT;
 import entity.MP1001;
@@ -437,10 +439,13 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		queryString.append(" mp23.MP2003_FINISH_TIME_DOOR, ");
 		
 		queryString.append(" mp11.MP1001_RECTIFY_TIMES, ");
-		queryString.append(" mp23.MP2003_STATUS ");
+		queryString.append(" mp23.MP2003_STATUS, ");
+
+		queryString.append(" mp02.MP0002_DEPARTMENT_NAME"); //add by joe
 		
-		queryString.append(" from MP2003 mp23,MP1001 mp11 ");
+		queryString.append(" from MP2003 mp23,MP1001 mp11,MP0002 mp02 ");
 		queryString.append(" where 1=1 ");
+		queryString.append(" and mp02.MP0002_SEQ = mp11.MP1001_DEPARTMENT_ID ");
 		queryString.append(" and mp23.MP2003_EMPLOYEE_NUM = mp11.MP1001_EMPLOYEE_NUM ");
 		
 		if(!empNum.equals("")){
@@ -545,6 +550,13 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 				mp23.setMP2003_STATUS("2");
 			}else{
 				mp23.setMP2003_STATUS(obj[9].toString());
+			}
+			
+			//Department Name
+			if(null == obj[10]){
+				mp23.setMP2003_DEPARTMENT_NAME("");
+			}else{
+				mp23.setMP2003_DEPARTMENT_NAME(obj[10].toString());
 			}
 			
 			resultList.add(mp23);
@@ -811,5 +823,292 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		}catch(RuntimeException ex){
 			throw ex;
 		}
+	}
+	
+	@Override
+	public List<MP2003> getTotalUnusualRecords(Map<String, String> propMap){ //for abnormal/late/early records report
+		List<MP2003> rs = new ArrayList<MP2003>();
+		
+		StringBuffer sb = new StringBuffer();
+		/**
+		 * select MP1001_EMPLOYEE_NUM,MP1001_PREFERED_NAME,MP1001_SURNAME,MP0002_DEPARTMENT_NAME, MP2003_DATETIME, MP2003_START_TIME, MP2003_FINISH_TIME, MP2003_COMMENT
+ from MP2003, MP0002, MP1001 
+ where MP1001_EMPLOYEE_NUM=MP2003_EMPLOYEE_NUM and MP1001_DEPARTMENT_ID=MP0002_SEQ and 
+  (MP2003_COMMENT like '%Early%' or 
+  MP2003_COMMENT like '%Abnormal%' or 
+  MP2003_COMMENT like '%Late%' ) and
+  MP2003_DATETIME >= '2014-05-01' and 
+  MP2003_DATETIME <= '2014-05-30'
+ order by MP1001_EMPLOYEE_NUM ASC;
+		 */
+		sb.append("select MP1001_EMPLOYEE_NUM,MP1001_PREFERED_NAME,MP1001_SURNAME,MP0002_DEPARTMENT_NAME, MP2003_DATETIME, MP2003_START_TIME, MP2003_FINISH_TIME, MP2003_COMMENT ");
+		sb.append(" from MP2003, MP0002, MP1001 ");
+		sb.append(" where MP1001_EMPLOYEE_NUM=MP2003_EMPLOYEE_NUM and MP1001_DEPARTMENT_ID=MP0002_SEQ and ");
+		sb.append(" (MP2003_COMMENT like '%Early%' or ");
+		sb.append(" MP2003_COMMENT like '%Abnormal%' or ");
+		sb.append(" MP2003_COMMENT like '%Late%' ) and ");
+		if(propMap.containsKey("from")){
+			sb.append(" MP2003_DATETIME >= '" + propMap.get("from") + "' and ");
+		}
+		if(propMap.containsKey("to")){
+			sb.append(" MP2003_DATETIME <= '" + propMap.get("to") + "' ");
+		}
+//		if(propMap.containsKey()){
+//			//MP1001_EMPLOYEE_NUM not in ('M0001')
+//		}
+		sb.append(" order by MP1001_EMPLOYEE_NUM, MP0002_DEPARTMENT_NAME ASC");
+		
+		//Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		session.beginTransaction();
+//		Query query = session.createQuery(sb.toString());
+		Query query = session.createSQLQuery(sb.toString());
+		List<Object[]> objList = query.list();
+		session.getTransaction().commit();
+		session.close();		
+		
+		for(int i = 0, j = objList.size(); i < j; i++){
+			MP2003 mp23 = new MP2003();
+			Object[] obj = objList.get(i);
+			
+			if(null == obj[0]){
+				mp23.setMP2003_EMPLOYEE_NUM("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_NUM(obj[0].toString());
+			}
+			if(null == obj[1]){
+				mp23.setMP2003_EMPLOYEE_NAME("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_NAME(obj[1].toString());	
+			}
+			if(null == obj[2]){
+				mp23.setMP2003_EMPLOYEE_SURNAME("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_SURNAME(obj[2].toString());	
+			}
+			if(null == obj[3]){
+				mp23.setMP2003_DEPARTMENT_NAME("");
+			}
+			else{
+				mp23.setMP2003_DEPARTMENT_NAME(obj[3].toString());
+			}
+			if(null == obj[4]){
+				mp23.setMP2003_DATETIME("");
+			}
+			else{
+				mp23.setMP2003_DATETIME(obj[4].toString());
+			}
+			if(null == obj[5]){
+				mp23.setMP2003_START_TIME("");
+			}
+			else{
+				mp23.setMP2003_START_TIME(obj[5].toString());
+			}
+			if(null == obj[6]){
+				mp23.setMP2003_FINISH_TIME("");
+			}
+			else{
+				mp23.setMP2003_FINISH_TIME(obj[6].toString());
+			}
+			if(null == obj[7]){
+				mp23.setMP2003_COMMENT("");
+			}
+			else{
+				mp23.setMP2003_COMMENT(obj[7].toString());	
+			}
+
+			rs.add(mp23);
+		}
+
+
+		return rs;
+	}
+
+	@Override
+	public List<MP2003> getAbnormalReptData(Map<String, String> propMap) {
+		// TODO Auto-generated method stub
+		List<MP2003> rs = new ArrayList<MP2003>();
+		
+		StringBuffer sb = new StringBuffer();
+		/**
+		 * select MP1001_EMPLOYEE_NUM,MP1001_PREFERED_NAME,MP1001_SURNAME,MP0002_DEPARTMENT_NAME, MP2003_DATETIME, MP2003_START_TIME, MP2003_FINISH_TIME, MP2003_COMMENT
+ from MP2003, MP0002, MP1001 
+ where MP1001_EMPLOYEE_NUM=MP2003_EMPLOYEE_NUM and MP1001_DEPARTMENT_ID=MP0002_SEQ and 
+  (MP2003_COMMENT like '%Early%' or 
+  MP2003_COMMENT like '%Abnormal%' or 
+  MP2003_COMMENT like '%Late%' ) and
+  MP2003_DATETIME >= '2014-05-01' and 
+  MP2003_DATETIME <= '2014-05-30'
+ order by MP1001_EMPLOYEE_NUM ASC;
+		 */
+		sb.append("select MP1001_EMPLOYEE_NUM,MP1001_PREFERED_NAME,MP1001_SURNAME,MP0002_DEPARTMENT_NAME, MP2003_DATETIME, MP2003_START_TIME, MP2003_FINISH_TIME, MP2003_COMMENT ");
+		sb.append(" from MP2003, MP0002, MP1001 ");
+		sb.append(" where MP1001_EMPLOYEE_NUM=MP2003_EMPLOYEE_NUM and MP1001_DEPARTMENT_ID=MP0002_SEQ and ");
+		sb.append(" MP2003_COMMENT like '%Abnormal%' and ");
+		if(propMap.containsKey("from")){
+			sb.append(" MP2003_DATETIME >= '" + propMap.get("from") + "' and ");
+		}
+		if(propMap.containsKey("to")){
+			sb.append(" MP2003_DATETIME <= '" + propMap.get("to") + "' ");
+		}
+//		if(propMap.containsKey()){
+//			//MP1001_EMPLOYEE_NUM not in ('M0001')
+//		}
+		sb.append(" order by MP1001_EMPLOYEE_NUM, MP0002_DEPARTMENT_NAME ASC");
+		
+		//Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		session.beginTransaction();
+//		Query query = session.createQuery(sb.toString());
+		Query query = session.createSQLQuery(sb.toString());
+		List<Object[]> objList = query.list();
+		session.getTransaction().commit();
+		session.close();		
+		
+		for(int i = 0, j = objList.size(); i < j; i++){
+			MP2003 mp23 = new MP2003();
+			Object[] obj = objList.get(i);
+			
+			if(null == obj[0]){
+				mp23.setMP2003_EMPLOYEE_NUM("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_NUM(obj[0].toString());
+			}
+			if(null == obj[1]){
+				mp23.setMP2003_EMPLOYEE_NAME("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_NAME(obj[1].toString());	
+			}
+			if(null == obj[2]){
+				mp23.setMP2003_EMPLOYEE_SURNAME("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_SURNAME(obj[2].toString());	
+			}
+			if(null == obj[3]){
+				mp23.setMP2003_DEPARTMENT_NAME("");
+			}
+			else{
+				mp23.setMP2003_DEPARTMENT_NAME(obj[3].toString());
+			}
+			if(null == obj[4]){
+				mp23.setMP2003_DATETIME("");
+			}
+			else{
+				mp23.setMP2003_DATETIME(obj[4].toString());
+			}
+			if(null == obj[5]){
+				mp23.setMP2003_START_TIME("");
+			}
+			else{
+				mp23.setMP2003_START_TIME(obj[5].toString());
+			}
+			if(null == obj[6]){
+				mp23.setMP2003_FINISH_TIME("");
+			}
+			else{
+				mp23.setMP2003_FINISH_TIME(obj[6].toString());
+			}
+			if(null == obj[7]){
+				mp23.setMP2003_COMMENT("");
+			}
+			else{
+				mp23.setMP2003_COMMENT(obj[7].toString());	
+			}
+
+			rs.add(mp23);
+		}
+
+		return rs;
+	}
+	@SuppressWarnings("unchecked")
+	public List<MP2003> getLateEarlyReptData(Map<String, String> propMap){
+		List<MP2003> rs = new ArrayList<MP2003>();
+		StringBuffer sb = new StringBuffer();
+		sb.append("select MP2003_EMPLOYEE_NUM, MP1001_PREFERED_NAME, MP1001_SURNAME, MP0002_DEPARTMENT_NAME, MP2003_DATETIME, " +
+				"MP2003_START_TIME, MP2003_FINISH_TIME,MP2003_COMMENT ");
+		sb.append(" from MP2003 m23, MP1001 mp11,MP0002 m02 ");
+		sb.append(" where (MP2003_COMMENT like '%Late%' or MP2003_COMMENT like '%Early%') ");
+		sb.append(" and MP1001_EMPLOYEE_NUM=MP2003_EMPLOYEE_NUM and MP1001_DEPARTMENT_ID=MP0002_SEQ ");
+		sb.append(" and MP2003_EMPLOYEE_NUM not in ('M0207','M0066','M0265','M0514','M0531','M0049'," +
+				"'M0249','M0105','M0456','M0078','M0453','m0482') and "); //not include specified employees
+		if(propMap.containsKey("from")){
+			sb.append(" MP2003_DATETIME >= '" + propMap.get("from") + "' and ");
+		}
+		if(propMap.containsKey("to")){
+			sb.append(" MP2003_DATETIME <= '" + propMap.get("to") + "' ");
+		}
+		sb.append(" order by MP0002_DEPARTMENT_NAME, MP2003_DATETIME ");
+		
+		Session ss = getHibernateTemplate().getSessionFactory().openSession();
+		ss.beginTransaction();
+
+		Query query = ss.createSQLQuery(sb.toString());
+		List<Object[]> objList = query.list();
+		ss.getTransaction().commit();
+		ss.close();
+		
+		for(int i = 0, j = objList.size(); i < j; i++){
+			MP2003 mp23 = new MP2003();
+			Object[] obj = objList.get(i);
+			
+			if(null == obj[0]){
+				mp23.setMP2003_EMPLOYEE_NUM("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_NUM(obj[0].toString());
+			}
+			if(null == obj[1]){
+				mp23.setMP2003_EMPLOYEE_NAME("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_NAME(obj[1].toString());	
+			}
+			if(null == obj[2]){
+				mp23.setMP2003_EMPLOYEE_SURNAME("");
+			}
+			else{
+				mp23.setMP2003_EMPLOYEE_SURNAME(obj[2].toString());	
+			}
+			if(null == obj[3]){
+				mp23.setMP2003_DEPARTMENT_NAME("");
+			}
+			else{
+				mp23.setMP2003_DEPARTMENT_NAME(obj[3].toString());
+			}
+			if(null == obj[4]){
+				mp23.setMP2003_DATETIME("");
+			}
+			else{
+				mp23.setMP2003_DATETIME(obj[4].toString());
+			}
+			if(null == obj[5]){
+				mp23.setMP2003_START_TIME("");
+			}
+			else{
+				mp23.setMP2003_START_TIME(obj[5].toString());
+			}
+			if(null == obj[6]){
+				mp23.setMP2003_FINISH_TIME("");
+			}
+			else{
+				mp23.setMP2003_FINISH_TIME(obj[6].toString());
+			}
+			if(null == obj[7]){
+				mp23.setMP2003_COMMENT("");
+			}
+			else{
+				mp23.setMP2003_COMMENT(obj[7].toString());	
+			}
+			
+			rs.add(mp23);
+		}
+		
+		return rs;
 	}
 }

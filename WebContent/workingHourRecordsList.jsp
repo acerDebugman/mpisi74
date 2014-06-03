@@ -150,6 +150,12 @@ function excel(){
     };
     $("#form2").ajaxSubmit(options);
 }
+
+function monthlyAttendanceReport(){
+	//var popstyle="dialogTop:300px;dialogLeft:300px;help:no;center:yes;dialogHeight:350px;dialogWidth:300px;status:no;resizable:no;scroll:no";
+	//window.showModalDialog("addShiftworkLeave.jsp",window,popstyle);
+	window.open("monthlyAttendanceReport.jsp", "_blank", "width=500,height=500");
+}
 </script>
 
 </head>
@@ -242,6 +248,7 @@ function excel(){
                         <input type="submit" name="searchBtn" value="Search" id="searchBtn" class="" />
                         <input type="button" onclick="fileDownload()" name="downloadBtn" value="EXPORT TO PDF" id="downloadBtn" />
                         <input type="button" onclick="excel()" name="excelBtn" value="EXPORT TO EXCEL" id="excelBtn" />
+                        <input type="button" onclick="monthlyAttendanceReport()" id="monthlyRept" name="monthlyRept" value="Monthly Attendance Report"  />
                         <input id="refreshData" type="button" value="refresh" onclick="refreshDataFun()" style="display:none;" />
                     </td>
                 </tr>
@@ -260,7 +267,7 @@ function excel(){
                     <th scope="col" width="150px">Location</th>
                     <th scope="col" width="150px">Out</th>
                     <th scope="col" width="150px">Location</th>
-                    <th scope="col" width="100px">Status</th>
+                    <th scope="col" width="250px">Status</th>
                     <th scope="col" width="100px"></th>
                 </tr>
 <s:iterator value="workingHourRecordList" status="st">
@@ -272,7 +279,7 @@ function excel(){
                     <td><s:property value="MP2003_START_TIME_DOOR"></s:property></td>
                     <td><s:property value="MP2003_FINISH_TIME"></s:property></td>
                     <td><s:property value="MP2003_FINISH_TIME_DOOR"></s:property></td>
-                    <td style="color:red;"><s:property value="MP2003_COMMENT"></s:property></td>
+                    <td style="color:red;width:250px;"><s:property value="MP2003_COMMENT"></s:property></td>
                     <td>
 <s:if test="MP2003_STATUS==1 &&  optApproval==1 && MP2003_EMPLOYEE_NUM != loginName && MP2003_DEPARTMENT_ID == depID">
                         <input type="button" onclick="workTimeConfirm('<s:property value="MP2003_EMPLOYEE_NUM"/>','<s:property value="MP2003_DATETIME"/>')" id="confrimBtn" name="confrimBtn" value="Confirm" />

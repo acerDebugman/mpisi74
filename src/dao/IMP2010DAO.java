@@ -32,4 +32,8 @@ public interface IMP2010DAO {
 	public abstract int getSearchConditionRowsCount(Map<String, String> columnMap);
 	
 	public abstract void getSubscriberInfo(MP2010 mp2010);
+	
+	public List<MP2010> findByColumnNames(Map<String, String> columnNames, boolean pageFlag);
+	
+	public long findTotalSearchCount(Map<String, String> columnNames);
 }

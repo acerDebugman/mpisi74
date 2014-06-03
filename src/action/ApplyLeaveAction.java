@@ -79,10 +79,13 @@ import common.ExcelUtil;
 import common.HeaderFooter;
 import common.LogUtil;
 import common.Mail;
+import common.PageBean;
 import common.UtilCommon;
 import common.UtilDate;
 
+import dto.AbnormalReptRecdDto;
 import dto.ShiftworkExcelRecordDto;
+import dto.LateEarlyDto;
 import entity.CHECKINOUT;
 import entity.HOLIDAY;
 import entity.JE0101;
@@ -282,6 +285,10 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	private String shiftworkExcelContentType;
 	private String shiftWorkRadio;
 	private String dayTypeChoose;
+	private String shiftWorkType;
+	private int currentPageNum;
+	private String PER_PAGE_NUM = "13";
+	private PageBean pageBean; // total
 	
 	//private String ;
 	private List<MP2010> shiftworkScheduleList;
@@ -438,14 +445,14 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			Map<String, CellStyle> styles = ExcelUtil.CreateStyles(wb);
 			
 			// Header标题
-			String[] titles = {"No", "EMPLOYEE NUMBER", "Date", "In","Out","Status"};
+			String[] titles = {"No", "EMPLOYEE NUMBER", "Date", "In","Out","Status", "Department"};
 			// 生成标题行
 			float rowHeight = 27f;
 			ExcelUtil.CreateHeadRow(sheet, titles, rowHeight, styles);
 	        // 冻结第一行
 	        sheet.createFreezePane(0, 1);
 	        
-	        int[] cellsWidth = {5,30,20,20,20,15};
+	        int[] cellsWidth = {5,30,20,20,20,15,30};
 	        // 设置单元格的宽度
 	        ExcelUtil.SetCellsWidth(sheet, cellsWidth);
 	        
@@ -459,18 +466,24 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
         	}
         	List<MP2003> excelList = serviceMp2003.getPdfData(employeeNum, fromDate, toDate, departmentID, attendenceStatus);
 			
+        	//add by Joe, add department name
+        	//List<MP1001> excelMp1001 = servic
+        	
 	        int count;
-	        String[] datas = new String[6];
+	        //String[] datas = new String[6];
+	        String[] datas = new String[7];
 	        for(int i=0,j=excelList.size(); i<j; i++){
 	        	MP2003 mp2003Obj = excelList.get(i);
 	        	count = i + 1;
-	        	datas = new String[6];
+	        	datas = new String[7];
 	        	datas[0] = String.valueOf(count);
 	        	datas[1] = mp2003Obj.getMP2003_EMPLOYEE_NAME() + "(" + mp2003Obj.getMP2003_EMPLOYEE_NUM() + ")";
 	        	datas[2] = mp2003Obj.getMP2003_DATETIME();
 	        	datas[3] = mp2003Obj.getMP2003_START_TIME();
 	        	datas[4] = mp2003Obj.getMP2003_FINISH_TIME();
 	        	datas[5] = mp2003Obj.getMP2003_COMMENT();
+	        	
+	        	datas[6] = mp2003Obj.getMP2003_DEPARTMENT_NAME();//get department name
 	        	
 	        	ExcelUtil.SetCellsValue(count, sheet, styles, datas);
 	        }
@@ -5853,10 +5866,14 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			branchSiteList = Constant.getBranchSiteList();
 			actingType = "shiftwork";
 			
-			shiftworkScheduleList = serviceMP2010.findAll();
+			Map<String, String> columanNameMap = new HashMap<String, String>();
+			columanNameMap.put("PAGE_NUM", "" + currentPageNum);
+			columanNameMap.put("PAGE_COUNT", PER_PAGE_NUM);
+			pageBean = serviceMP2010.queryForPage(columanNameMap);
+			shiftworkScheduleList = pageBean.getList();
 			
 			for(MP2010 tmpRcd : shiftworkScheduleList){
-				MP1001 mp11 = serviceMP1001.findById(tmpRcd.getMP2010_EMPLOYEE_NUM());
+				MP1001 mp11 = serviceMP1001.findById(tmpRcd.getMP2010_EMPLOYEE_NUM());	// 
 				tmpRcd.setEmployeeInfo(mp11);
 			}
 			
@@ -5873,13 +5890,35 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	public String shiftWorkSearch(){
 		try{
 			System.out.println("in shiftWordSearch function");
+			//process employee name
 			
-			shiftworkScheduleList = serviceMP2010.findAll();
+			//shiftworkScheduleList = serviceMP2010.findAll();
+			Map<String, String> columanNameMap = new HashMap<String, String>();
+			if(null != employeeNum && !employeeNum.equalsIgnoreCase("")){
+				columanNameMap.put("MP2010_EMPLOYEE_NUM", employeeNum);
+			}
+			if(null != fromDate && !fromDate.equalsIgnoreCase("")){
+				columanNameMap.put("MP2010_FROM_DATETIME", fromDate);
+			}
+			if(null != toDate && !toDate.equalsIgnoreCase("")){
+				columanNameMap.put("MP2010_END_DATETIME", toDate);
+			}
+			//columanNameMap.put("MP2010_TYPE", shiftWorkType);
+			if(null != branchSiteId && !branchSiteId.equalsIgnoreCase("") && !branchSiteId.equalsIgnoreCase("---Please Select---")){
+				columanNameMap.put("MP2010_BRANCH_SITE", branchSiteId);
+			}
+			columanNameMap.put("PAGE_NUM", "" + currentPageNum);
+			columanNameMap.put("PAGE_COUNT", PER_PAGE_NUM);
+			pageBean = serviceMP2010.queryForPage(columanNameMap);
+			//shiftworkScheduleList = serviceMP2010.findByColumnName(columanNameMap);
+			shiftworkScheduleList = pageBean.getList();
+			branchSiteList = Constant.getBranchSiteList();
 			
 			for(MP2010 tmpRcd : shiftworkScheduleList){
 				MP1001 mp11 = serviceMP1001.findById(tmpRcd.getMP2010_EMPLOYEE_NUM());
 				tmpRcd.setEmployeeInfo(mp11);
 			}
+			
 			
 			return SUCCESS;
 		}
@@ -5942,6 +5981,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			FileUtils.copyFile(shiftworkExcel, destFile);
 			
 			excelRecordsList = new ArrayList<ShiftworkExcelRecordDto>();
+			
+			
+			
 			analyseExcelTemplete();
 			convertToMP2010Records();
 			//shiftworkExcel = 
@@ -5999,7 +6041,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			//String _path = "d:\\shiftWorkExcelTemplate.xls";
 	        
 	        System.out.println(_path);
-	        
+
 	        Workbook wb = ExcelUtil.openExcelFile(_path);
 	        
 	        GetCellContent(wb);
@@ -6030,27 +6072,17 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	public void convertToMP2010Records() throws Exception{
 			JE0101 je11 = serviceJE0101.findByKey("shiftworkMonth");
 			String workDateMonth = je11.getJE0101_VALUE().substring(5, 7); //which month
-			System.out.println(workDateMonth);
+			serviceJE0101.delete(je11); //delete it
 			
 			Date d = new Date();
 			SimpleDateFormat yearSDF = new SimpleDateFormat("yyyy");
 			String thisYear = yearSDF.format(d);
-			System.out.println("date: " + d.toString());
 			
 			Calendar cal = Calendar.getInstance();
 			
-			//cal.set(Calendar.da, value);
-			//SampleDateFormat sdf = new SimpleDateFormat("");
-			//DateFormat df = DateFormat.getDateInstance();
-			//Date date = df.parse("2014/04/01");
-			//System.out.println("last : " + date.toString());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = sdf.parse("2014-04-01");
 			cal.setTime(date);
-			System.out.println("last : " + date.toString());
-			System.out.println("last again : " + sdf.format(date));
-			System.out.println("String format 2: " + String.format("%02d", 8));
-			System.out.println("String format 2: " + String.format("%02d", 18));
 			
 			for(ShiftworkExcelRecordDto recordDto : excelRecordsList){
 				/**
@@ -6085,7 +6117,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 					serviceMP2010.save(mp21);
 				}
 			}
-			System.out.println("in method : convertToMP2010Records()");
+//			System.out.println("in method : convertToMP2010Records()");
 	}
 	
 	public String hibernateTest(){
@@ -6127,7 +6159,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	}
 		
 	public void createShiftWorkExcelTemplate(Workbook wb){
-				// 新建一个SHEET页面
+		// 新建一个SHEET页面
 		Sheet sheet = ExcelUtil.CreateSheet(wb, "Overtime Application");
 		// 设置SHEET页面属性
 		ExcelUtil.SetSheetPropertyHSSF(sheet);
@@ -6611,7 +6643,283 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		}
 
 	}
+	
+	public String abnormalEarlyLateReport(){
+		try{
+			System.out.println("absolute path : " + ServletActionContext.getServletContext().getRealPath("/"));
+			
+			fileName = "abnormalEarlyLate.xls";
+			//String _path = ServletActionContext.getServletContext().getContextPath() + "/uploadfile/" + fileName;
+			String _path = ServletActionContext.getServletContext().getRealPath("/") + "uploadfile\\" + fileName;
+			fileName += "x";
+			//File f = new File(_path);
+			//f.createNewFile();
+			
+			Workbook wb = createReportWorkbook();
+			ExcelUtil.createExcelFile(_path, wb);
+			
+			return SUCCESS;
+		}catch(Exception ex){
+			System.out.println(ex.getLocalizedMessage());
+			return ERROR;
+		}
 
+	}
+	
+	public Workbook createReportWorkbook() throws Exception{
+		Workbook wb = ExcelUtil.CreateXSSFWorkBook();
+		
+		pourTotalUnusualRecordsIntoWorkbook(wb);
+		pourAbnormalRecordsIntoWorkbook(wb);
+		pourEarlyLateRecordsIntoWorkbook(wb);
+		
+		return wb;
+	}
+
+	public void pourTotalUnusualRecordsIntoWorkbook(Workbook wb) throws Exception {
+		//abnormal sheet, total unusual records
+		Sheet totalUnusualSheet = ExcelUtil.CreateSheet(wb, "Total Unusual Record");
+		// 设置SHEET页面属性
+		ExcelUtil.SetSheetPropertyHSSF(totalUnusualSheet);
+	
+		// 获取预定的样式
+		Map<String, CellStyle> styles = ExcelUtil.CreateStyles(wb);
+		
+		String[] titles = new String[8];
+//employee number	employee name	department name	date	in	out	comments	
+		titles[0] = "Employee Code";
+		titles[1] = "Employee Name";
+		titles[2] = "Surname";
+		titles[3] = "Department Name";
+		titles[4] = "Date";
+		titles[5] = "In";
+		titles[6] = "Out";
+		titles[7] = "Comments";
+		
+		float rowHeight = 27;
+		ExcelUtil.CreateHeadRow(totalUnusualSheet, titles, rowHeight, styles);
+		totalUnusualSheet.createFreezePane(0, 1);
+		
+		int[] cellsWidth = new int[8];
+		cellsWidth[0] = 30;
+		cellsWidth[1] = 30;
+		cellsWidth[2] = 30;
+		cellsWidth[3] = 35;
+		cellsWidth[4] = 30;
+		cellsWidth[5] = 30;
+		cellsWidth[6] = 30;
+		cellsWidth[7] = 30;
+		ExcelUtil.SetCellsWidth(totalUnusualSheet, cellsWidth);
+		
+		//get datas
+		Map<String, String> propMap = new HashMap<String, String>();
+		propMap.put("from", fromDate);
+		propMap.put("to", toDate);
+		List<MP2003> unusualList = serviceMp2003.getTotalUnusualRecords(propMap);
+
+		int count = 1;
+		String[] datas = null;
+		for(int i = 0, j = unusualList.size(); i < j; i++, count++){
+			datas = new String[8];
+			datas[0] = unusualList.get(i).getMP2003_EMPLOYEE_NUM();
+			datas[1] = unusualList.get(i).getMP2003_EMPLOYEE_NAME();
+			datas[2] = unusualList.get(i).getMP2003_EMPLOYEE_SURNAME();
+			datas[3] = unusualList.get(i).getMP2003_DEPARTMENT_NAME();
+			if(unusualList.get(i).getMP2003_DATETIME().isEmpty()){
+				datas[4] = "";
+			}
+			else{
+				datas[4] = unusualList.get(i).getMP2003_DATETIME().substring(0, 19);
+			}
+			if(unusualList.get(i).getMP2003_START_TIME().isEmpty()){
+				datas[5] = "";
+			}
+			else{
+				datas[5] = unusualList.get(i).getMP2003_START_TIME().substring(0, 19);
+			}
+			if(unusualList.get(i).getMP2003_FINISH_TIME().isEmpty()){
+				datas[6] = "";
+			}
+			else{
+				datas[6] = unusualList.get(i).getMP2003_FINISH_TIME().substring(0, 19);
+			}
+			datas[7] = unusualList.get(i).getMP2003_COMMENT();
+			
+			ExcelUtil.SetCellsValue(count, totalUnusualSheet, styles, datas);
+		}
+	}
+	
+	public void pourAbnormalRecordsIntoWorkbook(Workbook wb) throws Exception {
+		//only abnormal records report
+		Sheet abnormalSheet = ExcelUtil.CreateSheet(wb, "Abnormal Record");
+		ExcelUtil.SetSheetPropertyHSSF(abnormalSheet);
+		
+		// 获取预定的样式
+		Map<String, CellStyle> styles = ExcelUtil.CreateStyles(wb);
+		
+		String[] titles = new String[5];
+		titles[0] = "Employee Code";
+		titles[1] = "Employee Name";
+		titles[2] = "Surname";
+		titles[3] = "Department Name";
+		titles[4] = "Days";
+		
+		int[] cellsWidth = new int[5];
+		cellsWidth[0] = 30;
+		cellsWidth[1] = 30;
+		cellsWidth[2] = 30;
+		cellsWidth[3] = 35;
+		cellsWidth[4] = 30;
+		
+		float rowHeight = 27;
+		ExcelUtil.CreateHeadRow(abnormalSheet, titles, rowHeight, styles);
+		abnormalSheet.createFreezePane(0, 1);
+		
+		ExcelUtil.SetCellsWidth(abnormalSheet, cellsWidth);
+
+		Map<String, String> propMap = new HashMap<String, String>();
+		propMap.put("from", fromDate);
+		propMap.put("to", toDate);
+		List<AbnormalReptRecdDto> dataList = serviceMp2003.getAbnormalReptData(propMap);
+		
+		int count = 1;
+		String[] datas = null; 
+		for(int i = 0, j = dataList.size(); i < j; i++, count++){
+			datas = new String[5];
+			datas[0] = dataList.get(i).getEmployeeCode();
+			datas[1] = dataList.get(i).getEmployeeName();
+			datas[2] = dataList.get(i).getSurname();
+			datas[3] = dataList.get(i).getDepartmentName();
+			datas[4] = Float.toString(dataList.get(i).getDay());
+			
+			ExcelUtil.SetCellsValue(count, abnormalSheet, styles, datas);
+		}
+		
+	}
+	
+	public void pourEarlyLateRecordsIntoWorkbook(Workbook wb) throws Exception {
+		// 新建一个SHEET页面
+		Sheet sheet = ExcelUtil.CreateSheet(wb, "Late And Early");
+		// 设置SHEET页面属性
+		ExcelUtil.SetSheetPropertyHSSF(sheet);
+		// 获取预定的样式
+		Map<String, CellStyle> styles = ExcelUtil.CreateStyles(wb);
+
+		List<String> headNameList = new ArrayList<String>();
+		headNameList.add("EMPLOYEE_NUM");
+		headNameList.add("DATE");
+		headNameList.add("CLOCK IN");
+		headNameList.add("CLOCK OUT");
+		headNameList.add("EMPLOYEE NAME");
+		headNameList.add("SURNAME");
+		headNameList.add("DEPARTMENT");
+		headNameList.add("STATUS");
+		headNameList.add("LATE MINUTES");
+		headNameList.add("EARLY MINUTES");
+		headNameList.add("TOTAL MINUTES");
+
+		List<Integer> headCellWidth = new ArrayList<Integer>();
+		headCellWidth.add(20);
+		headCellWidth.add(30);
+		headCellWidth.add(30);
+		headCellWidth.add(30);
+		headCellWidth.add(20);
+		headCellWidth.add(20);
+		headCellWidth.add(35);
+		headCellWidth.add(10);
+		headCellWidth.add(18);
+		headCellWidth.add(18);
+		headCellWidth.add(18);
+
+		// Header标题
+		String[] titles = new String[headNameList.size()];
+		int i = 0;
+		for(String s : headNameList){
+			titles[i] = s;
+			i++;
+		}
+				
+		// 生成标题行
+		float rowHeight = 27f;
+		ExcelUtil.CreateHeadRow(sheet, titles, rowHeight, styles);
+        // 冻结第一行
+        sheet.createFreezePane(0, 1);
+        
+        Integer[] cellsWidth = new Integer[headCellWidth.size()];
+        i = 0;
+        for(Integer it : headCellWidth){
+        	cellsWidth[i] = it;
+        	i++;
+        }
+        
+        // 设置单元格的宽度
+        ExcelUtil.SetCellsWidth(sheet, cellsWidth); //static binding
+        
+      //---------------------------主报表-----------------------------------------------------------------------------------------
+        //List<lateEarlyDto> lateEarlyList = new ArrayList<lateEarlyDto>(); 
+        Map<String, String> propMap = new HashMap<String, String>();
+        propMap.put("from", fromDate);
+		propMap.put("to", toDate);
+        List<LateEarlyDto> lateEarlyList = serviceMp2003.getLateEarlyReptData(propMap); 
+
+        
+        // 取得报表数据
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String[] datas = new String[11];
+        int total = 0;
+        String dptName = null;
+        String oldDptName = null;
+        int rowNum = 0;
+        for(int c = 0, j = lateEarlyList.size(); c < j; c++){
+        	dptName = lateEarlyList.get(c).getDepartmentName();
+        	if(lateEarlyList.get(c).getAllMins() > 480){
+        		continue;
+        	}
+        	if(null != oldDptName && !dptName.equals(oldDptName)){
+        		for(int k = 0; k < 9; k++){
+        			datas[k] = "";
+        		}
+        		datas[9] = "Minutes";
+        		datas[10] = Integer.toString(total);
+        		oldDptName = dptName;
+        		total = 0;
+        		rowNum++;
+        		c--; //must do this, back forwad one record
+        	}
+        	else{
+	        	//lateEarlyList.get(c);
+	        	datas[0] = lateEarlyList.get(c).getEmployeeNum();
+	        	datas[1] = sdf.format(lateEarlyList.get(c).getDate());
+	        	datas[2] = sdf.format(lateEarlyList.get(c).getClockInTime());
+	        	datas[3] = sdf.format(lateEarlyList.get(c).getClockOutTime());
+	        	datas[4] = lateEarlyList.get(c).getPreferedName();
+	        	datas[5] = lateEarlyList.get(c).getSurname();
+	        	datas[6] = lateEarlyList.get(c).getDepartmentName();
+	        	datas[7] = lateEarlyList.get(c).getStatus();
+	        	datas[8] = Integer.toString(lateEarlyList.get(c).getLateMins());
+	        	datas[9] = Integer.toString((lateEarlyList.get(c).getEarlyMins()));
+	        	datas[10] = Integer.toString(lateEarlyList.get(c).getAllMins());
+
+	        	rowNum++;
+	        	total += lateEarlyList.get(c).getAllMins();
+        		oldDptName = dptName;
+        	}
+        	
+        	ExcelUtil.SetCellsValue(rowNum, sheet, styles, datas);
+        }
+        
+        //last total minutes records
+        for(int k = 0; k < 9; k++){
+			datas[k] = "";
+		}
+		datas[9] = "Minutes";
+		datas[10] = Integer.toString(total);
+		rowNum++;
+		ExcelUtil.SetCellsValue(rowNum, sheet, styles, datas);
+
+		
+	}
+	
 	public String validateShiftworkAddLeaveApply(){
 		System.out.println("in validateShiftworkAddLeaveApply function");
 		return SUCCESS;
@@ -8690,5 +8998,37 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 
 	public void setShiftworkScheduleList(List<MP2010> shiftworkScheduleList) {
 		this.shiftworkScheduleList = shiftworkScheduleList;
+	}
+
+	public String getShiftWorkType() {
+		return shiftWorkType;
+	}
+
+	public void setShiftWorkType(String shiftWorkType) {
+		this.shiftWorkType = shiftWorkType;
+	}
+
+	public int getCurrentPageNum() {
+		return currentPageNum;
+	}
+
+	public void setCurrentPageNum(int currentPageNum) {
+		this.currentPageNum = currentPageNum;
+	}
+
+	public String getPER_PAGE_NUM() {
+		return PER_PAGE_NUM;
+	}
+
+	public void setPER_PAGE_NUM(String pER_PAGE_NUM) {
+		PER_PAGE_NUM = pER_PAGE_NUM;
+	}
+
+	public PageBean getPageBean() {
+		return pageBean;
+	}
+
+	public void setPageBean(PageBean pageBean) {
+		this.pageBean = pageBean;
 	}
 }
