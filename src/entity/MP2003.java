@@ -38,6 +38,10 @@ public class MP2003 implements Serializable{
 	//private String MP2003_STATUS1;
 	private String MP2003_EDIT_USER;
 	private String MP2003_EDIT_DATETIME;
+	
+	//department name
+	private String MP2003_DEPARTMENT_NAME;
+	private String MP2003_EMPLOYEE_SURNAME; 
 
 	/**
 	 * @return the mP2003_EMPLOYEE_NUM
@@ -250,5 +254,21 @@ public class MP2003 implements Serializable{
 	 */
 	public void setMP2003_EDIT_DATETIME(String mP2003_EDIT_DATETIME) {
 		MP2003_EDIT_DATETIME = mP2003_EDIT_DATETIME;
+	}
+	public String getMP2003_DEPARTMENT_NAME() {
+		return MP2003_DEPARTMENT_NAME;
+	}
+	public void setMP2003_DEPARTMENT_NAME(String mP2003_DEPARTMENT_NAME) {
+		MP2003_DEPARTMENT_NAME = mP2003_DEPARTMENT_NAME;
+	}
+	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	public String getMP2003_EMPLOYEE_SURNAME() {
+		return MP2003_EMPLOYEE_SURNAME;
+	}
+	public void setMP2003_EMPLOYEE_SURNAME(String mP2003_EMPLOYEE_SURNAME) {
+		MP2003_EMPLOYEE_SURNAME = mP2003_EMPLOYEE_SURNAME;
 	}
 }

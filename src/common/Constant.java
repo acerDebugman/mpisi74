@@ -313,6 +313,16 @@ public class Constant {
 		
 		return leaveTypeList;
 	}
+	public static Map<String,String> getShiftWorkLeaveTypeList(){
+		Map<String, String> leaveTypeList = new LinkedHashMap<String, String>();
+		leaveTypeList.put(SELECT, "Please Select");
+		leaveTypeList.put(ANNUAL, "Annual");
+		leaveTypeList.put(SICK, "Sick");
+		leaveTypeList.put(UNPAID, "Unpaid");
+		leaveTypeList.put(OFFICAL_BUSINESS, "Official Business");
+		
+		return leaveTypeList;
+	}
 	public static Map<String,String> getLeaveTypeList2(){
 		Map<String, String> leaveTypeList = new LinkedHashMap<String, String>();
 		leaveTypeList.put(SELECT, "---Please Select---");
@@ -690,6 +700,17 @@ public class Constant {
 		return rs;
 	}
 	
+	public static List<String> getBranchSiteList(){
+		List<String> rs = new ArrayList<String>();
+
+		rs.add("---Please Select---");
+		rs.add("Head Office");
+		rs.add("Roodekop");
+		rs.add("Citydeep");
+		rs.add("Durban");
+
+		return rs;		
+	}
 	
 	public static String LOGIN_SUCCESS = "Logon Success";
 	public static String LOGIN_FAILURE = "Logon failure";
@@ -708,4 +729,6 @@ public class Constant {
 	public static String shiftTypeRest = "R"; //rest
 	public static String shiftTypeDay = "D"; //day work
 	public static String shiftTypeNight = "N"; //nigth work
+	
+	
 }

@@ -18,7 +18,7 @@
 		<th scope="col" width="150px">Location</th>
         <th scope="col" width="150px">Out</th>
 		<th scope="col" width="150px">Location</th>
-        <th scope="col" width="100px">Status</th>
+        <th scope="col" width="250px">Status</th>
         <th scope="col" width="100px"></th>
     </tr>
 <s:iterator value="workingHourRecordList" status="st">

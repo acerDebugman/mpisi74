@@ -3,6 +3,8 @@ package service;
 import java.util.List;
 import java.util.Map;
 
+import common.PageBean;
+
 import entity.MP2010;
 
 public interface IMP2010Service {
@@ -34,4 +36,6 @@ public interface IMP2010Service {
 	public abstract void getSubscriberInfo(MP2010 mp2010);
 	
 	public abstract void analyzeExcelTemplate(MP2010 mp2010);
+	
+	public PageBean queryForPage(Map<String, String> pageProperty);
 }

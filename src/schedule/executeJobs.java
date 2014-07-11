@@ -5,22 +5,28 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import service.MP2010Service;
+
 import common.Constant;
 import common.Mail;
 import common.UtilCommon;
 import common.UtilDate;
 
+import dao.MP2010DAO;
 import dto.AttendanceRecordDto;
 import dto.CheckInOutDto;
 import entity.MP1001;
 import entity.MP2003;
+import entity.MP2010;
 
 public class executeJobs {
 	//private static final Log log = LogFactory.getLog(AuthorityAction.class);
@@ -62,9 +68,24 @@ public class executeJobs {
 			CommonJobMethod.update2003(mp2003List,connSql);
 			System.out.println("update finish");
 			
-			connSql.close();
+			//job 11
+			executeJob11();
 			
-			// 发邮件通知本人密码已经重置
+			//add one new shift work schedule records 
+			executeJob14();
+			
+			//delete some employuee's attendance information, exclude all shift worker's
+			CommonJobMethod.deleteSpecialEmployeesAbnormal(connSql);
+
+			connSql.close();
+			//send abnormal emails, as shift workers have no emails, so send to their manager. 
+			//get all yesterday Abnormal email to manager, not only for shiftworker
+			CommonJobMethod.sendAbnormalEmails();
+			
+			//job 12
+//			executeJob12();
+			
+			//email info all success did
 			Mail mail = new Mail();
 			String to = Constant.ADMIN_MAIL;
 			mail.setSubject("Auto Calculate Attendance Records");
@@ -537,24 +558,27 @@ public class executeJobs {
 	//executeJob11 for shift work calculate
 	public void executeJob11() throws SQLException {
 		try{
-		//get employee number set, and which date
-		Date date = new Date();
-		
-		Set<String> employeeNumSet = CommonJobMethod.getAllShiftWorkEmployeeNums(date);
-		
-		//get specify day's employee attendance records from CHECKINOUT table
-		List<CheckInOutDto> checkInOutRecordsList = CommonJobMethod.getAllAttendanceRecords(employeeNumSet);
-		
-		List<AttendanceRecordDto> dailyRecords = CommonJobMethod.separateIntoEachDays(checkInOutRecordsList);
-		
-		//compare time and calculate attendance status
-		
-		
-		//delete old records
-		
-		//insert new records
-		
-		//send abnormal emails
+			//get employee number set, and which date
+			Date date = new Date();
+			
+			Set<String> employeeNumSet = CommonJobMethod.getAllShiftWorkEmployeeNums(date);
+			
+			//get specify day's employee attendance records from CHECKINOUT table
+			List<CheckInOutDto> checkInOutRecordsList = CommonJobMethod.getAllAttendanceRecords(employeeNumSet);
+			
+			Map<String, MP2010> mapShiftworkRecords = CommonJobMethod.getAllShiftArrangeRecords(); //get all mp2010 records
+			List<AttendanceRecordDto> dailyRecords = CommonJobMethod.separateIntoEachDays(checkInOutRecordsList); //get all checkInOut records
+			
+			//compare time and calculate attendance status
+			List<MP2003> calculatedAttendanceRcdList= CommonJobMethod.calculateAttendanceRecordStatus(dailyRecords, employeeNumSet, mapShiftworkRecords); //compare all daily clock in out records 
+			
+			//listMP2003
+			
+			//delete old records
+			CommonJobMethod.deleteOldAttendanceRcd(employeeNumSet);
+			
+			//insert new records
+			CommonJobMethod.insertCalculatedAttendanceRcd(calculatedAttendanceRcdList);
 		
 		} catch (ClassNotFoundException e){
 			System.out.println(e.getMessage());
@@ -566,4 +590,247 @@ public class executeJobs {
 			System.out.println(ex.getMessage());
 		}
 	}
+	
+	
+	//only for test
+	public void executeJob12(){
+		try{
+			//CommonJobMethod.sendAbnormalEmails();
+			System.out.println("abnormal test!");
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	//copy of executeJob1,but can not send email, only for autoload data function use 
+	public void executeJob13() throws SQLException {
+		String parameter ="";
+		Connection connSql = null;
+		//log.info("------Execute Job1 Start------");
+		try {
+			CommonJobMethod.loadDataToHrSystem(true, null);
+			
+			connSql = CommonJobMethod.getDBConnection();
+			List<MP2003> mp2003List =CommonJobMethod.getAllData(connSql,parameter);
+			
+			Map<String,String> mp23Map = new HashMap<String,String>();
+			for(MP2003 mp23 : mp2003List){
+				mp23Map.put(mp23.getMP2003_EMPLOYEE_NUM().toUpperCase() + "#@" +mp23.getMP2003_DATETIME().substring(0,10).trim(), "");
+			}
+			
+			Map<String, MP1001> empDateMap =  CommonJobMethod.getEmployeeInfoList(connSql); //get all employees of normal work day
+			Map<String, MP1001> newEmpDateMap = new HashMap<String, MP1001>();
+			int date1, date2;
+			for(Map.Entry<String, MP1001> entry : empDateMap.entrySet()){ //empDataMap contains all normal records,but it's empty 
+				date1 = Integer.parseInt(entry.getKey().split("#@")[1].replace("-", ""));
+				date2 = Integer.parseInt(entry.getValue().getMP1001_ENTRY_DATE().substring(0,10).replace("-", ""));
+				if(!mp23Map.containsKey(entry.getKey()) && date1 >= date2 ){ //mp23Map contains all the clock records,if it doesn't contains the normal records,the empty record will insert into MP2003 table;   
+					newEmpDateMap.put(entry.getKey(), entry.getValue());
+					System.out.println("Line: key:[" + entry.getKey() + "]  date1: [" + date1 + "] date2: [" + date2 + "]");
+				}
+			}
+			
+			CommonJobMethod.insertEmptyAttendanceRecord(newEmpDateMap, connSql); //insert into empty records
+			System.out.println("insert finish");
+			mp2003List =CommonJobMethod.getAllData(connSql,parameter); //this time will get all mp2003 records
+			CommonJobMethod.dataConvert2003(mp2003List,connSql);
+			//CommonJobMethod.mergeShiftWorkSchedule(mp2003List, connSql);
+			System.out.println("dataConvert finish");
+			
+			CommonJobMethod.update2003WithoutSendEmail(mp2003List,connSql);
+			
+			System.out.println("update finish");
+			
+			//job 11
+			executeJob11();
+			
+			//delete some employuee's attendance information, exclude all shift worker's
+			CommonJobMethod.deleteSpecialEmployeesAbnormal(connSql);
+
+			connSql.close();
+			//send abnormal emails, as shift workers have no emails, so send to their manager. 
+			//get all yesterday Abnormal email to manager, not only for shiftworker
+//			CommonJobMethod.sendAbnormalEmails();
+			
+			//job 12
+//			executeJob12();
+			
+			//email info all success did
+			Mail mail = new Mail();
+			String to = Constant.ADMIN_MAIL;
+			mail.setSubject("Auto Calculate Attendance Records");
+			mail.setContent("Dear Colleagues,\r\n \r\n Please note that The batch has been executed at " + UtilDate.get24DateTime());
+			mail.setTo(to);
+			mail.send();
+			
+			//log.info("------Execute Job1 Finish------");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			//log.info(e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			//log.info(e.getMessage());
+		}catch(ParseException pe){
+			pe.printStackTrace();
+			//log.info(pe.getMessage());
+		}
+		finally{
+			if(connSql!=null){
+				connSql.close();
+			}
+		}		
+	}
+	
+	public void executeJob14(){
+		try{
+			Connection conn = CommonJobMethod.getDBConnection();
+			Statement st = conn.createStatement();
+			
+			StringBuffer sb = new StringBuffer();
+			List<String> employeeList = new ArrayList<String>();
+			
+			sb.append("select distinct(MP2010_EMPLOYEE_NUM) from MP2010 ");
+			ResultSet rs = st.executeQuery(sb.toString());
+			while(rs.next()){
+				employeeList.add(rs.getString("MP2010_EMPLOYEE_NUM"));
+			}
+
+			//set time to next day
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+			sb.delete(0, sb.length());
+			sb.append("select top 1 MP2010_DATE from MP2010 order by MP2010_DATE desc");
+			rs = st.executeQuery(sb.toString());
+			rs.next();
+			cal.setTime(sdf.parse(rs.getString(1))); //the lastest day
+			cal.add(Calendar.DAY_OF_MONTH, 1); //set to next day
+			
+			//iterator every shift worker
+			List<MP2010> tmpList = new ArrayList<MP2010>();
+			for(int i = 0, j = employeeList.size(); i < j; i++){
+				
+				sb.delete(0, sb.length());
+				sb.append("select top 3 * from MP2010 where mp2010_EMPLOYEE_NUM='");
+				sb.append(employeeList.get(i) + "' order by MP2010_DATE desc;");
+
+				rs = st.executeQuery(sb.toString());
+				while(rs.next()){
+					MP2010 mp21 = new MP2010();
+					mp21.setMP2010_TYPE(rs.getString("MP2010_TYPE"));
+					mp21.setMP2010_BRANCH_SITE(rs.getString("MP2010_BRANCH_SITE"));
+					mp21.setMP2010_DATE(rs.getString("MP2010_DATE"));
+					mp21.setMP2010_EMPLOYEE_NUM(rs.getString("MP2010_EMPLOYEE_NUM"));
+					mp21.setMP2010_FROM_DATETIME(rs.getString("MP2010_FROM_DATETIME"));
+					mp21.setMP2010_END_DATETIME(rs.getString("MP2010_END_DATETIME"));
+					mp21.setMP2010_ID(rs.getInt("MP2010_ID"));
+					
+					tmpList.add(mp21);
+				}
+				
+				MP2010 nextRcd = new MP2010();
+				nextRcd.setMP2010_DATE(sdf.format(cal.getTime()));
+				nextRcd.setMP2010_BRANCH_SITE(tmpList.get(0).getMP2010_BRANCH_SITE());
+				nextRcd.setMP2010_EMPLOYEE_NUM(tmpList.get(0).getMP2010_EMPLOYEE_NUM());
+				nextRcd.setMP2010_FROM_DATETIME(tmpList.get(0).getMP2010_FROM_DATETIME());
+				nextRcd.setMP2010_END_DATETIME(tmpList.get(0).getMP2010_END_DATETIME());
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("D") && 		//tmpList.get(0) is the latest one
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("D") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("D")){
+						nextRcd.setMP2010_TYPE("N");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightStartTime);
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightEndTime);
+				}
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("R") && 
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("R") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("R")){
+						nextRcd.setMP2010_TYPE("D");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkDayStartTime);
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkDayEndTime);
+				}
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("N") && 
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("N") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("N")){
+						nextRcd.setMP2010_TYPE("R");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()));
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()));
+				}
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("D") && 
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("D") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("R")){
+						nextRcd.setMP2010_TYPE("D");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkDayStartTime);
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkDayEndTime);
+				}
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("D") && 
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("R") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("R")){
+						nextRcd.setMP2010_TYPE("D");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkDayStartTime);
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkDayEndTime);
+				}
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("R") && 
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("N") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("N")){
+						nextRcd.setMP2010_TYPE("R");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()));
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()));
+				}
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("R") && 
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("R") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("N")){
+						nextRcd.setMP2010_TYPE("R");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()));
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()));
+				}
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("N") && 
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("D") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("D")){
+						nextRcd.setMP2010_TYPE("N");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightStartTime);
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightEndTime);
+				}
+				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("N") && 
+						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("N") && 
+							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("D")){
+						nextRcd.setMP2010_TYPE("N");
+						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightStartTime);
+						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightEndTime);
+				}
+				
+				sb.delete(0, sb.length());
+				sb.append("insert into MP2010(MP2010_EMPLOYEE_NUM, MP2010_TYPE, MP2010_DATE, MP2010_BRANCH_SITE, MP2010_FROM_DATETIME, MP2010_END_DATETIME) values(");
+				sb.append("'" + nextRcd.getMP2010_EMPLOYEE_NUM() + "',");
+				sb.append("'" + nextRcd.getMP2010_TYPE() + "',");
+				sb.append("'" + nextRcd.getMP2010_DATE() + "',");
+				sb.append("'" + nextRcd.getMP2010_BRANCH_SITE() + "',");
+				sb.append("'" + nextRcd.getMP2010_FROM_DATETIME() + "',");
+				sb.append("'" + nextRcd.getMP2010_END_DATETIME() + "')");
+				
+				st.execute(sb.toString()); //insert into MP2010
+				
+				tmpList.clear(); //clear all records
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	//for change shift worker's status 
+	public void executeJob15(){
+		try{
+//			Connection conn = CommonJobMethod.getDBConnection();
+//			Statement st = conn.createStatement();
+//			StringBuffer sb = new StringBuffer();
+			
+			//get 
+//			sb.append("");
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 }

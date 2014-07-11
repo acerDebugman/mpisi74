@@ -3,6 +3,8 @@ package service;
 import java.util.List;
 import java.util.Map;
 
+import common.PageBean;
+
 import dao.MP2010DAO;
 import entity.MP2010;
 
@@ -73,7 +75,8 @@ public class MP2010Service implements IMP2010Service {
 	public List<MP2010> findByColumnName(Map<String, String> columnMap,
 			String strOrder, boolean pageFlag) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		return this.dao.findByColumnName(columnMap);
 	}
 
 	@Override
@@ -100,5 +103,31 @@ public class MP2010Service implements IMP2010Service {
 
 	public void setDao(MP2010DAO dao) {
 		this.dao = dao;
+	}
+	
+	@Override
+	public PageBean queryForPage(Map<String, String> pageProperty) {
+		PageBean pageBean = new PageBean();
+		
+		int pageSize = Integer.parseInt(pageProperty.get("PAGE_COUNT")); //page count is number of record per page
+		int ctPage = Integer.parseInt(pageProperty.get("PAGE_NUM"));
+		if(0 == ctPage){
+			pageProperty.remove("PAGE_NUM");
+			ctPage = PageBean.countCurrentPage(ctPage);
+			pageProperty.put("PAGE_NUM", "" + ctPage);
+		}
+		List<MP2010> list = this.dao.findByColumnNames(pageProperty, true); //per page data
+		
+		//int allRow = this.dao.findByColumnNames(pageProperty, false).size(); //all need data, total record count
+		int allRow = (int)this.dao.findTotalSearchCount(pageProperty);
+		final int totalPage =  PageBean.countTotalPage(pageSize, allRow);
+		
+		pageBean.setAllRow(allRow);
+		pageBean.setCurrentPage(ctPage);
+		pageBean.setPageSize(pageSize);
+		pageBean.setTotalPage(totalPage);
+		pageBean.setList(list);
+		
+		return pageBean;
 	}
 }

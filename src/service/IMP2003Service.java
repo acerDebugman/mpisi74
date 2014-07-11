@@ -1,8 +1,11 @@
 package service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
+import dto.AbnormalReptRecdDto;
+import dto.LateEarlyDto;
 import entity.CHECKINOUT;
 import entity.MP1001;
 import entity.MP2003;
@@ -37,5 +40,10 @@ public interface IMP2003Service {
 	public abstract int getRowCountByPropertys(MP1001 employeeData,String empNum, String fromDate, String FinishDate,String depId,String attendenceStatus);
 	
 	public abstract List<MP2003> getPdfData(String empNum, String fromDate, String FinishDate,String depId,String attendenceStatus);
+
+	public abstract List<MP2003> getTotalUnusualRecords(Map<String, String> propMap); //for abnormal/late/early records report
 	
+	public abstract List<AbnormalReptRecdDto> getAbnormalReptData(Map<String, String> propMap);
+	
+	public abstract List<LateEarlyDto> getLateEarlyReptData(Map<String, String> propMap) throws ParseException;
 }

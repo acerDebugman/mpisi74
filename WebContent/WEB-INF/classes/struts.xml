@@ -7,6 +7,7 @@
 <!-- 设置临时文件上传路径 -->
 <constant name="struts.multipart.saveDir" value="/tmp"/>
 <constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+<constant name="struts.devMode" value="true"></constant>
 	
 <package name="default" extends="struts-default" >
 	
@@ -541,9 +542,31 @@
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
 		
+		
+		<!-- shift work part-->
 		<action name="shiftWorkMngInit" class="applyLeaveMngBean" method="shiftWorkMngInit">
-			<result name="success">test.jsp</result>
+			<result name="success">shiftworkMngInit.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="shiftWorkSearch" class="applyLeaveMngBean" method="shiftWorkSearch">
+			<result name="success">shiftworkSearch_list.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="shiftWorkCalculate" class="applyLeaveMngBean" method="shiftWorkCalculate">
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		
+		<action name="shiftworkLeaveSubmit" class="applyLeaveMngBean" >
+		    <result name="success" type="redirect">shiftworkApplyLeaveDis.action</result>
+			<result name="approve" >applyLeave.jsp</result>
+			<result name="input" type="redirect">shiftworkApplyLeaveDis.action</result>
+			<result name="fail" type="redirect">addShiftWorkLeaveInit.action?type=add</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="shiftworkApplyLeaveDis" class="applyLeaveMngBean" method="applyLeaveDis">
+			<result name="success">shiftworkApplyLeaveDis.jsp</result>
+			<interceptor-ref name="sessioncheck"/>
 		</action>
 		
 		<!-- <action name="exportShiftWorkExcelTemplate" class="applyLeaveMngBean" method="exportShiftWorkExcelTemplate">
@@ -560,6 +583,29 @@
 			</result>
 			<interceptor-ref name="sessioncheck"/>
 		</action>
+		<action name="importShiftworkScheduleExcelInit" class="applyLeaveMngBean" method="importShiftworkScheduleExcelInit">
+			<result name="success">importShiftworkSchedule.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="uploadExcelFile" class="applyLeaveMngBean" method="uploadExcelFile">
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="addShiftWorkLeaveInit" class="applyLeaveMngBean" method="addShiftWorkLeaveInit">
+			<result name="success">addShiftworkLeave.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="abnormalEarlyLateReport" class="applyLeaveMngBean" method="abnormalEarlyLateReport">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;fileName="abnormalEarlyLated.xlsx"</param>
+			   	<!-- <param name="contentDisposition">inline;fileName="abnormalEarlyLated.xlsx"</param> -->
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		
 		 
 <!-- 出勤管理Action -->
 
@@ -1432,5 +1478,30 @@
 			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		
+<!-- some tools -->
+		<action name="joeTools" class="itServiceBean" method="joeTools">
+			<result name="success">pages/itService/main.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="lateEarlyJobTest" class="itServiceBean" method="lateEarlyJobTest">
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<!-- <action name="lateAndEarlyExcel" class="itServiceBean" method="lateAndEarlyExcel">
+			<result name="success">pages/itService/main.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action> -->
+		
+		<action name="downloadLateAndEarlyExcel" class="itServiceBean" method="downloadLateAndEarlyExcel">
+			<result name="success" type="stream">
+			    <param name="contentType">application/octet-stream</param>
+			    <param name="contentDisposition">attachment;filename="late-and-early3.xlsx"</param>
+			    <param name="inputName">downloadFile</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<interceptor-ref name="sessioncheck"/>
+		</action>
+				
 	</package>
 </struts>

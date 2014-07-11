@@ -228,11 +228,11 @@ public class LoginAction extends ActionSupport {
 				return INPUT;
 			}
 			// 判断密码是否正确
-			/*if(!mp1001.getMP1001_PASSWORD().equals(employeeData.getMP1001_PASSWORD())){
-				addFieldError("mp1001.MP1001_PASSWORD","login failure.");
-				writeLoginLog(employeeData,"N");
-				return INPUT;
-			}*/
+//			if(!mp1001.getMP1001_PASSWORD().equals(employeeData.getMP1001_PASSWORD())){
+//				addFieldError("mp1001.MP1001_PASSWORD","login failure.");
+//				writeLoginLog(employeeData,"N");
+//				return INPUT;
+//			}
 
 			group = employeeData.getMP1001_GROUP();
 			mp1001.setMP1001_EMPLOYEE_NUM(employeeNum.toUpperCase());
