@@ -1,0 +1,12 @@
+/action
+/beans.xml
+/common
+/dao
+/dto
+/entity
+/interceptor
+/log4j.properties
+/schedule
+/service
+/struts.xml
+/template
