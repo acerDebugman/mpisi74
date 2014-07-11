@@ -232,12 +232,12 @@ function exportSchedule(){
        		<input type="button" value="Download Next Month Excel Template" onclick="downloadMonthlyExcel()"/>
             <input id="ImportExcel" name="ImportExcel" value="Import Excel" onclick="openImportExcelWindow()" type="button"/>
 		</td>
-		<td align="left" width="30%">
+		<!-- <td align="left" width="30%">
             <input id="shiftWorkAddLeave" name="shiftWorkAddLeave" type="button" value="Add Shiftwork Leave" onclick="openAddWindow()" style="float:left"/>
-        </td>
-        <!-- <td align="left" width="30%">
-            <input id="shiftWorkCalculate" name="shiftWorkCalculate" type="button" value="implement calculate" onclick="shiftWorkCalculate()" style="float:left"/>
         </td> -->
+        <td align="left" width="30%">
+            <input id="shiftWorkCalculate" name="shiftWorkCalculate" type="button" value="implement calculate" onclick="shiftWorkCalculate()" style="float:left"/>
+        </td>
         <!-- <td align="left" width="30%">
             <input id="exportShiftworkSchedule" name="exportShiftworkSchedule" type="button" value="export schedule" onclick="exportSchedule()" style="float:left"/>
         </td> -->

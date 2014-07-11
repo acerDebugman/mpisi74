@@ -3271,12 +3271,14 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			//----------------------------Operation History------------------
 			
 			Calendar calendar = Calendar.getInstance();
+			Calendar nextDayCal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			//String editDate = String.valueOf(calendar.get(Calendar.YEAR)) + "-" + String.format("%02d",calendar.get(Calendar.MONTH) + 1) + "-" + String.format("%02d",calendar.get(Calendar.DAY_OF_MONTH)) + "-" +  String.format("%02d",calendar.get(Calendar.HOUR_OF_DAY)) + "-" + String.format("%02d",calendar.get(Calendar.MINUTE));
 
 			mp2003.setMP2003_EDIT_DATETIME(calendar.getTime().toString());
 			mp2003.setMP2003_EDIT_USER(employeeData.getMP1001_EMPLOYEE_NUM());
 			
-			serviceMp2003.updateStatus(mp2003);	
+			serviceMp2003.updateStatus(mp2003);
 			try{
 				CustomerContextHolder.setCustomerType("finger");
 				int usrId =  serviceCHECKINOUT.findAll(mp2003.getMP2003_EMPLOYEE_NUM());
@@ -3289,10 +3291,37 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 					checkinout.setWORKCODE(0);
 					checkinout.setSN("2364259440003");
 					checkinout.setUSEREXTFMT(1);
+					checkinout.setMEMOINFO("");
 					
 					String startTime = mp2003.getMP2003_DATETIME() + " 08:00";
 					String finishTime = mp2003.getMP2003_DATETIME() + " 16:30";
-					if(mp2003.getMP2003_STATUS().equals("3")){ // In is null
+					String shiftDStartTime = mp2003.getMP2003_DATETIME() + " 06:00";
+					String shiftDFinishTime = mp2003.getMP2003_DATETIME() + " 18:00";
+					String shiftNStartTime = mp2003.getMP2003_DATETIME() + " 18:00";
+					nextDayCal.setTime(sdf.parse(mp2003.getMP2003_DATETIME()));
+					nextDayCal.add(Calendar.DAY_OF_MONTH, 1); //next day
+					String shiftNFinishTime = sdf.format(nextDayCal.getTime()) + " 06:00";
+					if(null != mp2003.getMP2003_COMMENT() && -1 != mp2003.getMP2003_COMMENT().indexOf("N Abnormal")){
+						if(null == mp2003.getMP2003_START_TIME() || mp2003.getMP2003_START_TIME().equalsIgnoreCase("")){
+							checkinout.setCHECKTIME(shiftNStartTime);
+							serviceCHECKINOUT.save(checkinout);
+						}
+						if(null == mp2003.getMP2003_FINISH_TIME() || mp2003.getMP2003_FINISH_TIME().equalsIgnoreCase("")){
+							checkinout.setCHECKTIME(shiftNFinishTime);
+							serviceCHECKINOUT.save(checkinout);
+						}
+					}
+					else if(null != mp2003.getMP2003_COMMENT() && -1 != mp2003.getMP2003_COMMENT().indexOf("D Abnormal")){
+						if(null == mp2003.getMP2003_START_TIME() || mp2003.getMP2003_START_TIME().equalsIgnoreCase("")){
+							checkinout.setCHECKTIME(shiftDStartTime);
+							serviceCHECKINOUT.save(checkinout);
+						}
+						if(null == mp2003.getMP2003_FINISH_TIME() || mp2003.getMP2003_FINISH_TIME().equalsIgnoreCase("")){
+							checkinout.setCHECKTIME(shiftDFinishTime);
+							serviceCHECKINOUT.save(checkinout);
+						}
+					}
+					else if(mp2003.getMP2003_STATUS().equals("3")){ // In is null
 						checkinout.setCHECKTIME(startTime);
 						serviceCHECKINOUT.save(checkinout);
 					}else if(mp2003.getMP2003_STATUS().equals("4")){ // Out is null
@@ -3315,7 +3344,14 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			
 			Overtime overtime = new Overtime();
 			overtime.setEmployeeNum(mp2003.getMP2003_EMPLOYEE_NUM());
-			overtime.setCheckTime1(mp2003.getMP2003_DATETIME().substring(0, 10) + " 23:59");
+//			overtime.setCheckTime1(mp2003.getMP2003_DATETIME().substring(0, 10) + " 23:59");
+			//change to next day, load two days records to system because
+			if(null != mp2003.getMP2003_COMMENT() && -1 != mp2003.getMP2003_COMMENT().indexOf("N Abnormal")){//if it's night
+				overtime.setCheckTime1(sdf.format(nextDayCal.getTime()) + " 23:59");
+			}
+			else{
+				overtime.setCheckTime1(mp2003.getMP2003_DATETIME().substring(0, 10) + " 23:59");
+			}
 			overtime.setCheckTime2(mp2003.getMP2003_DATETIME().substring(0, 10));
 		    CommonJobMethod.loadDataToHrSystem(false, overtime)	;
 			
@@ -6929,6 +6965,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	public String shiftWorkCalculate(){
 		try{
 			executeJobs jb = new executeJobs();
+//			jb.executeJob14();
 			jb.executeJob11();
 			return NONE;
 		}

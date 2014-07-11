@@ -222,11 +222,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="dataSourceHr" parent="parentDataSource">
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property> --> 
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.53.71:1433/mpisiHr;instance=JOE"></property> -->
- 		<property name="url" value="jdbc:jtds:sqlserver://localhost:1433/mpisiHr;instance=JOE"></property> 
+ 		<property name="url" value="jdbc:jtds:sqlserver://localhost:1433/mpisiHr;instance=JOE"></property>
 	</bean>
 	<bean id="dataSourceFinger" parent="parentDataSource">
-		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/finger"></property> -->
-		<property name="url" value="jdbc:jtds:sqlserver://192.168.53.66:1433/testFinger;instance=JOE"></property>
+		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/oldFinger"></property> -->
+		<property name="url" value="jdbc:jtds:sqlserver://MPC050141:1433/testFinger;instance=JOE"></property>
 	</bean>
 	
 	<bean id="dataSource" class="common.DynamicDataSource">

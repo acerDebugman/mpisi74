@@ -844,6 +844,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		sb.append("select MP1001_EMPLOYEE_NUM,MP1001_PREFERED_NAME,MP1001_SURNAME,MP0002_DEPARTMENT_NAME, MP2003_DATETIME, MP2003_START_TIME, MP2003_FINISH_TIME, MP2003_COMMENT ");
 		sb.append(" from MP2003, MP0002, MP1001 ");
 		sb.append(" where MP1001_EMPLOYEE_NUM=MP2003_EMPLOYEE_NUM and MP1001_DEPARTMENT_ID=MP0002_SEQ and ");
+		sb.append(" MP1001_STATUS in ('2', '1') and ");
 		sb.append(" (MP2003_COMMENT like '%Early%' or ");
 		sb.append(" MP2003_COMMENT like '%Abnormal%' or ");
 		sb.append(" MP2003_COMMENT like '%Late%' ) and ");
@@ -947,6 +948,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		sb.append("select MP1001_EMPLOYEE_NUM,MP1001_PREFERED_NAME,MP1001_SURNAME,MP0002_DEPARTMENT_NAME, MP2003_DATETIME, MP2003_START_TIME, MP2003_FINISH_TIME, MP2003_COMMENT ");
 		sb.append(" from MP2003, MP0002, MP1001 ");
 		sb.append(" where MP1001_EMPLOYEE_NUM=MP2003_EMPLOYEE_NUM and MP1001_DEPARTMENT_ID=MP0002_SEQ and ");
+		sb.append(" MP1001_STATUS in ('2', '1') and ");
 		sb.append(" MP2003_COMMENT like '%Abnormal%' and ");
 		if(propMap.containsKey("from")){
 			sb.append(" MP2003_DATETIME >= '" + propMap.get("from") + "' and ");
@@ -1034,6 +1036,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 				"MP2003_START_TIME, MP2003_FINISH_TIME,MP2003_COMMENT ");
 		sb.append(" from MP2003 m23, MP1001 mp11,MP0002 m02 ");
 		sb.append(" where (MP2003_COMMENT like '%Late%' or MP2003_COMMENT like '%Early%') ");
+		sb.append(" and MP1001_STATUS in ('2', '1') ");
 		sb.append(" and MP1001_EMPLOYEE_NUM=MP2003_EMPLOYEE_NUM and MP1001_DEPARTMENT_ID=MP0002_SEQ ");
 		sb.append(" and MP2003_EMPLOYEE_NUM not in ('M0207','M0066','M0265','M0514','M0531','M0049'," +
 				"'M0249','M0105','M0456','M0078','M0453','m0482') and "); //not include specified employees

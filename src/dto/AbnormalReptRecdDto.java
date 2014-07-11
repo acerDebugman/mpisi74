@@ -38,6 +38,4 @@ public class AbnormalReptRecdDto {
 	public void setSurname(String surname) {
 		Surname = surname;
 	}
-	
-	
 }

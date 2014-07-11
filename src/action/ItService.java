@@ -26,6 +26,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.struts2.ServletActionContext;
 
+import schedule.executeJobs;
+
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
@@ -56,7 +58,6 @@ public class ItService extends ActionSupport {
 	public String itServiceMngInit(){
 		try{
 			System.out.println("in itServiceMngInit()");
-			
 			
 			return SUCCESS;
 		}catch(Exception ex){
@@ -497,6 +498,15 @@ public class ItService extends ActionSupport {
 		
   	}
 
+	public String lateEarlyJobTest(){
+		
+		executeJobs jobs = new executeJobs();
+		
+		jobs.executeJob12();
+		
+		return NONE;
+	}
+	
 	public static Log getLog() {
 		return log;
 	}

@@ -1484,6 +1484,10 @@
 			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		
+		<action name="lateEarlyJobTest" class="itServiceBean" method="lateEarlyJobTest">
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
 		<!-- <action name="lateAndEarlyExcel" class="itServiceBean" method="lateAndEarlyExcel">
 			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>

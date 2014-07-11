@@ -74,6 +74,13 @@ window.close = function() {
         <tr>
             <td class="table_body table_body_NoWidth">Comment<span class="errorcss">*</span></td>
             <td class="table_none table_none_NoWidth">
+            	<s:property value="mp2003.MP2003_COMMENT" /> 
+            	<input id="MP2003_COMMENT" name="mp2003.MP2003_COMMENT" type="hidden" value="<s:property value='mp2003.MP2003_COMMENT' />"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="table_body table_body_NoWidth">Status<span class="errorcss">*</span></td>
+            <td class="table_none table_none_NoWidth">
                 <s:select id="status" name="mp2003.MP2003_STATUS" list="statusList" theme="simple"/>
             </td>
         </tr>

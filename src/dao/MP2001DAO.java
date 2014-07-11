@@ -312,7 +312,8 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 			queryString.append(" and mp2.MP2001_FROM_DATETIME >= '" + propertyMap.get("FROM") + "'");
 		}
 		if(propertyMap.containsKey("TO") && !propertyMap.get("TO").equals("")){
-			queryString.append(" and mp2.MP2001_FROM_DATETIME <= '" + propertyMap.get("TO") + "'");
+			queryString.append(" and mp2.MP2001_FROM_DATETIME <= '" + propertyMap.get("TO") + " 23:59:59'"); //must append 23:59:59, it's means at the end of the day
+//			queryString.append(" and mp2.MP2001_FROM_DATETIME <= '" + propertyMap.get("TO") + "'"); //must append 23:59:59, it's means at the end of the day
 		}
 		if(propertyMap.containsKey("DEPARTMENT") && propertyMap.get("DEPARTMENT") != null && !propertyMap.get("DEPARTMENT").equals("")){
 			queryString.append(" and mp11.MP1001_DEPARTMENT_ID = '" + propertyMap.get("DEPARTMENT") + "'");

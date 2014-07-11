@@ -28,5 +28,10 @@
 <s:form action="downloadLateAndEarlyExcel" method="post" theme="simple">
 	<s:submit value="down late/early excel" />
 </s:form>
+
+<hr />
+<s:form action="lateEarlyJobTest" method="post" theme="simple">
+	<s:submit value="Late early job execute" />
+</s:form>
 </body>
 </html>
