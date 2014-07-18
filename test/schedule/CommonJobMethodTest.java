@@ -6,6 +6,8 @@ import java.sql.Connection;
 
 import org.junit.Test;
 
+import com.joe.schedule.CommonJobMethod;
+
 public class CommonJobMethodTest {
 
 	@Test

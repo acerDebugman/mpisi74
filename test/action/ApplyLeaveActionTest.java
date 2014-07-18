@@ -7,6 +7,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.joe.action.ApplyLeaveAction;
+
 public class ApplyLeaveActionTest {
 
 	@Test

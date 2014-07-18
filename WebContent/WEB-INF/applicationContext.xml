@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
-xmlns:aop="http://www.springframework.org/schema/aop"  
-xmlns:tx="http://www.springframework.org/schema/tx"  
-xsi:schemaLocation="  
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd  
-http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    	http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+        
+        
+	<context:annotation-config/>
+    <context:component-scan base-package="com.joe"/>        
 <!-- 系统定时任务执行处理 -->
 <!--===== job =====-->
 	<bean id="executeJobs" class="schedule.executeJobs"/>
@@ -94,7 +101,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 	</bean>
 <!--===== Trigger =====-->
-	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail1"/>
 		</property>
@@ -103,7 +110,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<!--  <value>0 0/15 * * * ?</value> -->
 		</property>
 	</bean>
-	<bean id="quartzTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail2"/>
 		</property>
@@ -111,7 +118,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 30 1 20 * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger3" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail3"/>
 		</property>
@@ -119,7 +126,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>* * * * * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger4" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail4"/>
 		</property>
@@ -127,7 +134,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 0 2 * * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger5" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger5" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail5"/>
 		</property>
@@ -135,7 +142,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 10 2 L * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger6" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger6" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail6"/>
 		</property>
@@ -145,7 +152,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <!-- <value>0 25 12 * * ?</value> -->
 		</property>
 	</bean>
-	<bean id="quartzTrigger7" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger7" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail7"/>
 		</property>
@@ -153,7 +160,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 0 3 1 3 ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger8" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger8" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail8"/>
 		</property>
@@ -161,7 +168,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 30 22 * * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger9" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger9" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail9"/>
 		</property>
@@ -169,7 +176,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 30 3 1 * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger10" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger10" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail10"/>
 		</property>
@@ -181,16 +188,16 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-			    <ref local="quartzTrigger1"/>
-			    <ref local="quartzTrigger2"/>
+			    <ref bean="quartzTrigger1"/>
+			    <ref bean="quartzTrigger2"/>
 			    <!-- <ref local="quartzTrigger3"/> -->
-			    <ref local="quartzTrigger4"/>
-			    <ref local="quartzTrigger5"/>
-			    <ref local="quartzTrigger6"/>
-			    <ref local="quartzTrigger7"/>
+			    <ref bean="quartzTrigger4"/>
+			    <ref bean="quartzTrigger5"/>
+			    <ref bean="quartzTrigger6"/>
+			    <ref bean="quartzTrigger7"/>
 			    <!-- <ref local="quartzTrigger8"/> -->
-			    <ref local="quartzTrigger9"/>
-			    <ref local="quartzTrigger10"/>
+			    <ref bean="quartzTrigger9"/>
+			    <ref bean="quartzTrigger10"/>
 			</list>
 		</property>
 	</bean>
@@ -240,7 +247,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <property name="defaultTargetDataSource" ref="dataSourceHr"/>
     </bean>
 	 
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
@@ -256,87 +263,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 				<!-- <prop key="hibernate.format_sql">true</prop> -->
 			</props>
 		</property>
-		<property name="mappingResources">
-			<list>
-<!-- Entity配置信息 -->
-				<value>entity/MP0002.hbm.xml</value>
-				<value>entity/MP0005.hbm.xml</value>
-				<value>entity/MP0006.hbm.xml</value>
-				<value>entity/MP0008.hbm.xml</value>
-				<value>entity/MP0009.hbm.xml</value>
-				<value>entity/MP0010.hbm.xml</value>
-				<value>entity/MP0011.hbm.xml</value>
-				
-				<value>entity/MP1001.hbm.xml</value>
-				<value>entity/MP1002.hbm.xml</value>
-				<value>entity/MP1003.hbm.xml</value>
-				<value>entity/MP1004.hbm.xml</value>
-				<value>entity/MP1005.hbm.xml</value>
-				<value>entity/MP1006.hbm.xml</value>
-				<value>entity/MP1007.hbm.xml</value>
-				<value>entity/MP1008.hbm.xml</value>
-				<value>entity/MP1009.hbm.xml</value>
-				<value>entity/MP1010.hbm.xml</value>
-				
-				<value>entity/MP2001.hbm.xml</value>
-				<value>entity/MP2002.hbm.xml</value>
-				<value>entity/MP2003.hbm.xml</value>
-				<value>entity/MP2004.hbm.xml</value>
-				<value>entity/MP2007.hbm.xml</value>
-				<value>entity/MP2008.hbm.xml</value>
-				<value>entity/MP2009.hbm.xml</value>
-				
-				<value>entity/MP2010.hbm.xml</value>
-				
-				<value>entity/MP4001.hbm.xml</value>
-				<value>entity/MP4002.hbm.xml</value>
-				<value>entity/MP4003.hbm.xml</value>
-				<value>entity/MP4004.hbm.xml</value>
-				
-				<value>entity/HOLIDAY.hbm.xml</value>
-				
-				<value>entity/AC0001.hbm.xml</value>
-				<value>entity/AC0002.hbm.xml</value>
-				<value>entity/AC0003.hbm.xml</value>
-				<value>entity/AC0004.hbm.xml</value>
-				<value>entity/AC0005.hbm.xml</value>
-				<value>entity/AC0006.hbm.xml</value>
-				<value>entity/AC0007.hbm.xml</value>
-				<value>entity/AC0008.hbm.xml</value>
-				<value>entity/AC0009.hbm.xml</value>
-				<value>entity/AC0010.hbm.xml</value>
-				<value>entity/AC0011.hbm.xml</value>
-				<value>entity/AC0012.hbm.xml</value>
-				
-				<value>entity/MP7001.hbm.xml</value>
-				<value>entity/MP7002.hbm.xml</value>
-				<value>entity/MP7003.hbm.xml</value>
-				<value>entity/MP7004.hbm.xml</value>
-				<value>entity/MP7005.hbm.xml</value>
-				<value>entity/MP7006.hbm.xml</value>
-				<value>entity/MP7007.hbm.xml</value>
-				<value>entity/MP7008.hbm.xml</value>
-				
-				<value>entity/MP8001.hbm.xml</value>
-				<value>entity/MP8002.hbm.xml</value>
-				<value>entity/MP8003.hbm.xml</value>
-				<value>entity/MP8004.hbm.xml</value>
-				<value>entity/MP8005.hbm.xml</value>
-				<value>entity/MP8006.hbm.xml</value>
-				
-				<value>entity/CHECKINOUT.hbm.xml</value>
-				<value>entity/USERINFO.hbm.xml</value>
-				
-				<value>entity/JE0101.hbm.xml</value>
-				
-				<value>entity/JE0201.hbm.xml</value>
-				<value>entity/JE0202.hbm.xml</value>
-<!-- Entity配置信息 -->
-			</list>
-		</property>
+		<property name="packageToScan" value="com.joe"/>
 	</bean>
 	
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	<tx:annotation-driven transaction-manager="transactionManager"/>	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 	    <property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	

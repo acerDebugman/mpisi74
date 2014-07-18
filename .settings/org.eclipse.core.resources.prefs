@@ -1,9 +1,8 @@
-#Thu Oct 03 09:29:32 CAT 2013
 eclipse.preferences.version=1
 encoding//WebContent/async_json_data.json=UTF-8
 encoding//WebContent/bulletinView.jsp=UTF-8
 encoding//WebContent/documentMng.jsp=UTF-8
 encoding//WebContent/pages/performance2/examEvaluationMonthly2ReportMng.jsp=UTF-8
-encoding//src/common/Constant.java=UTF-8
-encoding//src/schedule/executeJobs.java=UTF-8
+encoding//src/com/joe/common/Constant.java=UTF-8
+encoding//src/com/joe/schedule/executeJobs.java=UTF-8
 encoding/<project>=UTF-8

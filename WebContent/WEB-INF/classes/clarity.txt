@@ -1,0 +1,5 @@
+1. properties marked by 
+		//extended properties
+   are TIM's properties
+   
+2. 
