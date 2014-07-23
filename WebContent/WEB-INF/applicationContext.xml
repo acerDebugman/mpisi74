@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
-xmlns:aop="http://www.springframework.org/schema/aop"  
-xmlns:tx="http://www.springframework.org/schema/tx"  
-xsi:schemaLocation="  
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd  
-http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"  
+		xmlns:aop="http://www.springframework.org/schema/aop"  
+		xmlns:tx="http://www.springframework.org/schema/tx"  
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+					http://www.springframework.org/schema/beans/spring-beans-2.5.xsd   
+					http://www.springframework.org/schema/tx 
+					http://www.springframework.org/schema/tx/spring-tx-2.5.xsd  
+					http://www.springframework.org/schema/tx
+        			http://www.springframework.org/schema/tx/spring-tx.xsd 
+					http://www.springframework.org/schema/aop 
+					http://www.springframework.org/schema/aop/spring-aop-2.5.xsd" >
 
 <!-- 系统定时任务执行处理 -->
 <!--===== job =====-->
@@ -94,7 +99,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 	</bean>
 <!--===== Trigger =====-->
-	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail1"/>
 		</property>
@@ -103,7 +108,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<!--  <value>0 0/15 * * * ?</value> -->
 		</property>
 	</bean>
-	<bean id="quartzTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail2"/>
 		</property>
@@ -111,7 +116,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 30 1 20 * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger3" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail3"/>
 		</property>
@@ -119,7 +124,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>* * * * * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger4" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail4"/>
 		</property>
@@ -127,7 +132,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 0 2 * * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger5" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger5" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail5"/>
 		</property>
@@ -135,7 +140,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 10 2 L * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger6" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger6" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail6"/>
 		</property>
@@ -145,7 +150,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <!-- <value>0 25 12 * * ?</value> -->
 		</property>
 	</bean>
-	<bean id="quartzTrigger7" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger7" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail7"/>
 		</property>
@@ -153,7 +158,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 0 3 1 3 ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger8" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger8" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail8"/>
 		</property>
@@ -161,7 +166,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 30 22 * * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger9" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger9" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail9"/>
 		</property>
@@ -169,7 +174,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 30 3 1 * ?</value>
 		</property>
 	</bean>
-	<bean id="quartzTrigger10" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="quartzTrigger10" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail10"/>
 		</property>
@@ -240,7 +245,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <property name="defaultTargetDataSource" ref="dataSourceHr"/>
     </bean>
 	 
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
@@ -335,311 +340,323 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			</list>
 		</property>
 	</bean>
-	
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+
+<!-- transcational management -->	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 	    <property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	
+  <tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+      <tx:method name="get*" read-only="true"/>
+      <tx:method name="*"/>
+    </tx:attributes>
+  </tx:advice>
+  <aop:config>
+    <aop:pointcut id="allDaoFunctions" expression="execution(public * daoImpl.*.*(..))"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="allDaoFunctions"/>
+  </aop:config>
+	
 <!-- Dao配置信息 -->
-	<bean id="HOLIDAYDAO" class="dao.HOLIDAYDAO">
-		<property name="sessionFactory">
+	<bean id="HOLIDAYDAO" class="daoImpl.HOLIDAYDAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP0002DAO" class="dao.MP0002DAO">
-		<property name="sessionFactory">
+	<bean id="MP0002DAO" class="daoImpl.MP0002DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP0005DAO" class="dao.MP0005DAO">
-		<property name="sessionFactory">
+	<bean id="MP0005DAO" class="daoImpl.MP0005DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP0006DAO" class="dao.MP0006DAO">
-		<property name="sessionFactory">
+	<bean id="MP0006DAO" class="daoImpl.MP0006DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP0008DAO" class="dao.MP0008DAO">
-		<property name="sessionFactory">
+	<bean id="MP0008DAO" class="daoImpl.MP0008DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP0009DAO" class="dao.MP0009DAO">
-		<property name="sessionFactory">
+	<bean id="MP0009DAO" class="daoImpl.MP0009DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP0010DAO" class="dao.MP0010DAO">
-		<property name="sessionFactory">
+	<bean id="MP0010DAO" class="daoImpl.MP0010DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP0011DAO" class="dao.MP0011DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	
-	<bean id="MP1001DAO" class="dao.MP1001DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1002DAO" class="dao.MP1002DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1003DAO" class="dao.MP1003DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1004DAO" class="dao.MP1004DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1005DAO" class="dao.MP1005DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1006DAO" class="dao.MP1006DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1007DAO" class="dao.MP1007DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1008DAO" class="dao.MP1008DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1009DAO" class="dao.MP1009DAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="MP1010DAO" class="dao.MP1010DAO">
-		<property name="sessionFactory">
+	<bean id="MP0011DAO" class="daoImpl.MP0011DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
 	
-	<bean id="MP2001DAO" class="dao.MP2001DAO">
-		<property name="sessionFactory">
+	<bean id="MP1001DAO" class="daoImpl.MP1001DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP2002DAO" class="dao.MP2002DAO">
-		<property name="sessionFactory">
+	<bean id="MP1002DAO" class="daoImpl.MP1002DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP2003DAO" class="dao.MP2003DAO">
-		<property name="sessionFactory">
+	<bean id="MP1003DAO" class="daoImpl.MP1003DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP2004DAO" class="dao.MP2004DAO">
-		<property name="sessionFactory">
+	<bean id="MP1004DAO" class="daoImpl.MP1004DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP2007DAO" class="dao.MP2007DAO">
-		<property name="sessionFactory">
+	<bean id="MP1005DAO" class="daoImpl.MP1005DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP2008DAO" class="dao.MP2008DAO">
-		<property name="sessionFactory">
+	<bean id="MP1006DAO" class="daoImpl.MP1006DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP2009DAO" class="dao.MP2009DAO">
-		<property name="sessionFactory">
+	<bean id="MP1007DAO" class="daoImpl.MP1007DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP2010DAO" class="dao.MP2010DAO">
-		<property name="sessionFactory">
+	<bean id="MP1008DAO" class="daoImpl.MP1008DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP4001DAO" class="dao.MP4001DAO">
-		<property name="sessionFactory">
+	<bean id="MP1009DAO" class="daoImpl.MP1009DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP4002DAO" class="dao.MP4002DAO">
-		<property name="sessionFactory">
+	<bean id="MP1010DAO" class="daoImpl.MP1010DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP4003DAO" class="dao.MP4003DAO">
-		<property name="sessionFactory">
+	
+	<bean id="MP2001DAO" class="daoImpl.MP2001DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP4004DAO" class="dao.MP4004DAO">
-		<property name="sessionFactory">
+	<bean id="MP2002DAO" class="daoImpl.MP2002DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP7001DAO" class="dao.MP7001DAO">
-		<property name="sessionFactory">
+	<bean id="MP2003DAO" class="daoImpl.MP2003DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP7002DAO" class="dao.MP7002DAO">
-		<property name="sessionFactory">
+	<bean id="MP2004DAO" class="daoImpl.MP2004DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP7003DAO" class="dao.MP7003DAO">
-		<property name="sessionFactory">
+	<bean id="MP2007DAO" class="daoImpl.MP2007DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP7004DAO" class="dao.MP7004DAO">
-		<property name="sessionFactory">
+	<bean id="MP2008DAO" class="daoImpl.MP2008DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP7005DAO" class="dao.MP7005DAO">
-		<property name="sessionFactory">
+	<bean id="MP2009DAO" class="daoImpl.MP2009DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP7006DAO" class="dao.MP7006DAO">
-		<property name="sessionFactory">
+	<bean id="MP2010DAO" class="daoImpl.MP2010DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP7007DAO" class="dao.MP7007DAO">
-		<property name="sessionFactory">
+	<bean id="MP4001DAO" class="daoImpl.MP4001DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP7008DAO" class="dao.MP7008DAO">
-		<property name="sessionFactory">
+	<bean id="MP4002DAO" class="daoImpl.MP4002DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP4003DAO" class="daoImpl.MP4003DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP4004DAO" class="daoImpl.MP4004DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7001DAO" class="daoImpl.MP7001DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7002DAO" class="daoImpl.MP7002DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7003DAO" class="daoImpl.MP7003DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7004DAO" class="daoImpl.MP7004DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7005DAO" class="daoImpl.MP7005DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7006DAO" class="daoImpl.MP7006DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7007DAO" class="daoImpl.MP7007DAO">
+		<property name="sf">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="MP7008DAO" class="daoImpl.MP7008DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>	
-	<bean id="MP8001DAO" class="dao.MP8001DAO">
-		<property name="sessionFactory">
+	<bean id="MP8001DAO" class="daoImpl.MP8001DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP8002DAO" class="dao.MP8002DAO">
-		<property name="sessionFactory">
+	<bean id="MP8002DAO" class="daoImpl.MP8002DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP8003DAO" class="dao.MP8003DAO">
-		<property name="sessionFactory">
+	<bean id="MP8003DAO" class="daoImpl.MP8003DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP8004DAO" class="dao.MP8004DAO">
-		<property name="sessionFactory">
+	<bean id="MP8004DAO" class="daoImpl.MP8004DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP8005DAO" class="dao.MP8005DAO">
-		<property name="sessionFactory">
+	<bean id="MP8005DAO" class="daoImpl.MP8005DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="MP8006DAO" class="dao.MP8006DAO">
-		<property name="sessionFactory">
+	<bean id="MP8006DAO" class="daoImpl.MP8006DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>	
-	<bean id="AC0001DAO" class="dao.AC0001DAO">
-		<property name="sessionFactory">
+	<bean id="AC0001DAO" class="daoImpl.AC0001DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0002DAO" class="dao.AC0002DAO">
-		<property name="sessionFactory">
+	<bean id="AC0002DAO" class="daoImpl.AC0002DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0003DAO" class="dao.AC0003DAO">
-		<property name="sessionFactory">
+	<bean id="AC0003DAO" class="daoImpl.AC0003DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0004DAO" class="dao.AC0004DAO">
-		<property name="sessionFactory">
+	<bean id="AC0004DAO" class="daoImpl.AC0004DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0005DAO" class="dao.AC0005DAO">
-		<property name="sessionFactory">
+	<bean id="AC0005DAO" class="daoImpl.AC0005DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0006DAO" class="dao.AC0006DAO">
-		<property name="sessionFactory">
+	<bean id="AC0006DAO" class="daoImpl.AC0006DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0007DAO" class="dao.AC0007DAO">
-		<property name="sessionFactory">
+	<bean id="AC0007DAO" class="daoImpl.AC0007DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0008DAO" class="dao.AC0008DAO">
-		<property name="sessionFactory">
+	<bean id="AC0008DAO" class="daoImpl.AC0008DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0009DAO" class="dao.AC0009DAO">
-		<property name="sessionFactory">
+	<bean id="AC0009DAO" class="daoImpl.AC0009DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0010DAO" class="dao.AC0010DAO">
-		<property name="sessionFactory">
+	<bean id="AC0010DAO" class="daoImpl.AC0010DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0011DAO" class="dao.AC0011DAO">
-		<property name="sessionFactory">
+	<bean id="AC0011DAO" class="daoImpl.AC0011DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="AC0012DAO" class="dao.AC0012DAO">
-		<property name="sessionFactory">
+	<bean id="AC0012DAO" class="daoImpl.AC0012DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="CHECKINOUTDAO" class="dao.CHECKINOUTDAO">
-		<property name="sessionFactory">
+	<bean id="CHECKINOUTDAO" class="daoImpl.CHECKINOUTDAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="JE0101DAO" class="dao.JE0101DAO">
-		<property name="sessionFactory">
+	<bean id="JE0101DAO" class="daoImpl.JE0101DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="JE0201DAO" class="dao.JE0201DAO">
-		<property name="sessionFactory">
+	<bean id="JE0201DAO" class="daoImpl.JE0201DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="JE0202DAO" class="dao.JE0202DAO">
-		<property name="sessionFactory">
+	<bean id="JE0202DAO" class="daoImpl.JE0202DAO">
+		<property name="sf">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
@@ -953,7 +970,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 <!-- Service配置信息 -->
 
 <!-- Bean配置信息 -->
-    <bean name="authorityMngBean" class="action.AuthorityAction" scope="prototype">
+<!--     <bean name="authorityMngBean" class="action.AuthorityAction" scope="prototype">
 		<property name="serviceAC0001">
 			<ref bean="AC0001Service" />
 		</property>
@@ -1000,7 +1017,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="serviceMP0011">
 			<ref bean="MP0011Service" />
 		</property>
-	</bean>
+	</bean> -->
 	<bean name="loginMngBean" class="action.LoginAction" scope="prototype">
 		<property name="serviceMP1001">
 			<ref bean="MP1001Service" />
@@ -1350,7 +1367,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="MP8006Service" />
 		</property>
 	</bean>
-	<bean name="fileUploadBean" class="action.FileUploadAction" scope="prototype"></bean>
+	<!-- <bean name="fileUploadBean" class="action.FileUploadAction" scope="prototype"></bean> -->
 	<bean name="AttendanceDataLoadBean" class="action.AttendanceDataLoadAction" scope="prototype">
 		<property name="serviceAC0006">
 			<ref bean="AC0006Service" />

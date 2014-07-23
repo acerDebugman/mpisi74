@@ -3,11 +3,11 @@ package service;
 import java.util.List;
 import java.util.Map;
 
-import dao.JE0201DAO;
+import dao.IJE0201DAO;
 import entity.JE0201;
 
 public class JE0201Service implements IJE0201Service {
-	JE0201DAO dao;
+	private IJE0201DAO dao;
 	
 	@Override
 	public void save(JE0201 je0201) {
@@ -45,14 +45,7 @@ public class JE0201Service implements IJE0201Service {
 		dao.update(je0201);
 	}
 
-	public JE0201DAO getDao() {
-		return dao;
-	}
-
-	public void setDao(JE0201DAO dao) {
-		this.dao = dao;
-	}
-
+	
 	@Override
 	public JE0201 findByType(String type) {
 		// TODO Auto-generated method stub
@@ -67,5 +60,13 @@ public class JE0201Service implements IJE0201Service {
 	@Override
 	public List<JE0201> findByColumnName(Map<String, String> columnMap, String order){
 		return dao.findByColumnName(columnMap, order);
+	}
+
+	public IJE0201DAO getDao() {
+		return dao;
+	}
+
+	public void setDao(IJE0201DAO dao) {
+		this.dao = dao;
 	}
 }

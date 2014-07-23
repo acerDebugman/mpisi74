@@ -8,6 +8,7 @@
 <constant name="struts.multipart.saveDir" value="/tmp"/>
 <constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
 <constant name="struts.devMode" value="true"></constant>
+<constant name="struts.enable.DynamicMethodInvocation" value="true"></constant>
 	
 <package name="default" extends="struts-default" >
 	
@@ -16,8 +17,14 @@
         <interceptor name="sessionout" class="interceptor.SessionIterceptor"></interceptor>
         <!-- 拦截器栈 -->
         <interceptor-stack name="sessioncheck">
-            <interceptor-ref name="sessionout"/>
+            <interceptor-ref name="sessionout" />
             <interceptor-ref name="defaultStack" />
+            <!-- selectGroup is the radio name in apply leave application -->
+            <!-- <interceptor-ref name="defaultStack" >
+            	<param name="exception.logEnabled">true</param>
+        		<param name="exception.logLevel">ERROR</param>
+        		<param name="params.excludeParams">^class\..*,^dojo\..*,^struts\..*,^session\..*,^request\..*,^application\..*,^servlet(Request|Response)\..*,^parameters\..*,^action:.*,^method:.*,selectGroup</param> 
+            </interceptor-ref> -->
         </interceptor-stack>
     </interceptors>
 

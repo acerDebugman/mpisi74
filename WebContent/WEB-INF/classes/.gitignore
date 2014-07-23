@@ -2,6 +2,7 @@
 /beans.xml
 /common
 /dao
+/daoImpl
 /dto
 /entity
 /interceptor

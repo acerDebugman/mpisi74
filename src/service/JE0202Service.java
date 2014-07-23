@@ -5,11 +5,12 @@ import java.util.Map;
 
 import common.PageBean;
 
-import dao.JE0202DAO;
+import dao.IJE0202DAO;
+import daoImpl.JE0202DAO;
 import entity.JE0202;
 
 public class JE0202Service implements IJE0202Service {
-	JE0202DAO dao;
+	private IJE0202DAO dao;
 	
 	@Override
 	public void save(JE0202 je0202) {
@@ -45,14 +46,6 @@ public class JE0202Service implements IJE0202Service {
 	public void update(JE0202 je0202) {
 		// TODO Auto-generated method stub
 		dao.update(je0202);
-	}
-
-	public JE0202DAO getDao() {
-		return dao;
-	}
-
-	public void setDao(JE0202DAO dao) {
-		this.dao = dao;
 	}
 
 	@Override
@@ -112,5 +105,13 @@ public class JE0202Service implements IJE0202Service {
 	
 	public void getSubscriberInfo(JE0202 je0202){
 		dao.getSubscriberInfo(je0202);
+	}
+
+	public IJE0202DAO getDao() {
+		return dao;
+	}
+
+	public void setDao(IJE0202DAO dao) {
+		this.dao = dao;
 	}
 }
