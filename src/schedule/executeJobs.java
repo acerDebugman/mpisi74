@@ -14,22 +14,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import service.MP2010Service;
-
 import common.Constant;
 import common.Mail;
 import common.UtilCommon;
 import common.UtilDate;
 
-import dao.MP2010DAO;
 import dto.AttendanceRecordDto;
 import dto.CheckInOutDto;
+import entity.CHECKINOUT;
 import entity.MP1001;
 import entity.MP2003;
 import entity.MP2010;
 
 public class executeJobs {
 	//private static final Log log = LogFactory.getLog(AuthorityAction.class);
+	
+	private ExecuteJobsService serviceExecuteJob;
+	private String joeStr;
 	
 	// 每天凌晨一点自动计算员工上下班异常
 	public void executeJob1() throws SQLException {
@@ -700,16 +701,18 @@ public class executeJobs {
 			Calendar cal = Calendar.getInstance();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-			sb.delete(0, sb.length());
-			sb.append("select top 1 MP2010_DATE from MP2010 order by MP2010_DATE desc");
-			rs = st.executeQuery(sb.toString());
-			rs.next();
-			cal.setTime(sdf.parse(rs.getString(1))); //the lastest day
-			cal.add(Calendar.DAY_OF_MONTH, 1); //set to next day
 			
 			//iterator every shift worker
 			List<MP2010> tmpList = new ArrayList<MP2010>();
 			for(int i = 0, j = employeeList.size(); i < j; i++){
+				
+				sb.delete(0, sb.length());
+				sb.append("select top 1 MP2010_DATE from MP2010 where MP2010_EMPLOYEE_NUM='" + employeeList.get(i)  + "' " + 
+						"order by MP2010_DATE desc");
+				rs = st.executeQuery(sb.toString());
+				rs.next();
+				cal.setTime(sdf.parse(rs.getString(1))); //the lastest day
+				cal.add(Calendar.DAY_OF_MONTH, 1); //set to next day
 				
 				sb.delete(0, sb.length());
 				sb.append("select top 3 * from MP2010 where mp2010_EMPLOYEE_NUM='");
@@ -740,7 +743,9 @@ public class executeJobs {
 							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("D")){
 						nextRcd.setMP2010_TYPE("N");
 						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightStartTime);
+						cal.add(Calendar.DAY_OF_MONTH, 1);
 						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightEndTime);
+						cal.add(Calendar.DAY_OF_MONTH, -1);
 				}
 				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("R") && 
 						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("R") && 
@@ -789,14 +794,18 @@ public class executeJobs {
 							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("D")){
 						nextRcd.setMP2010_TYPE("N");
 						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightStartTime);
+						cal.add(Calendar.DAY_OF_MONTH, 1);
 						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightEndTime);
+						cal.add(Calendar.DAY_OF_MONTH, -1);
 				}
 				if(tmpList.get(0).getMP2010_TYPE().equalsIgnoreCase("N") && 
 						tmpList.get(1).getMP2010_TYPE().equalsIgnoreCase("N") && 
 							tmpList.get(2).getMP2010_TYPE().equalsIgnoreCase("D")){
 						nextRcd.setMP2010_TYPE("N");
 						nextRcd.setMP2010_FROM_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightStartTime);
+						cal.add(Calendar.DAY_OF_MONTH, 1);
 						nextRcd.setMP2010_END_DATETIME(sdf2.format(cal.getTime()) + " " + Constant.shiftWorkNightEndTime);
+						cal.add(Calendar.DAY_OF_MONTH, -1);
 				}
 				
 				sb.delete(0, sb.length());
@@ -831,6 +840,80 @@ public class executeJobs {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+//	//temporary work, adjust MP2010_night_end time 
+//	public void executeJob16(){
+//		try{
+//			Connection conn = CommonJobMethod.getDBConnection();
+//			Statement st = conn.createStatement();
+//			StringBuffer sb = new StringBuffer();
+//			sb.append("select * from MP2010 where MP2010_TYPE='N'");
+//			
+//			ResultSet rs = st.executeQuery(sb.toString());
+//			List<MP2010> rcdList = new ArrayList<MP2010>();
+//			while(rs.next()){
+//				MP2010 mp21 = new MP2010();
+//				mp21.setMP2010_TYPE(rs.getString("MP2010_TYPE"));
+//				mp21.setMP2010_BRANCH_SITE(rs.getString("MP2010_BRANCH_SITE"));
+//				mp21.setMP2010_DATE(rs.getString("MP2010_DATE"));
+//				mp21.setMP2010_EMPLOYEE_NUM(rs.getString("MP2010_EMPLOYEE_NUM"));
+//				mp21.setMP2010_FROM_DATETIME(rs.getString("MP2010_FROM_DATETIME"));
+//				mp21.setMP2010_END_DATETIME(rs.getString("MP2010_END_DATETIME"));
+//				mp21.setMP2010_ID(rs.getInt("MP2010_ID"));
+//				
+//				rcdList.add(mp21);
+//			}
+//			
+//			Calendar cal = Calendar.getInstance();
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//			for(int i = 0, j = rcdList.size(); i < j; i++){
+//				MP2010 mp21 = rcdList.get(i);
+//				Date d1 = sdf.parse(mp21.getMP2010_DATE());
+//				Date d2 = sdf.parse(mp21.getMP2010_END_DATETIME());
+//				if(d1.equals(d2)){
+//					cal.setTime(d1);
+//					cal.add(Calendar.DAY_OF_MONTH, 1);
+//					mp21.setMP2010_END_DATETIME(sdf.format(cal.getTime()) + " " + Constant.shiftWorkNightEndTime);
+//				}
+//				
+//				sb.delete(0, sb.length());
+//				sb.append("update mp2010 set mp2010_end_datetime='" + mp21.getMP2010_END_DATETIME() + "' where mp2010_id=" + mp21.getMP2010_ID());
+//				st.executeUpdate(sb.toString());
+//			}
+//			
+////			st.executeUpdate();
+//			
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
+	
+	public void executeJob17(){
+		List<CHECKINOUT> lst = serviceExecuteJob.getManagerCheckInRcds();
+		String str = serviceExecuteJob.produceMngMeetingMailContent(lst);
+		
+		Mail mail = new Mail();
+//		mail.setTo(Constant.managerMeetingGroupEmailList);
+		mail.setTo("ManagementGroup@mpisi.com"); //to ManagementGroup, can configure all receiver mail addr at exchange server
+//		mail.setTo("joe_zhang@mpisi.com"); 
+		mail.setSubject("Manager Meeting Attendance");
+		mail.setContent(str);
+		mail.sendTextHtml();
+	}
+	
+	
+	public ExecuteJobsService getServiceExecuteJob() {
+		return serviceExecuteJob;
+	}
+	public void setServiceExecuteJob(ExecuteJobsService serviceExecuteJob) {
+		this.serviceExecuteJob = serviceExecuteJob;
+	}
+	public String getJoeStr() {
+		return joeStr;
+	}
+	public void setJoeStr(String joeStr) {
+		this.joeStr = joeStr;
 	}
 	
 }

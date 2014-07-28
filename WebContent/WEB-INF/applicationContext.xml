@@ -11,7 +11,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 <!-- 系统定时任务执行处理 -->
 <!--===== job =====-->
-	<bean id="executeJobs" class="schedule.executeJobs"/>
+	<!-- <bean id="executeJobs" class="schedule.executeJobs"/> -->
+	
 <!--===== job detail =====-->
 	<bean id="quartzDetail1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -91,6 +92,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 		<property name="targetMethod">
 		  <value>executeJob10</value>
+		</property>
+	</bean>
+	<!-- for manager meeting report -->
+	<bean id="quartzDetail11" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob17</value>
 		</property>
 	</bean>
 <!--===== Trigger =====-->
@@ -177,6 +187,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 20 4 * * ?</value>
 		</property>
 	</bean>
+	<bean id="quartzTrigger11" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail11"/>
+		</property>
+		<property name="cronExpression">
+		  <value>0 0 11 * * ?</value> <!-- every day 11:00 am -->
+		</property>
+	</bean>
 <!--===== Schedule =====-->
 	<bean autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
@@ -191,6 +209,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			    <!-- <ref local="quartzTrigger8"/> -->
 			    <ref local="quartzTrigger9"/>
 			    <ref local="quartzTrigger10"/>
+			    <ref local="quartzTrigger11"/>
 			</list>
 		</property>
 	</bean>
@@ -222,7 +241,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="dataSourceHr" parent="parentDataSource">
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property> --> 
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.53.71:1433/mpisiHr;instance=JOE"></property> -->
- 		<property name="url" value="jdbc:jtds:sqlserver://localhost:1433/mpisiHr;instance=JOE"></property>
+ 		<property name="url" value="jdbc:jtds:sqlserver://localhost:1433/mpisiHR;instance=JOE"></property>
 	</bean>
 	<bean id="dataSourceFinger" parent="parentDataSource">
 		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/oldFinger"></property> -->
@@ -331,6 +350,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 				
 				<value>entity/JE0201.hbm.xml</value>
 				<value>entity/JE0202.hbm.xml</value>
+
+				<value>entity/DetailDayWorkTime.hbm.xml</value>
+				<value>entity/EachCircleDay.hbm.xml</value>
+				<value>entity/EmpWorkTimePattern_R.hbm.xml</value>
+				<value>entity/StandardWorkTime.hbm.xml</value>
+				<value>entity/WorkTimePattern.hbm.xml</value>
 <!-- Entity配置信息 -->
 			</list>
 		</property>
@@ -339,6 +364,18 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 	    <property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
+	
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="*"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* dao.*.*(..))"/>
+	</aop:config>
 	
 <!-- Dao配置信息 -->
 	<bean id="HOLIDAYDAO" class="dao.HOLIDAYDAO">
@@ -643,6 +680,35 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
+
+	
+	<bean id="DetailDayWorkTimeDAO" class="dao.DetailDayWorkTimeDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="EachCircleDayDAO" class="dao.EachCircleDayDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="EmpWorktimePattern_RDAO" class="dao.EmpWorktimePattern_RDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="StandardWorkTimeDAO" class="dao.StandardWorkTimeDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="WorkTimePatternDAO" class="dao.WorkTimePatternDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	
 <!-- Dao配置信息 -->
 
 <!-- Service配置信息 -->
@@ -950,10 +1016,36 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="JE0202DAO" />
 		</property>
 	</bean>
+	
+	<bean id="DetailDayWorkTimeService" class="service.DetailDayWorkTimeService">
+		<property name="dao">
+			<ref bean="DetailDayWorkTimeDAO" />
+		</property>
+	</bean>
+	<bean id="EachCircleDayService" class="service.EachCircleDayService">
+		<property name="dao">
+			<ref bean="EachCircleDayDAO" />
+		</property>
+	</bean>
+	<bean id="EmpWorktimePattern_RService" class="service.EmpWorktimePattern_RService">
+		<property name="dao">
+			<ref bean="EmpWorktimePattern_RDAO" />
+		</property>
+	</bean>
+	<bean id="StandardWorkTimeService" class="service.StandardWorkTimeService">
+		<property name="dao">
+			<ref bean="StandardWorkTimeDAO" />
+		</property>
+	</bean>
+	<bean id="WorkTimePatternService" class="service.WorkTimePatternService">
+		<property name="dao">
+			<ref bean="WorkTimePatternDAO" />
+		</property>
+	</bean>
 <!-- Service配置信息 -->
 
 <!-- Bean配置信息 -->
-    <bean name="authorityMngBean" class="action.AuthorityAction" scope="prototype">
+    <!-- <bean name="authorityMngBean" class="action.AuthorityAction" scope="prototype">
 		<property name="serviceAC0001">
 			<ref bean="AC0001Service" />
 		</property>
@@ -1000,7 +1092,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="serviceMP0011">
 			<ref bean="MP0011Service" />
 		</property>
-	</bean>
+	</bean> -->
 	<bean name="loginMngBean" class="action.LoginAction" scope="prototype">
 		<property name="serviceMP1001">
 			<ref bean="MP1001Service" />
@@ -1201,6 +1293,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="serviceJE0101">
 			<ref bean="JE0101Service" />
 		</property>
+		<property name="jb">
+			<ref bean="executeJobs" />
+		</property>
 		
 	</bean>
 	<bean name="requisitionFormMngBean" class="action.RequisitionFormAction" scope="prototype">
@@ -1350,7 +1445,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="MP8006Service" />
 		</property>
 	</bean>
-	<bean name="fileUploadBean" class="action.FileUploadAction" scope="prototype"></bean>
+	<!-- <bean name="fileUploadBean" class="action.FileUploadAction" scope="prototype"></bean> -->
 	<bean name="AttendanceDataLoadBean" class="action.AttendanceDataLoadAction" scope="prototype">
 		<property name="serviceAC0006">
 			<ref bean="AC0006Service" />
@@ -1395,6 +1490,46 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<!-- ItService -->
 	<bean name="itServiceBean" class="action.ItService" scope="prototype">
 	</bean>
+	
+	<!-- work time pattern -->
+	<bean name="workTimePatternBean" class="action.WorkTimePatternAction" scope="prototype">
+		<property name="serviceWorkTimePattern">
+			<ref bean="WorkTimePatternService" />
+		</property>
+		<property name="serviceEachCircleDay">
+			<ref bean="EachCircleDayService" />
+		</property>
+		<property name="serviceDetailDayWorkTime">
+			<ref bean="DetailDayWorkTimeService" />
+		</property>
+		<property name="serviceEmpWTP">
+			<ref bean="EmpWorktimePattern_RService" />
+		</property>
+		<property name="serviceStdWorkTime">
+			<ref bean="StandardWorkTimeService" />
+		</property>
+	</bean>
 <!-- Bean配置信息 -->
 
+	<!-- execute job service -->
+	<bean id="executeJobsService" class="schedule.ExecuteJobsService">
+			<property name="serviceCheckInOut">
+				<ref bean="CHECKINOUTService"/>
+			</property>
+			<property name="serviceMP1001">
+				<ref bean="MP1001Service"/>	
+			</property>
+			<property name="serviceMP0002">
+				<ref bean="MP0002Service"/>
+			</property>
+	</bean>
+
+	<bean id="executeJobs" class="schedule.executeJobs">
+		<property name="serviceExecuteJob">
+			<ref bean="executeJobsService"/>
+		</property>
+		<property name="joeStr">
+			<value>testtest</value>
+		</property>
+	</bean>
 </beans>

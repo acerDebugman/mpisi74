@@ -677,6 +677,71 @@ public class Constant {
 		return rs;
 	}
 	
+	public static List<String> getDayShiftWorkHalfAnHourIntervalWorkTime(){
+		List<String> rs = new ArrayList<String>();
+		
+		rs.add("---Please Select---");
+		rs.add("06:00");
+		rs.add("06:30");
+		rs.add("07:00");
+		rs.add("07:30");
+		rs.add("08:00");
+		rs.add("08:30");
+		rs.add("09:00");
+		rs.add("09:30");
+		rs.add("10:00");
+		rs.add("10:30");
+		rs.add("11:00");
+		rs.add("11:30");
+		rs.add("12:00");
+		rs.add("12:30");
+		rs.add("13:00");
+		rs.add("13:30");
+		rs.add("14:00");
+		rs.add("14:30");
+		rs.add("15:00");
+		rs.add("15:30");
+		rs.add("16:00");
+		rs.add("16:30");
+		rs.add("17:00");
+		rs.add("17:30");
+		rs.add("18:00");
+		
+		return rs;
+	}
+	public static List<String> getNightShiftWorkHalfAnHourIntervalWorkTime(){
+		List<String> rs = new ArrayList<String>();
+		
+		rs.add("---Please Select---");
+		rs.add("18:00");
+		rs.add("18:30");
+		rs.add("19:00");
+		rs.add("19:30");
+		rs.add("20:00");
+		rs.add("20:30");
+		rs.add("21:00");
+		rs.add("21:30");
+		rs.add("22:00");
+		rs.add("22:30");
+		rs.add("23:00");
+		rs.add("23:30");
+		rs.add("00:00");
+		rs.add("00:30");
+		rs.add("01:00");
+		rs.add("01:30");
+		rs.add("02:00");
+		rs.add("02:30");
+		rs.add("03:00");
+		rs.add("03:30");
+		rs.add("04:00");
+		rs.add("04:30");
+		rs.add("05:00");
+		rs.add("05:30");
+		rs.add("06:00");
+		
+		return rs;
+	}
+	
 	public static List<String> getRoomFloorList(){
 		List<String> floorList = new ArrayList<String>();
 
@@ -729,6 +794,22 @@ public class Constant {
 	public static String shiftTypeRest = "R"; //rest
 	public static String shiftTypeDay = "D"; //day work
 	public static String shiftTypeNight = "N"; //nigth work
+	
+	//for meeting report
+	public static String managerMeetingGroupCodeList = "'M0104','M0483','M0511','M0146','M0137','M0076','M0003','M0241','M0173','M0494','M0118'," +
+			"'M0025','M0268','M0020','M0127','M0047','M0142','M0058','M0291','M0061','M0462'," +
+			"'M0365','M0002','M0144','M0011','M0004','M0128','M0439','A0001','A0002'," + 
+			"'M0541', 'M0540'";
+	//need Fanna new empployee code
+
+//	public static String managerMeetingGroupEmailList = "joe_zhang@mpisi.com";
+	public static String managerMeetingGroupEmailList = "amelia@mpisi.com,AndleyWu@mpisi.com,CarinaL@mpisi.com,CarolineLin@mpisi.com,Cary@mpisi.com," 
+					+ "catherine@mpisi.com,chenny@mpisi.com,chetty@mpisi.com,Chris_Lin@mpisi.com,clark@mpisi.com,ConstanceWu@mpisi.com,ESTRALITTA@mpisi.com,"
+					+ "Fanna@PHIDISANANG.CO.ZA,gert@mpisi.com,Hazel@mpisi.com,Jackson_Lo@mpisi.com,janet@mpisi.com,jean@mpisi.com,jeff@mpisi.com,jenny@mpisi.com,"
+					+ "jimmyyang@mpisi.com,johnson@mpisi.com,josephlin@mpisi.com,Joy@mpisi.com,Julie@PHIDISANANG.CO.ZA,kane@Jaycept.com,Kevin_chou@mpisi.com,"
+					+ "Louis_Lai@mpisi.com,louis@mpisi.com,lucien@prudence.co.za,phila@mpisi.com,phinah@mpisi.com,portia@phidisanang.co.za,richard@mpisi.com,"
+					+ "robert@mpisi.com,robin@mpisi.com,sipho@Jaycept.com,teresa@mpisi.com,tj_chou@mpisi.com";
+
 	
 	
 }

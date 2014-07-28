@@ -75,6 +75,9 @@ public class MP1001 implements Serializable {
 	private String MP1001_EFFECTIVE_DATE_MONTH;
 	private String MP1001_PAYROLL_NUM;
 	
+//	private WorkTimePattern workTimePattern;
+	private EmpWorkTimePattern_R empWorkTimePattern_R;
+	
 	public MP1001(String MP1001_EMPLOYEE_NUM, String MP1001_PASSWORD){
 		this.MP1001_EMPLOYEE_NUM = MP1001_EMPLOYEE_NUM;
 		this.MP1001_PASSWORD = MP1001_PASSWORD;
@@ -878,4 +881,13 @@ public class MP1001 implements Serializable {
 	public void setMP1001_PAYROLL_NUM(String mP1001_PAYROLL_NUM) {
 		MP1001_PAYROLL_NUM = mP1001_PAYROLL_NUM;
 	}
+
+	public EmpWorkTimePattern_R getEmpWorkTimePattern_R() {
+		return empWorkTimePattern_R;
+	}
+
+	public void setEmpWorkTimePattern_R(EmpWorkTimePattern_R empWorkTimePattern_R) {
+		this.empWorkTimePattern_R = empWorkTimePattern_R;
+	}
+	
 }

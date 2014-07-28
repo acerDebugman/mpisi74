@@ -1243,7 +1243,7 @@ public class CommonJobMethod {
 		Connection conn = getDBConnection2();
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append("select u.SSN, c.CHECKTIME, c.SENSORID from CHECKINOUT c, USERINFO u where 1=1 and c.CHECKTIME>=DATEADD(DD, DATEDIFF(DD,0,getdate()), -31) and c.USERID=u.USERID and u.SSN in (");
+		sb.append("select u.SSN, c.CHECKTIME, c.SENSORID from CHECKINOUT c, USERINFO u where 1=1 and c.CHECKTIME>=DATEADD(DD, DATEDIFF(DD,0,getdate()), -45) and c.USERID=u.USERID and u.SSN in (");
 		for(String employeeNum : employeeNums){
 			sb.append("'" + employeeNum + "',");
 		}
@@ -1343,7 +1343,7 @@ public class CommonJobMethod {
 		Date today = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(today);
-		cal.add(Calendar.DAY_OF_MONTH, -31); //the past one month
+		cal.add(Calendar.DAY_OF_MONTH, -45); //the past one month
 		
 		
 		while(!cal.getTime().equals(today)){  //which day
@@ -2109,7 +2109,7 @@ public class CommonJobMethod {
 		Connection conn = getDBConnection();
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append("delete from MP2003 where MP2003_DATETIME>=DATEADD(DD, DATEDIFF(DD,0,getdate()), -31) and MP2003_EMPLOYEE_NUM in (");
+		sb.append("delete from MP2003 where MP2003_DATETIME>=DATEADD(DD, DATEDIFF(DD,0,getdate()), -45) and MP2003_EMPLOYEE_NUM in (");
 		for(String num : employeeSet){
 			sb.append("'");
 			sb.append(num);

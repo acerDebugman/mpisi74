@@ -84,8 +84,8 @@ import common.UtilCommon;
 import common.UtilDate;
 
 import dto.AbnormalReptRecdDto;
-import dto.ShiftworkExcelRecordDto;
 import dto.LateEarlyDto;
+import dto.ShiftworkExcelRecordDto;
 import entity.CHECKINOUT;
 import entity.HOLIDAY;
 import entity.JE0101;
@@ -127,6 +127,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	private IMP0011Service serviceMP0011;
 	private IMP1010Service serviceMP1010;
 	private ICHECKINOUTService serviceCHECKINOUT;
+	
+	//for job
+	private executeJobs jb;
 	
 	//for shiftwork configuration
 	private IJE0101Service serviceJE0101;
@@ -6964,9 +6967,13 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	
 	public String shiftWorkCalculate(){
 		try{
-			executeJobs jb = new executeJobs();
-//			jb.executeJob14();
+//			executeJobs jb = new executeJobs();
+			//calculate shift work
 			jb.executeJob11();
+			
+			
+			//test part
+//			jb.executeJob17();
 			return NONE;
 		}
 		catch(Exception e){
@@ -9067,5 +9074,13 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 
 	public void setPageBean(PageBean pageBean) {
 		this.pageBean = pageBean;
+	}
+
+	public executeJobs getJb() {
+		return jb;
+	}
+
+	public void setJb(executeJobs jb) {
+		this.jb = jb;
 	}
 }

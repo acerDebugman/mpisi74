@@ -339,6 +339,11 @@ function showAddDocument(){
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Auto Load Data
                              </td>
                          </tr>
+                         <tr>
+                             <td class="table_none" onclick="javascript:NowShow('M_110','workTimePatternMngInit.action');" onmousemove="javascript:TDOverORIn('M_110');" onmouseout="javascript:TDOverOROut('M_110');" id="M_110">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Work Time Pattern
+                             </td>
+                         </tr>
 
                      </tbody>
                  </table>

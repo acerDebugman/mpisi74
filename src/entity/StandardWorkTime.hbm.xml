@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.StandardWorkTime" table="StandardWorkTime">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="native" />
+        </id>
+        <!-- <property name="employeeNum" type="java.lang.String">
+            <column name="employeeNum" length="30" not-null="false" />
+        </property> -->
+        <property name="dayDate" type="java.util.Date">
+            <column name="dayDate" not-null="false" />
+        </property>
+        <!-- <property name="circleDayIdx" type="java.lang.Integer">
+            <column name="circleDayIdx" not-null="false" />
+        </property> -->
+        <property name="stdClockInTime" type="java.util.Date">
+            <column name="stdClockInTime" not-null="false" />
+        </property>
+        <property name="stdClockOutTime" type="java.util.Date">
+            <column name="stdClockOutTime" not-null="false" />
+        </property>
+        
+        <many-to-one name="employee" class="entity.MP1001" column="employeeCode">
+        </many-to-one>
+        <many-to-one name="circleDay" class="entity.EachCircleDay" column="circleDayIdx"></many-to-one>
+    </class>
+</hibernate-mapping>

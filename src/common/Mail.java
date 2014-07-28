@@ -64,42 +64,42 @@ public class Mail {
     public void sendTextHtml(){
 	    try{
 		    // Get system properties
-		    Properties props = System.getProperties();
-		    // Setup mail server
-		    props.put("mail.smtp.host", host);
-		    
-		    props.put("mail.smtp.connectiontimeout","1000");
-		    props.put("mail.smtp.timeout","2000");
-		    // Get session
-		    props.put("mail.smtp.auth", "true");
-		    //props.put("mail.smtp.starttls.enable","true");
-		    
-		    props.put("mail.smtp.port", port);
-
-		    MyAuthenticator myauth = new MyAuthenticator(userId, password);
-		    Session session = Session.getDefaultInstance(props, myauth);
-
-		    session.setDebug(false);
-		    // Define message
-		    MimeMessage message = new MimeMessage(session);
-		    
-		    // Set the from address
-		    message.setFrom(new InternetAddress(from));
-		    new InternetAddress();
-			// Set the to address
-		    //message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-		    InternetAddress[] toList = InternetAddress.parse(to);
-		    message.addRecipients(Message.RecipientType.TO, toList);
-		    // Set the subject
-		    message.setSubject(subject);
-		    //set to html, so link 
-		    message.setContent(content, "text/html");
-		    //message.setText(content, "text/html");
-		    // Set the content
-		    //message.setText(content);
-		    message.saveChanges();
-		    
-		    Transport.send(message);
+//		    Properties props = System.getProperties();
+//		    // Setup mail server
+//		    props.put("mail.smtp.host", host);
+//		    
+//		    props.put("mail.smtp.connectiontimeout","1000");
+//		    props.put("mail.smtp.timeout","2000");
+//		    // Get session
+//		    props.put("mail.smtp.auth", "true");
+//		    //props.put("mail.smtp.starttls.enable","true");
+//		    
+//		    props.put("mail.smtp.port", port);
+//
+//		    MyAuthenticator myauth = new MyAuthenticator(userId, password);
+//		    Session session = Session.getDefaultInstance(props, myauth);
+//
+//		    session.setDebug(false);
+//		    // Define message
+//		    MimeMessage message = new MimeMessage(session);
+//		    
+//		    // Set the from address
+//		    message.setFrom(new InternetAddress(from));
+//		    new InternetAddress();
+//			// Set the to address
+//		    //message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+//		    InternetAddress[] toList = InternetAddress.parse(to);
+//		    message.addRecipients(Message.RecipientType.TO, toList);
+//		    // Set the subject
+//		    message.setSubject(subject);
+//		    //set to html, so link 
+//		    message.setContent(content, "text/html");
+//		    //message.setText(content, "text/html");
+//		    // Set the content
+//		    //message.setText(content);
+//		    message.saveChanges();
+//		    
+//		    Transport.send(message);
 		    
 		    System.out.println("mail send success"); 
 	    }catch(Exception ex){

@@ -5,11 +5,13 @@ import java.util.Map;
 
 import common.PageBean;
 
+import dao.IMP2010DAO;
 import dao.MP2010DAO;
 import entity.MP2010;
 
 public class MP2010Service implements IMP2010Service {
-	MP2010DAO dao;
+	private IMP2010DAO dao;
+	
 	@Override
 	public void save(MP2010 mp2010) {
 		// TODO Auto-generated method stub
@@ -96,14 +98,6 @@ public class MP2010Service implements IMP2010Service {
 		// TODO Auto-generated method stub
 		
 	}
-
-	public MP2010DAO getDao() {
-		return dao;
-	}
-
-	public void setDao(MP2010DAO dao) {
-		this.dao = dao;
-	}
 	
 	@Override
 	public PageBean queryForPage(Map<String, String> pageProperty) {
@@ -129,5 +123,13 @@ public class MP2010Service implements IMP2010Service {
 		pageBean.setList(list);
 		
 		return pageBean;
+	}
+
+	public IMP2010DAO getDao() {
+		return dao;
+	}
+
+	public void setDao(IMP2010DAO dao) {
+		this.dao = dao;
 	}
 }

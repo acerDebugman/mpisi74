@@ -1467,8 +1467,23 @@
 		<action name="delBookedRoomRecord" class="roomsMngBean" method="delBookedRoomRecord">
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		
+<!-- Work Time Pattern -->
+		<action name="workTimePatternMngInit" class="workTimePatternBean" method="workTimePatternMngInit">
+			<result name="success">workTimePatternMng.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="fetchWorkTimePatternList" class="workTimePatternBean" method="fetchWorkTimePatternList">
+			<result name="success">workTimePatternList.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="displayPatternDetail" class="workTimePatternBean" method="displayPatternDetail">
+			<result name="success">workTimePatternDis.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		
+				
 <!-- IT Request -->
-	
 		<action name="itServiceMngInit" class="itServiceBean" method="itServiceMngInit">
 			<result name="success">main.jsp</result>
 		    <result name="input">login.jsp</result>
