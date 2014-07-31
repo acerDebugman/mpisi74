@@ -7,6 +7,7 @@ public class MP0010 implements Serializable{
 	private static final long serialVersionUID = -8882938943277674284L;
 
 	// Fields
+	private int id;
 	private String MP0010_DATETIME;
 	private String MP0010_START_TIME;
 	private String MP0010_END_TIME;
@@ -14,6 +15,8 @@ public class MP0010 implements Serializable{
 	private String MP0010_TOTAL_TIME;
 	private String MP0010_OTHER1;
 	private String MP0010_OTHER2;
+	
+	private WorkTimePattern workTimePattern;
 	
 	/**
 	 * @return the mP0010_DATETIME
@@ -99,5 +102,16 @@ public class MP0010 implements Serializable{
 	public void setMP0010_OTHER2(String mP0010_OTHER2) {
 		MP0010_OTHER2 = mP0010_OTHER2;
 	}
-
+	public WorkTimePattern getWorkTimePattern() {
+		return workTimePattern;
+	}
+	public void setWorkTimePattern(WorkTimePattern workTimePattern) {
+		this.workTimePattern = workTimePattern;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 }

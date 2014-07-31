@@ -447,8 +447,10 @@ function checkStatus(){
                                         <td class="table_none table_none_NoWidth">
                                             <input name="mp1001.MP1001_PAYROLL_NUM" value="${mp1001.MP1001_PAYROLL_NUM}" type="text" class="text_input"/>
                                         </td>
-                                        <td class="table_body table_body_NoWidth"></span></td>
-                                        <td class="table_none table_none_NoWidth"></td>
+                                        <td class="table_body table_body_NoWidth">Work Time Pattern</td>
+                                        <td class="table_none table_none_NoWidth">
+                                        	<span><s:property value="mp1001.empWorkTimePattern_R.workTimePattern.name" /></span>
+                                        </td>
                                     </tr>
                                     
                                     

@@ -21,9 +21,13 @@
         <property name="stdClockOutTime" type="java.util.Date">
             <column name="stdClockOutTime" not-null="false" />
         </property>
+        <property name="manuallyChangeFlag" type="java.lang.Boolean">
+        	<column name="manuallyChangeFlag" not-null="false" />
+        </property>
         
         <many-to-one name="employee" class="entity.MP1001" column="employeeCode">
         </many-to-one>
         <many-to-one name="circleDay" class="entity.EachCircleDay" column="circleDayIdx"></many-to-one>
+        <many-to-one name="detailChangeLog" class="entity.MP0011" column="manuallyChangeLogId" unique="true"></many-to-one>
     </class>
 </hibernate-mapping>

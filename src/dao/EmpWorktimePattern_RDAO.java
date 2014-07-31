@@ -6,7 +6,7 @@ import org.hibernate.SessionFactory;
 
 import entity.EmpWorkTimePattern_R;
 
-public class EmpWorktimePattern_RDAO implements IEmpWorktimePattern_RDAO {
+public class EmpWorkTimePattern_RDAO implements IEmpWorkTimePattern_RDAO {
 	SessionFactory sessionFactory;
 	
 	@Override

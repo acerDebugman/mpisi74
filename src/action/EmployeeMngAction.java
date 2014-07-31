@@ -30,32 +30,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
-import entity.AC0009;
-import entity.MP0002;
-import entity.MP0006;
-import entity.MP0008;
-import entity.MP0009;
-import entity.MP1001;
-import entity.MP1002;
-import entity.MP1003;
-import entity.MP1004;
-import entity.MP1005;
-import entity.MP1008;
-import entity.MP1009;
-import entity.MP1010;
-import entity.MP2001;
-import entity.MP2002;
-import entity.MP2003;
-import entity.MP2004;
-import entity.MP2008;
-import entity.MP7002;
-import entity.MP7003;
-import entity.MP7008;
+import service.EmpWorkTimePattern_RService;
 import service.IAC0006Service;
 import service.IAC0007Service;
 import service.IAC0008Service;
@@ -79,9 +59,9 @@ import service.IMP2004Service;
 import service.IMP7002Service;
 import service.IMP7003Service;
 import service.IMP7008Service;
+import service.IWorkTimePatternService;
+import service.WorkTimePatternService;
 
-
-import common.HeaderFooter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.PageSize;
@@ -91,14 +71,38 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
 import common.Constant;
 import common.ExcelUtil;
+import common.HeaderFooter;
 import common.LogUtil;
 import common.Mail;
 import common.UtilCommon;
 import common.UtilDate;
+
+import entity.AC0009;
+import entity.EmpWorkTimePattern_R;
+import entity.MP0002;
+import entity.MP0006;
+import entity.MP0008;
+import entity.MP0009;
+import entity.MP1001;
+import entity.MP1002;
+import entity.MP1003;
+import entity.MP1004;
+import entity.MP1005;
+import entity.MP1008;
+import entity.MP1009;
+import entity.MP1010;
+import entity.MP2001;
+import entity.MP2002;
+import entity.MP2003;
+import entity.MP2004;
+import entity.MP7002;
+import entity.MP7003;
+import entity.MP7008;
+import entity.WorkTimePattern;
 
 public class EmployeeMngAction extends ActionSupport implements ServletResponseAware {
 	private static final long serialVersionUID = 1L;
@@ -127,6 +131,8 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 	private IMP7008Service serviceMP7008;
 	private IMP7003Service serviceMP7003;
 	private IMP7002Service serviceMP7002;
+	
+	private IWorkTimePatternService serviceWorkTimePattern;
 	
 	private MP1001 mp1001 = new MP1001();
 	private MP1002 mp1002 = new MP1002();
@@ -272,6 +278,14 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 	
 	private String optPdf = "0";
 	private String optReset = "0";
+	
+	
+	private List<WorkTimePattern> workTimePatternList;
+	private WorkTimePattern workTimePattern;
+//	private WorkTimePattern workTimePattern;
+	private int patternCircleIdx;
+	private EmpWorkTimePattern_RService serviceEmpWorkTimePattern_R;
+	private EmpWorkTimePattern_R ewtp_R;//= new EmpWorkTimePattern_R();
 	
     /* 
 	* @getDownloadFile 此方法对应的是struts.xml文件中的： 
@@ -1313,6 +1327,21 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 		//年月日
 		birthdayList.clear();
 		birthdayList = Constant.getYearMonthDay();
+		
+		//for work time pattern
+		if(null == workTimePatternList){
+			workTimePatternList = serviceWorkTimePattern.findAll();
+		}
+		
+	    if(null == workTimePattern || 0 == workTimePattern.getAllCircleDays().size()){
+	    	if(null == workTimePattern){
+	    		workTimePattern = new WorkTimePattern();
+	    	}
+	    	if(-1 != workTimePattern.getId() && 0 != workTimePattern.getId() && 0 == workTimePattern.getAllCircleDays().size()){
+	    		workTimePattern = serviceWorkTimePattern.findById(workTimePattern.getId());
+	    	}
+	    }
+	    
 	}
 	
 	// 员工信息初始化
@@ -1355,6 +1384,9 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 			
 		    mp6.setMP0006_VALUE(String.valueOf(maxNum));
 		    session.put("MP0006", mp6);
+		    
+		    
+		    
 			return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
@@ -1465,6 +1497,10 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 			
 			// 取得要查询员工的紧急联系人信息列表
 			contactInfoList = serviceMP1005.findByProperty("MP1005_EMPLOYEE_NUM", employeeNum);
+			
+			//for work time pattern
+			
+//		    workTimePattern = mp1001.getEmpWorkTimePattern_R().getWorkTimePattern().
 			
 			return SUCCESS;
 		}catch(Exception ex){
@@ -1647,6 +1683,13 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 			positionInfoInit(mp1001.getMP1001_DEPARTMENT_ID());
 			
 			session.remove("PICTURE_NAME");
+			
+			//save work time pattern
+//			ewtp = new EmpWorkTimePattern_R();
+			ewtp_R.setEmployee(mp1001);
+			ewtp_R.setWorkTimePattern(workTimePattern);
+			ewtp_R.setStartDate(now);
+			serviceEmpWorkTimePattern_R.save(ewtp_R);
 			
 			return SUCCESS;
 		}catch(ParseException pe){
@@ -1896,6 +1939,11 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 		// 验证入职日期
 		if(mp1001.getMP1001_ENTRY_DATE().equals("")){
 			addFieldError("mp1001.MP1001_ENTRY_DATE","starting date is empty.");
+			retflag = false;
+		}
+		
+		if(-1 == ewtp_R.getInitialCircleDayIdx() || -1 == workTimePattern.getId()){
+			addFieldError("MP1001.workTimePatternError", "Please Choose Work Time Pattern or Cirlce Day.");
 			retflag = false;
 		}
 		
@@ -6483,6 +6531,46 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 	public void setOptDepartment(String optDepartment) {
 		this.optDepartment = optDepartment;
 	}
-
-
+	public IWorkTimePatternService getServiceWorkTimePattern() {
+		return serviceWorkTimePattern;
+	}
+	public void setServiceWorkTimePattern(
+			IWorkTimePatternService serviceWorkTimePattern) {
+		this.serviceWorkTimePattern = serviceWorkTimePattern;
+	}
+	public List<WorkTimePattern> getWorkTimePatternList() {
+		return workTimePatternList;
+	}
+	public void setWorkTimePatternList(List<WorkTimePattern> workTimePatternList) {
+		this.workTimePatternList = workTimePatternList;
+	}
+	
+	public static Log getLog() {
+		return log;
+	}
+	public WorkTimePattern getWorkTimePattern() {
+		return workTimePattern;
+	}
+	public void setWorkTimePattern(WorkTimePattern workTimePattern) {
+		this.workTimePattern = workTimePattern;
+	}
+	public int getPatternCircleIdx() {
+		return patternCircleIdx;
+	}
+	public void setPatternCircleIdx(int patternCircleIdx) {
+		this.patternCircleIdx = patternCircleIdx;
+	}
+	public EmpWorkTimePattern_RService getServiceEmpWorkTimePattern_R() {
+		return serviceEmpWorkTimePattern_R;
+	}
+	public void setServiceEmpWorkTimePattern_R(
+			EmpWorkTimePattern_RService serviceEmpWorkTimePattern_R) {
+		this.serviceEmpWorkTimePattern_R = serviceEmpWorkTimePattern_R;
+	}
+	public EmpWorkTimePattern_R getEwtp_R() {
+		return ewtp_R;
+	}
+	public void setEwtp_R(EmpWorkTimePattern_R ewtp_R) {
+		this.ewtp_R = ewtp_R;
+	}
 }

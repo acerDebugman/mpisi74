@@ -153,16 +153,13 @@ CREATE TABLE [dbo].[MP0009](
 );
 
 CREATE TABLE [dbo].[MP0010](
-	id int IDENTITY(1,1) not null,
 	[MP0010_DATETIME] [varchar](30) NULL,
 	[MP0010_START_TIME] [varchar](30) NULL,
 	[MP0010_END_TIME] [varchar](30) NULL,
 	[MP0010_LUNCH_TIME] [varchar](10) NULL,
 	[MP0010_TOTAL_TIME] [varchar](10) NULL,
 	[MP0010_OTHER1] [varchar](10) NULL,
-	[MP0010_OTHER2] [varchar](10) NULL,
-	[workTimePatternId] [int],
-	primary key (id)
+	[MP0010_OTHER2] [varchar](10) NULL
 );
 
 CREATE TABLE [dbo].[MP0011](
@@ -709,135 +706,3 @@ CREATE TABLE [dbo].[JE0202](
 	[JE0202_DES] [nvarchar](200) NULL,
 	[JE0202_STATUS] [nvarchar](2) NULL
 );
-
-/*below is initial data*/
-/*department*/
-insert into MP0002(MP0002_DEPARTMENT_NUM, MP0002_DEPARTMENT_NAME, MP0002_DEPARTMENT_DESC, MP0002_DEPARTMENT_STATUS, MP0002_CREATE_USER, MP0002_CREATE_DATETIME)
-values('HR','Human Resource', 'Human Resource Management', '1', 'A0001', '2014-07-22 00:00:00')
-/*employee*/
-insert into MP1001(MP1001_EMPLOYEE_NUM,MP1001_EMPLOYEE_ID,MP1001_SURNAME,MP1001_FIRSTNAME,MP1001_PREFERED_NAME,MP1001_VISA_TYPE,MP1001_DEPARTMENT_ID,
-MP1001_POSITION,MP1001_GENDER,MP1001_RELIGION,MP1001_NATIONALITY,MP1001_BIRTHDAY,MP1001_MARRIAGE_STATUS,MP1001_RACE,MP1001_MOBILE_PHONE,MP1001_TELEPHONE,
-MP1001_OTHER_CONTACT,MP1001_EMAIL,MP1001_COMPANY_EMAIL,MP1001_DEGREE_LEVEL,MP1001_ENTRY_DATE,MP1001_STATUS,MP1001_ANNUAL_STATUS,MP1001_RESIGN_DATE,
-MP1001_RESIGN_REASON,MP1001_RESIGN_TYPE,MP1001_PICTURE,MP1001_PICTURE_NAME,MP1001_PHYSICAL_ADDRESS,MP1001_PASSWORD,MP1001_PASSWORD_DATE,MP1001_GROUP,
-MP1001_RECTIFY_TIMES,MP1001_FREE_MONEY,MP1001_CHG_TIME,MP1001_CHG_EMPLOYE,MP1001_APPRASIER,MP1001_EFFECTIVE_DATE_YEAR,MP1001_EFFECTIVE_DATE_MONTH,
-MP1001_PAYROLL_NUM,MP1001_CREATE_USER,MP1001_CREATE_DATE,MP1001_EDIT_USER,MP1001_EDIT_DATE)
-values('A0001','','HRadmin','HRadmin','HRadmin','','1','1','','','','','','','','','','','','','','1','','','','',null,'','','password',
-GETDATE(),'2','','','','','','','','','','','','');
-
-
-insert into mp0006(MP0006_code, MP0006_value) values('EMP_NUM','1');
-insert into MP0006(MP0006_CODE, MP0006_VALUE) values('LEAVE_NUM','1');
-insert into MP2002(MP2002_EMPLOYEE_NUM, MP2002_YEAR, MP2002_ANNUAL, MP2002_ANNUAL_T, MP2002_ANNUAL_MAX, MP2002_SICK, MP2002_SICK_T,
-					MP2002_FAMILY_RESP, MP2002_FAMILY_RESP_T, MP2002_MATERNITY, MP2002_MATERNITY_T, MP2002_STUDY, MP2002_STUDY_T)
-values('A0001','2014','-10','-10','','56','56','24','0','0','0','0','0');
-insert into MP0006(MP0006_CODE, MP0006_VALUE) values('DIRECTOR_LIST','');
-insert into AC0009(AC0009_EMPLOYEE_NUM, AC0009_ROLE_NUM) values('A0001', 'R1002');
-insert into AC0009(AC0009_EMPLOYEE_NUM, AC0009_ROLE_NUM) values('A0001', 'R1003');
-insert into AC0009(AC0009_EMPLOYEE_NUM, AC0009_ROLE_NUM) values('A0001', 'R1004');
-insert into AC0009(AC0009_EMPLOYEE_NUM, AC0009_ROLE_NUM) values('A0001', 'R1005');
-
-/*work time patter tables*/
-create table DetailDayWorkTime (
-        id int identity not null,
-        name varchar(40),
-        fromTime datetime,
-        toTime datetime,
-        eachCircleDayId int,
-        primary key (id)
-);
-     
-create table EachCircleDay (
-        id int identity not null,
-        daySeq int not null,
-        description varchar(255),
-        name varchar(40),
-        workTimePatternId int,
-        overTimeRate float,  /*over time rate*/
-        primary key (id)
-);
-
-create table WorkTimePattern (
-        id int identity not null,
-        name varchar(40),
-        circleDays int,
-        description varchar(255),
-        calPubHolidayFlag bit,
-        calSpecialDayFlag bit,
-        applyLeaveIgnorePublicHolidayFlag bit,
-        initialAnnualLeaveDays float,
-        addAnnualHoursPM float,
-        initialSickLeaveDays float,
-        addSickHoursPM float,
-        dayWorkHours float,
-        primary key (id)
-);
-
-create table EmpWorkTimePattern_R(
-	id int identity not null,
-	employeeCode varchar(10) not null,
-	workTimePatterId int not null,
-	startDate datetime,
-	initialCircleDayIdx int,
-	primary key (id)
-);
-		
-create table StandardWorkTime(
-	id int identity not null,
-	employeeCode varchar(10) not null,
-	dayDate datetime not null,
-	circleDayIdx int, /*for which day in circle*/
-	stdClockInTime datetime,
-	stdClockOutTime datetime,
-	manuallyChangeFlag bit, /*change flag*/
-	manuallyChangeLogId varchar(50), 
-	primary key (id)
-);
-
-/*for sql server import data wizard*/
-alter table DetailDayWorkTime drop constraint FK_DetailDayWorkTime;
-alter table EachCircleDay drop constraint FK_EachCircleDay;
-alter table EmpWorkTimePattern_R drop constraint FK_Emp_R;
-alter table EmpWorkTimePattern_R drop constraint FK_WorkTimePatternId;
-alter table StandardWorkTime drop constraint FK_StandardWorkTime;
-alter table StandardWorkTime drop constraint FK_StandardWorkTime_CircleDay;
-alter table StandardWorkTime drop constraint FK_StandardWorkTime_1;
-
-alter table DetailDayWorkTime 
-	add constraint FK_DetailDayWorkTime
-	foreign key (eachCircleDayId) 
-	references EachCircleDay;
-
-alter table EachCircleDay 
-    add constraint FK_EachCircleDay
-    foreign key (workTimePatternId) 
-    references WorkTimePattern;
-
-alter table EmpWorkTimePattern_R
-	add constraint FK_Emp_R
-	foreign key (employeeCode)
-	references MP1001(MP1001_EMPLOYEE_NUM);
-
-alter table EmpWorkTimePattern_R 	
-	add constraint FK_WorkTimePatternId
-	foreign key (workTimePatterId)
-	references WorkTimePattern(id);
-	
-alter table StandardWorkTime
-	add constraint FK_StandardWorkTime
-	foreign key (employeeCode)
-	references MP1001(MP1001_EMPLOYEE_NUM);
-	
-alter table StandardWorkTime
-	add constraint FK_StandardWorkTime_CircleDay 
-	foreign key (circleDayIdx) 
-	references EachCircleDay(id); 
-
-alter table StandardWorkTime
-	add constraint FK_StandardWorkTime_1
-	foreign key (manuallyChangeLogId) 
-	references MP0011(MP0011_SEQ);
-
-alter table MP0010
-	add constraint FK_MP0010_0
-	foreign key (workTimePatternId) 
-	references WorkTimePattern(id);

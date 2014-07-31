@@ -7,7 +7,8 @@ public class EmpWorkTimePattern_R {
 //	private String employeeCode;
 //	private int workTimePatterId;
 	private Date startDate; //according to this date to add annual/sick leave days per month
-
+	private int initialCircleDayIdx;
+	
 	private MP1001 employee;
 	private WorkTimePattern workTimePattern;
 	
@@ -47,5 +48,11 @@ public class EmpWorkTimePattern_R {
 	}
 	public void setWorkTimePattern(WorkTimePattern workTimePattern) {
 		this.workTimePattern = workTimePattern;
+	}
+	public int getInitialCircleDayIdx() {
+		return initialCircleDayIdx;
+	}
+	public void setInitialCircleDayIdx(int initialCircleDayIdx) {
+		this.initialCircleDayIdx = initialCircleDayIdx;
 	}
 }

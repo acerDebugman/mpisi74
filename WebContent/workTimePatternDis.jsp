@@ -77,10 +77,19 @@ response.setDateHeader("Expires", 0);
                     <tr>
                     	<td class="table_body">Each Days Work Time<span class="errorcss">*</span></td>
                     	<td class="table_none">
-                    		<ol>
-                    			<li><span>joe</span>&nbsp;&nbsp;<span>time 1</span></li>
-                    			<li><span>zhang</span>&nbsp;&nbsp;<span>time 2</span></li>
-                    		</ol>
+                    		<ul>
+                    			<s:iterator value="workTimePattern.allCircleDays" status="st" var="eachDay">
+	                    			<li>&nbsp;&nbsp;<span><s:property value="#eachDay.name"/></span></li>
+	                    			<ol>
+	                    				<s:iterator value="#eachDay.detailWorkTimeItems" var="dt">
+	                    					<li>&nbsp;&nbsp;<span><s:property value="#dt.description"/></span>&nbsp;&nbsp;
+	                    						<span>Start Time:</span><span><s:date name="#dt.fromTime" format="HH:mm:ss"/></span>&nbsp;&nbsp;
+	                    						<span>End Time:</span><span><s:date name="#dt.toTime" format="HH:mm:ss"/></span>
+	                    					</li>
+	                    				</s:iterator>
+	                    			</ol>
+                    			</s:iterator>
+                    		</ul>
                     	</td>
                     </tr>
                     <tr>

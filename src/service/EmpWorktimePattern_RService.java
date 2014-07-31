@@ -2,11 +2,11 @@ package service;
 
 import java.util.List;
 
-import dao.IEmpWorktimePattern_RDAO;
+import dao.IEmpWorkTimePattern_RDAO;
 import entity.EmpWorkTimePattern_R;
 
-public class EmpWorktimePattern_RService implements IEmpWorktimePattern_RService{
-	private IEmpWorktimePattern_RDAO dao;
+public class EmpWorkTimePattern_RService implements IEmpWorkTimePattern_RService{
+	private IEmpWorkTimePattern_RDAO dao;
 	
 	@Override
 	public void save(EmpWorkTimePattern_R item) {
@@ -38,11 +38,11 @@ public class EmpWorktimePattern_RService implements IEmpWorktimePattern_RService
 		dao.update(item);
 	}
 
-	public IEmpWorktimePattern_RDAO getDao() {
+	public IEmpWorkTimePattern_RDAO getDao() {
 		return dao;
 	}
 
-	public void setDao(IEmpWorktimePattern_RDAO dao) {
+	public void setDao(IEmpWorkTimePattern_RDAO dao) {
 		this.dao = dao;
 	}
 

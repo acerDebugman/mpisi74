@@ -224,6 +224,18 @@ function conDel(seq){
 	}
 }
 
+
+//----------work time pattern------------
+//fetch work time pattern circle days
+function fetchPatternCircleDayList(){
+	var patternId = $("#selectWorkPatternId").val();
+	if(-1 == patternId){
+		return ;
+	}
+	var param = {"workTimePatternId" : patternId};
+//	alert(patternId);
+	$("#patternCircleDayList").load("fetchWorkTimePatternCircleDays.action", param);
+}
 </script>
 
 </head>
@@ -498,8 +510,15 @@ function conDel(seq){
                                         <td class="table_none table_none_NoWidth">
                                             <input name="mp1001.MP1001_PAYROLL_NUM" value="${mp1001.MP1001_PAYROLL_NUM}" type="text" class="text_input"/>
                                         </td>
-                                        <td class="table_body table_body_NoWidth"></span></td>
-                                        <td class="table_none table_none_NoWidth"></td>
+                                        <td class="table_body table_body_NoWidth">Work Time Pattern<span class="errorcss">*</span></td>
+                                        <td class="table_none table_none_NoWidth">
+                                        	<s:select id="selectWorkPatternId" name="workTimePattern.id" value="workTimePattern.id" list="workTimePatternList" listKey="id" listValue="name" required="true" headerKey="-1" headerValue="-please select-" onchange="fetchPatternCircleDayList()" theme="simple"/>
+                                        	&nbsp;<span>Choose Start Day </span><span id="patternCircleDayList"><s:select name="ewtp_R.initialCircleDayIdx" value="ewtp_R.initialCircleDayIdx" list="workTimePattern.allCircleDays" listKey="daySeq" listValue="name" required="true" headerKey="-1" headerValue="-select pattern first-" theme="simple"/></span>
+                                        	<s:fielderror theme="simple" cssStyle="color:red;margin-left:10px;">
+                                                <s:param>MP1001.workTimePatternError</s:param>
+                                            </s:fielderror>
+                                        </td>
+                                        
                                     </tr>
                                     
                                     

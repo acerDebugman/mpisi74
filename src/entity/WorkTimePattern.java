@@ -19,6 +19,7 @@ public class WorkTimePattern {
         
         //extended
         private Set<EachCircleDay> allCircleDays = new HashSet<EachCircleDay>();
+        private Set<MP0010> allSpecialDays = new HashSet<MP0010>();
         
 		public int getId() {
 			return id;
@@ -98,5 +99,11 @@ public class WorkTimePattern {
 		}
 		public void setAllCircleDays(Set<EachCircleDay> allCircleDays) {
 			this.allCircleDays = allCircleDays;
+		}
+		public Set<MP0010> getAllSpecialDays() {
+			return allSpecialDays;
+		}
+		public void setAllSpecialDays(Set<MP0010> allSpecialDays) {
+			this.allSpecialDays = allSpecialDays;
 		}
 }

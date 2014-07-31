@@ -1,12 +1,16 @@
 package dao;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
 import entity.CHECKINOUT;
 import entity.USERINFO;
 
@@ -190,7 +194,32 @@ public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO
 	}
     
     
-    
-    
+    //
+    public List<CHECKINOUT> fetchAllDayRecords(Date date){
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(date);
+    	cal.set(Calendar.HOUR_OF_DAY, 0);
+    	cal.set(Calendar.MINUTE, 0);
+    	cal.set(Calendar.SECOND, 0);
+    	Date startTime = cal.getTime();
+    	cal.set(Calendar.HOUR_OF_DAY, 23);
+    	cal.set(Calendar.MINUTE, 59);
+    	cal.set(Calendar.SECOND, 59);
+    	Date endTime = cal.getTime();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	
+    	Session session = getHibernateTemplate().getSessionFactory().openSession();
+    	session.beginTransaction();
+    	
+        Query query = session.createQuery("select c from CHECKINOUT c where c.CHECKTIME>=:startDateTime and c.CHECKTIME<=:endDateTime")
+        				.setString("startDateTime", sdf.format(startTime))
+        				.setString("endDateTime", sdf.format(endTime));
+        List<CHECKINOUT> list = query.list();
+        
+        session.getTransaction().commit();
+        session.close();
+        
+        return list;
+    }
 }
 

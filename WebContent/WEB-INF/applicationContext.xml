@@ -692,7 +692,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="EmpWorktimePattern_RDAO" class="dao.EmpWorktimePattern_RDAO">
+	<bean id="EmpWorkTimePattern_RDAO" class="dao.EmpWorkTimePattern_RDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
@@ -1027,9 +1027,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="EachCircleDayDAO" />
 		</property>
 	</bean>
-	<bean id="EmpWorktimePattern_RService" class="service.EmpWorktimePattern_RService">
+	<bean id="EmpWorkTimePattern_RService" class="service.EmpWorkTimePattern_RService">
 		<property name="dao">
-			<ref bean="EmpWorktimePattern_RDAO" />
+			<ref bean="EmpWorkTimePattern_RDAO" />
 		</property>
 	</bean>
 	<bean id="StandardWorkTimeService" class="service.StandardWorkTimeService">
@@ -1221,7 +1221,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="serviceMP7002">
 			<ref bean="MP7002Service" />
 		</property>
-		
+		<property name="serviceWorkTimePattern">
+			<ref bean="WorkTimePatternService" />
+		</property>
+		<property name="serviceEmpWorkTimePattern_R">
+			<ref bean="EmpWorkTimePattern_RService"/>
+		</property>
 	</bean>
 	<bean name="applyLeaveMngBean" class="action.ApplyLeaveAction" scope="prototype">
 		<property name="service">
@@ -1503,7 +1508,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="DetailDayWorkTimeService" />
 		</property>
 		<property name="serviceEmpWTP">
-			<ref bean="EmpWorktimePattern_RService" />
+			<ref bean="EmpWorkTimePattern_RService" />
 		</property>
 		<property name="serviceStdWorkTime">
 			<ref bean="StandardWorkTimeService" />
@@ -1522,14 +1527,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<property name="serviceMP0002">
 				<ref bean="MP0002Service"/>
 			</property>
+			<property name="serviceDetailDayWorkTime">
+				<ref bean="DetailDayWorkTimeService" />
+			</property>
 	</bean>
 
 	<bean id="executeJobs" class="schedule.executeJobs">
 		<property name="serviceExecuteJob">
 			<ref bean="executeJobsService"/>
-		</property>
-		<property name="joeStr">
-			<value>testtest</value>
 		</property>
 	</bean>
 </beans>

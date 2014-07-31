@@ -1,7 +1,11 @@
 package dao;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
 import entity.HOLIDAY;
 
 public class HOLIDAYDAO extends HibernateDaoSupport implements IHOLIDAYDAO {
@@ -36,5 +40,10 @@ public class HOLIDAYDAO extends HibernateDaoSupport implements IHOLIDAYDAO {
 		}catch(RuntimeException ex){
 			throw ex;
 		}
+	}
+	
+	public boolean isPublicHoliday(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return !getHibernateTemplate().find("from HOLIDAY where HOLIDAY_DATE='" + sdf.format(date) + "'").isEmpty();		
 	}
 }

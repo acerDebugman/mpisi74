@@ -1,5 +1,6 @@
 package service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,10 @@ public class CHECKINOUTService implements ICHECKINOUTService{
     	dao.save(userinfo);
     }
     
+    public List<CHECKINOUT> fetchAllDayRecords(Date date){
+    	return dao.fetchAllDayRecords(date);
+    }
+    
     /**
      * @return the dao
      */
@@ -70,5 +75,7 @@ public class CHECKINOUTService implements ICHECKINOUTService{
     public void setDao(ICHECKINOUTDAO dao) {
         this.dao = dao;
     }
+    
+    
 }
 

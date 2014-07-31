@@ -16,6 +16,10 @@
             <column name="startDate" not-null="false" />
         </property>
         
+        <property name="initialCircleDayIdx" type="java.lang.Integer">
+        	<column name="initialCircleDayIdx" not-null="false" />
+        </property>
+        
         <many-to-one name="employee" class="entity.MP1001" column="employeeCode" unique="true"></many-to-one>
         <many-to-one name="workTimePattern" class="entity.WorkTimePattern" column="workTimePatterId" unique="true"></many-to-one>
         

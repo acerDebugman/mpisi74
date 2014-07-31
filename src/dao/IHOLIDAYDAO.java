@@ -1,7 +1,9 @@
 package dao;
 
+import java.util.Date;
 import java.util.List;
-import entity.HOLIDAY;;
+
+import entity.HOLIDAY;
 
 public interface IHOLIDAYDAO {
 	public abstract void save(HOLIDAY holiday);
@@ -15,4 +17,6 @@ public interface IHOLIDAYDAO {
 	public abstract void update(HOLIDAY holiday);
 	
 	public abstract List<HOLIDAY> findByProperty(String name, String value);
+	
+	public abstract boolean isPublicHoliday(Date date);
 }

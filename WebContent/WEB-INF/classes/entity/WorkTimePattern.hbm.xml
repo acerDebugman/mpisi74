@@ -40,7 +40,7 @@
             <column name="dayWorkHours" length="255" not-null="false" />
         </property>
         
-        <set name="allCircleDays" inverse="true" lazy="false" fetch="select">
+        <set name="allCircleDays" inverse="true" lazy="false" fetch="select" order-by="daySeq ASC">
         	<key column="workTimePatternId" />
         	<one-to-many class="entity.EachCircleDay" />
         </set>

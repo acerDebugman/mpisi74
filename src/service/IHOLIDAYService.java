@@ -1,6 +1,8 @@
 package service;
 
+import java.util.Date;
 import java.util.List;
+
 import entity.HOLIDAY;
 
 public interface IHOLIDAYService {
@@ -15,4 +17,6 @@ public interface IHOLIDAYService {
 	public abstract void update(HOLIDAY holiday);
 	
 	public abstract List<HOLIDAY> findByProperty(String name, String value);
+	
+	public abstract boolean isPublicHoliday(Date date);
 }

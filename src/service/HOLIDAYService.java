@@ -1,6 +1,8 @@
 package service;
 
+import java.util.Date;
 import java.util.List;
+
 import dao.IHOLIDAYDAO;
 import entity.HOLIDAY;
 
@@ -52,4 +54,7 @@ public class HOLIDAYService implements IHOLIDAYService{
 		this.dao = dao;
 	}
 
+	public boolean isPublicHoliday(Date date){
+		return dao.isPublicHoliday(date);
+	}
 }

@@ -25,6 +25,11 @@ public class WorkTimePatternDAO implements IWorkTimePatternDAO {
 	public WorkTimePattern findById(int id) {
 		// TODO Auto-generated method stub
 		return (WorkTimePattern)sessionFactory.getCurrentSession().get(WorkTimePattern.class, id);
+//		return (WorkTimePattern)sessionFactory.getCurrentSession()
+//				.createQuery("from WorkTimePattern w, EachCircleDay e, DetailDayWorkTime d where d.circleDay=e and e.workTimePattern=w and w.id=:wId order by e.daySeq, d.id")
+//				.createQuery("from WorkTimePattern w where w.id=:wId ")
+//				.setParameter("wId", id)
+//				.uniqueResult();
 	}
 
 	@Override

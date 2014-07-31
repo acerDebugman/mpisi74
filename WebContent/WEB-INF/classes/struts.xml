@@ -1481,6 +1481,14 @@
 			<result name="success">workTimePatternDis.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		<action name="addDefaultPattern" class="workTimePatternBean" method="addDefaultPattern">
+			<result name="success">workTimePatternMng.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="fetchWorkTimePatternCircleDays" class="workTimePatternBean" method="fetchWorkTimePatternCircleDays">
+			<result name="success">workTimePatternCircleDays.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
 		
 				
 <!-- IT Request -->

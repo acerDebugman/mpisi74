@@ -795,6 +795,14 @@ public class Constant {
 	public static String shiftTypeDay = "D"; //day work
 	public static String shiftTypeNight = "N"; //nigth work
 	
+	//office work time, for temparory 
+	public static String officeStartWorkTime_0 = "08:00:59";
+	public static String officeEndWorkTime_0 = "13:00:00"; //lunch time between 13:00:00 -- 14:00:00
+	public static String officeStartWorkTime_1 = "14:00:00";
+	public static String officeEndWorkTime_1 = "16:30:00";
+//	public static java.util.Date startEpoch = new java.util.Date(0); //java.util.Date(0) in database will be 1970-01-01 02:00:00, different from 1970-01-01 00:00:00
+	public static String startEpoch = "1970-01-01 00:00:00";
+
 	//for meeting report
 	public static String managerMeetingGroupCodeList = "'M0104','M0483','M0511','M0146','M0137','M0076','M0003','M0241','M0173','M0494','M0118'," +
 			"'M0025','M0268','M0020','M0127','M0047','M0142','M0058','M0291','M0061','M0462'," +

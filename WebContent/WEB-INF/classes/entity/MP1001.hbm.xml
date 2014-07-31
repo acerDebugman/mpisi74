@@ -136,7 +136,7 @@
             <column name="MP1001_EDIT_DATE" length="30" not-null="false" />
         </property>
         
-        <one-to-one name="empWorkTimePattern_R" class="entity.EmpWorkTimePattern_R" property-ref="employee">
+        <one-to-one name="empWorkTimePattern_R" class="entity.EmpWorkTimePattern_R" property-ref="employee" lazy="false">
         </one-to-one>
     </class>
 </hibernate-mapping>

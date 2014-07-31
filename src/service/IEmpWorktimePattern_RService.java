@@ -4,7 +4,7 @@ import java.util.List;
 
 import entity.EmpWorkTimePattern_R;
 
-public interface IEmpWorktimePattern_RService {
+public interface IEmpWorkTimePattern_RService {
 	public abstract void save(EmpWorkTimePattern_R item);
 
 	public abstract void delete(EmpWorkTimePattern_R item);

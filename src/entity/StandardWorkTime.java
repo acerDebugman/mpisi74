@@ -9,10 +9,12 @@ public class StandardWorkTime {
 //	private int circleDayIdx; //for which day in circle
 	private Date stdClockInTime;
 	private Date stdClockOutTime;
+	private boolean manuallyChangeFlag; /*change flag, if true, no need to calcualte the time, because it's changed manually by people*/
 	
 	
 	private MP1001 employee;
-	private EachCircleDay circleDay; 
+	private EachCircleDay circleDay;
+	private MP0011 detailChangeLog; //if it manually changed, need to find the log 
 	
 	public int getId() {
 		return id;
@@ -55,5 +57,17 @@ public class StandardWorkTime {
 	}
 	public void setCircleDay(EachCircleDay circleDay) {
 		this.circleDay = circleDay;
+	}
+	public boolean isManuallyChangeFlag() {
+		return manuallyChangeFlag;
+	}
+	public void setManuallyChangeFlag(boolean manuallyChangeFlag) {
+		this.manuallyChangeFlag = manuallyChangeFlag;
+	}
+	public MP0011 getDetailChangeLog() {
+		return detailChangeLog;
+	}
+	public void setDetailChangeLog(MP0011 detailChangeLog) {
+		this.detailChangeLog = detailChangeLog;
 	}
 }

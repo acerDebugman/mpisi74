@@ -30,7 +30,6 @@ public class executeJobs {
 	//private static final Log log = LogFactory.getLog(AuthorityAction.class);
 	
 	private ExecuteJobsService serviceExecuteJob;
-	private String joeStr;
 	
 	// 每天凌晨一点自动计算员工上下班异常
 	public void executeJob1() throws SQLException {
@@ -903,17 +902,25 @@ public class executeJobs {
 	}
 	
 	
+	//fetch data every 5 miniuts
+	public void executeJob18(){
+		try{
+			serviceExecuteJob.fetchAttendanceRecords();
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	
+	//----------------------------------------------------------------------------
+	
 	public ExecuteJobsService getServiceExecuteJob() {
 		return serviceExecuteJob;
 	}
 	public void setServiceExecuteJob(ExecuteJobsService serviceExecuteJob) {
 		this.serviceExecuteJob = serviceExecuteJob;
 	}
-	public String getJoeStr() {
-		return joeStr;
-	}
-	public void setJoeStr(String joeStr) {
-		this.joeStr = joeStr;
-	}
+	
 	
 }

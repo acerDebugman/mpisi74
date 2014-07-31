@@ -1,15 +1,17 @@
 package action;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import service.DetailDayWorkTimeService;
 import service.EachCircleDayService;
-import service.EmpWorktimePattern_RService;
+import service.EmpWorkTimePattern_RService;
 import service.StandardWorkTimeService;
 import service.WorkTimePatternService;
 
 import com.opensymphony.xwork2.ActionSupport;
+import common.Constant;
 
 import entity.DetailDayWorkTime;
 import entity.EachCircleDay;
@@ -22,7 +24,7 @@ public class WorkTimePatternAction extends ActionSupport {
 	private WorkTimePatternService serviceWorkTimePattern;
 	private EachCircleDayService serviceEachCircleDay;
 	private DetailDayWorkTimeService serviceDetailDayWorkTime;
-	private EmpWorktimePattern_RService serviceEmpWTP;
+	private EmpWorkTimePattern_RService serviceEmpWTP;
 	private StandardWorkTimeService serviceStdWorkTime;
 	
 	private List<WorkTimePattern> workTimePatternList;
@@ -49,53 +51,7 @@ public class WorkTimePatternAction extends ActionSupport {
 */
 	public String workTimePatternMngInit(){
 		try{
-			WorkTimePattern wtp = new WorkTimePattern();
-			wtp.setName("joe zhang");
-	//		wtp.set
-	//		
-			wtp.setDescription("zhang jojo");
-			wtp.setCircleDays(3);
-			wtp.setCalPubHolidayFlag(true);
-			wtp.setCalSpecialDayFlag(true);
-			wtp.setApplyLeaveIgnorePublicHolidayFlag(false);
-			wtp.setInitialAnnualLeaveDays(0.0);
-			wtp.setAddAnnualHoursPM(1.4);
-			wtp.setInitialSickLeaveDays(36.0);
-			wtp.setAddSickHoursPM(1.395);
-			wtp.setDayWorkHours(7.5);
-			serviceWorkTimePattern.save(wtp);
 			
-			EachCircleDay cd = new EachCircleDay();
-			cd.setDaySeq(1);
-			cd.setName("test");
-			cd.setWorkTimePattern(wtp);
-			serviceEachCircleDay.save(cd);
-			
-			EachCircleDay cd1 = new EachCircleDay();
-			cd1.setDaySeq(2);
-			cd1.setName("test 2");
-			cd1.setWorkTimePattern(wtp);
-			serviceEachCircleDay.save(cd1);
-			
-			EachCircleDay cd2 = new EachCircleDay();
-			cd2.setDaySeq(3);
-			cd2.setName("test 3");
-			cd2.setWorkTimePattern(wtp);
-			serviceEachCircleDay.save(cd2);
-			
-			DetailDayWorkTime dt = new DetailDayWorkTime();
-			dt.setFromTime(new Date());
-			dt.setToTime(new Date());
-			dt.setDescription("Moring");
-			dt.setCircleDay(cd);
-			serviceDetailDayWorkTime.save(dt);
-			
-			DetailDayWorkTime dt1 = new DetailDayWorkTime();
-			dt1.setFromTime(new Date());
-			dt1.setToTime(new Date());
-			dt1.setDescription("afternoon");
-			dt1.setCircleDay(cd);
-			serviceDetailDayWorkTime.save(dt1);
 			
 			return SUCCESS;
 		}
@@ -133,6 +89,208 @@ public class WorkTimePatternAction extends ActionSupport {
 		}
 	}
 	
+	//use to add default pattern, test part
+	public String addDefaultPattern(){ 
+		try{
+			WorkTimePattern wtp = new WorkTimePattern();
+			wtp.setName("Office Work Time");
+			wtp.setDescription("For normal office work time");
+			wtp.setCircleDays(7);
+			wtp.setCalPubHolidayFlag(true);
+			wtp.setCalSpecialDayFlag(true);
+			wtp.setApplyLeaveIgnorePublicHolidayFlag(false);
+			wtp.setInitialAnnualLeaveDays(0.0);
+			wtp.setAddAnnualHoursPM(1.4);
+			wtp.setInitialSickLeaveDays(36.0);
+			wtp.setAddSickHoursPM(1.395);
+			wtp.setDayWorkHours(7.5);
+			serviceWorkTimePattern.save(wtp);
+			
+			EachCircleDay cd = new EachCircleDay();
+			cd.setDaySeq(1);
+			cd.setName("Monday");
+			cd.setWorkTimePattern(wtp);
+			cd.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd);
+			
+			EachCircleDay cd1 = new EachCircleDay();
+			cd1.setDaySeq(2);
+			cd1.setName("Tursday");
+			cd1.setWorkTimePattern(wtp);
+			cd1.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd1);
+			
+			EachCircleDay cd2 = new EachCircleDay();
+			cd2.setDaySeq(3);
+			cd2.setName("Wensday");
+			cd2.setWorkTimePattern(wtp);
+			cd2.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd2);
+			
+			EachCircleDay cd3 = new EachCircleDay();
+			cd3.setDaySeq(4);
+			cd3.setName("Thursday");
+			cd3.setWorkTimePattern(wtp);
+			cd3.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd3);
+			
+			EachCircleDay cd4 = new EachCircleDay();
+			cd4.setDaySeq(5);
+			cd4.setName("Friday");
+			cd4.setWorkTimePattern(wtp);
+			cd4.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd4);
+			
+			EachCircleDay cd5 = new EachCircleDay();
+			cd5.setDaySeq(6);
+			cd5.setName("Saturday");
+			cd5.setWorkTimePattern(wtp);
+			cd5.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd5);
+			
+			EachCircleDay cd6 = new EachCircleDay();
+			cd6.setDaySeq(7);
+			cd6.setName("Sunday");
+			cd6.setWorkTimePattern(wtp);
+			cd6.setOverTimeRate(2);
+			serviceEachCircleDay.save(cd6);
+
+			//set detail work time
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss"); //format date
+			SimpleDateFormat sdf_0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //format date
+
+			//Monday
+			DetailDayWorkTime dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setName("Monday AM");
+			dt.setCircleDay(cd); //Monday
+			serviceDetailDayWorkTime.save(dt);
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setName("Monday PM");
+			dt.setCircleDay(cd); //Monday
+			serviceDetailDayWorkTime.save(dt);
+			
+			//Tursday
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setName("Tursday AM");
+			dt.setCircleDay(cd1); //Tursday
+			serviceDetailDayWorkTime.save(dt);
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setName("Tursday PM");
+			dt.setCircleDay(cd1); //Tursday
+			serviceDetailDayWorkTime.save(dt);
+
+			//Wensday
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setName("Wensday AM");
+			dt.setCircleDay(cd2); //Wensday
+			serviceDetailDayWorkTime.save(dt);
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setName("Wensday PM");
+			dt.setCircleDay(cd2); //Wensday
+			serviceDetailDayWorkTime.save(dt);
+			
+			//Thursday
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setName("Thursday AM");
+			dt.setCircleDay(cd3); //Thursday
+			serviceDetailDayWorkTime.save(dt);
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setName("Thursday PM");
+			dt.setCircleDay(cd3); //Thursday
+			serviceDetailDayWorkTime.save(dt);
+			
+
+			//Friday
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setName("Friday AM");
+			dt.setCircleDay(cd4); //Friday
+			serviceDetailDayWorkTime.save(dt);
+			dt = new DetailDayWorkTime();
+			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setName("Friday PM");
+			dt.setCircleDay(cd4); //Friday
+			serviceDetailDayWorkTime.save(dt);
+
+
+			//Saturday
+			dt = new DetailDayWorkTime();
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setFromTime(sdf_0.parse(Constant.startEpoch));
+			dt.setToTime(sdf_0.parse(Constant.startEpoch));
+			dt.setName("Saturday AM");
+			dt.setCircleDay(cd5); //Saturday
+			serviceDetailDayWorkTime.save(dt);
+			dt = new DetailDayWorkTime();
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+//			dt.setFromTime(sdf_0.parse(Constant.startEpoch));
+//			dt.setToTime(sdf_0.parse(Constant.startEpoch));
+			dt.setFromTime(new Date(0));
+			dt.setToTime(new Date(0));
+			dt.setName("Saturday PM");
+			dt.setCircleDay(cd5); //Saturday
+			serviceDetailDayWorkTime.save(dt);
+
+			//Sunday
+			dt = new DetailDayWorkTime();
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setFromTime(sdf_0.parse(Constant.startEpoch));
+			dt.setToTime(sdf_0.parse(Constant.startEpoch));
+			dt.setName("Sunday AM");
+			dt.setCircleDay(cd6); //Sunday
+			serviceDetailDayWorkTime.save(dt);
+			dt = new DetailDayWorkTime();
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+//			dt.setFromTime(sdf_0.parse(Constant.startEpoch));
+//			dt.setToTime(sdf_0.parse(Constant.startEpoch));
+			dt.setFromTime(new Date(0));
+			dt.setToTime(new Date(0));
+			dt.setName("Sunday PM");
+			dt.setCircleDay(cd6); //Sunday
+			serviceDetailDayWorkTime.save(dt);
+			
+			return SUCCESS;
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+			return ERROR;
+		}
+	}
+	
+	public String fetchWorkTimePatternCircleDays(){
+		try{
+			workTimePattern = serviceWorkTimePattern.findById(workTimePatternId);
+			
+			return SUCCESS;
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+			return ERROR;
+		}
+	}
+	
 	public WorkTimePatternService getServiceWorkTimePattern() {
 		return serviceWorkTimePattern;
 	}
@@ -159,11 +317,11 @@ public class WorkTimePatternAction extends ActionSupport {
 		this.serviceDetailDayWorkTime = serviceDetailDayWorkTime;
 	}
 
-	public EmpWorktimePattern_RService getServiceEmpWTP() {
+	public EmpWorkTimePattern_RService getServiceEmpWTP() {
 		return serviceEmpWTP;
 	}
 
-	public void setServiceEmpWTP(EmpWorktimePattern_RService serviceEmpWTP) {
+	public void setServiceEmpWTP(EmpWorkTimePattern_RService serviceEmpWTP) {
 		this.serviceEmpWTP = serviceEmpWTP;
 	}
 

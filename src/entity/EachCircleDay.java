@@ -9,10 +9,11 @@ public class EachCircleDay {
         private String description;
         private String name;
 //        private int workTimePatternId;
+        private double overTimeRate; //for over time
         
         //extended 
         private WorkTimePattern workTimePattern; //standard work time many need to find which work time pattern it belong to
-        private Set<DetailDayWorkTime> detailWorkTimeItems;// = new HashSet<DetailDayWorkTime>();
+        private Set<DetailDayWorkTime> detailWorkTimeItems = new HashSet<DetailDayWorkTime>();
         
 		public int getId() {
 			return id;
@@ -55,5 +56,11 @@ public class EachCircleDay {
 		}
 		public void setDetailWorkTimeItems(Set<DetailDayWorkTime> detailWorkTimeItems) {
 			this.detailWorkTimeItems = detailWorkTimeItems;
+		}
+		public double getOverTimeRate() {
+			return overTimeRate;
+		}
+		public void setOverTimeRate(double overTimeRate) {
+			this.overTimeRate = overTimeRate;
 		}
 }

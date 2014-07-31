@@ -1,10 +1,11 @@
 package entity;
 
+
 import java.util.Date;
 
 public class DetailDayWorkTime {
 		private int id;
-        private String description;
+        private String name;
         private Date fromTime;
         private Date toTime;
 //        private int eachCircleDayId;
@@ -17,12 +18,6 @@ public class DetailDayWorkTime {
 		}
 		public void setId(int id) {
 			this.id = id;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public void setDescription(String description) {
-			this.description = description;
 		}
 		public Date getFromTime() {
 			return fromTime;
@@ -47,5 +42,11 @@ public class DetailDayWorkTime {
 		}
 		public void setCircleDay(EachCircleDay circleDay) {
 			this.circleDay = circleDay;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
 		}
 }

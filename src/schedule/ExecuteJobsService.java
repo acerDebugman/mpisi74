@@ -2,25 +2,28 @@ package schedule;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import service.CHECKINOUTService;
-import service.MP0002Service;
-import service.MP1001Service;
+import service.DetailDayWorkTimeService;
+import service.ICHECKINOUTService;
+import service.IMP0002Service;
+import service.IMP1001Service;
 
 import common.Constant;
 import common.CustomerContextHolder;
 
 import entity.CHECKINOUT;
+import entity.DetailDayWorkTime;
 import entity.MP0002;
 import entity.MP1001;
 
 public class ExecuteJobsService {
-	private CHECKINOUTService serviceCheckInOut;
-	private MP1001Service serviceMP1001;
-	private MP0002Service serviceMP0002;
+	private ICHECKINOUTService serviceCheckInOut;
+	private IMP1001Service serviceMP1001;
+	private IMP0002Service serviceMP0002;
+	
+	private DetailDayWorkTimeService serviceDetailDayWorkTime;
 
 	public List<CHECKINOUT> getManagerCheckInRcds(){
 		String startTime = " 07:00:00";
@@ -113,28 +116,67 @@ public class ExecuteJobsService {
 		
 		return sb.toString();
 	}
+	
+	//every 5 minutes
+	public void fetchAttendanceRecords() throws Exception {
+//		DetailDayWorkTime d = new DetailDayWorkTime();
+//		d.setFromTime(new Date(0));
+//		d.setToTime(new Date(0));
+//		serviceDetailDayWorkTime.save(d);
+		
+//		DetailDayWorkTime nd = serviceDetailDayWorkTime.findById(15);
+//		System.out.println(nd.getFromTime().getTime() + "|"
+//							+ new Date(0).getTime() + "|" 
+//							+ new Date(0).toString() + "|" +
+//							new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1970-01-01 00:00:00").getTime()
+//							);
+		
+//		try{
+//			CustomerContextHolder.setCustomerType("finger");
+//		
+//			List<CHECKINOUT> lst = serviceCheckInOut.fetchAllDayRecords(new Date());
+//			
+//			CustomerContextHolder.remove();
+//		}
+//		catch(Exception ex){
+//			System.out.println(ex.getMessage());
+//		}
+//		finally{
+//			CustomerContextHolder.remove();
+//		}
+	}
 
-	public CHECKINOUTService getServiceCheckInOut() {
+	public ICHECKINOUTService getServiceCheckInOut() {
 		return serviceCheckInOut;
 	}
 
-	public void setServiceCheckInOut(CHECKINOUTService serviceCheckInOut) {
+	public void setServiceCheckInOut(ICHECKINOUTService serviceCheckInOut) {
 		this.serviceCheckInOut = serviceCheckInOut;
 	}
 
-	public MP1001Service getServiceMP1001() {
+	public IMP1001Service getServiceMP1001() {
 		return serviceMP1001;
 	}
 
-	public void setServiceMP1001(MP1001Service serviceMP1001) {
+	public void setServiceMP1001(IMP1001Service serviceMP1001) {
 		this.serviceMP1001 = serviceMP1001;
 	}
 
-	public MP0002Service getServiceMP0002() {
+	public IMP0002Service getServiceMP0002() {
 		return serviceMP0002;
 	}
 
-	public void setServiceMP0002(MP0002Service serviceMP0002) {
+	public void setServiceMP0002(IMP0002Service serviceMP0002) {
 		this.serviceMP0002 = serviceMP0002;
 	}
+
+	public DetailDayWorkTimeService getServiceDetailDayWorkTime() {
+		return serviceDetailDayWorkTime;
+	}
+
+	public void setServiceDetailDayWorkTime(
+			DetailDayWorkTimeService serviceDetailDayWorkTime) {
+		this.serviceDetailDayWorkTime = serviceDetailDayWorkTime;
+	}
+
 }

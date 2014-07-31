@@ -1,7 +1,9 @@
 package dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import entity.CHECKINOUT;
 import entity.USERINFO;
 
@@ -29,5 +31,7 @@ public interface ICHECKINOUTDAO {
     
     public abstract int findAll(String employeeNum);
     public abstract void save(USERINFO userinfo);
+    
+    public abstract List<CHECKINOUT> fetchAllDayRecords(Date date);
 }
 
