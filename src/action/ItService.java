@@ -1,19 +1,23 @@
 package action;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +31,9 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.struts2.ServletActionContext;
 
 import schedule.executeJobs;
+import service.IMP1001Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
@@ -35,13 +41,12 @@ import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.parser.RegionTextRenderFilter;
 import com.itextpdf.text.pdf.parser.RenderFilter;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
-import com.mchange.v2.sql.filter.RecreatePackage;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import common.ExcelUtil;
 
 import dto.LateEarlyDto;
-import entity.JE0101;
+import entity.MP1001;
 
 public class ItService extends ActionSupport {
 	private static final Log log = LogFactory.getLog(LoginAction.class);
@@ -54,6 +59,10 @@ public class ItService extends ActionSupport {
 	public String downloadFile;
 	
 	private List<LateEarlyDto> lateEarlyList = new ArrayList<LateEarlyDto>();
+
+	//emplyee API 
+	public String empCode;
+	public IMP1001Service serviceMP1001;
 	
 	public String itServiceMngInit(){
 		try{
@@ -507,6 +516,63 @@ public class ItService extends ActionSupport {
 		return NONE;
 	}
 	
+	public String lookupEmployeeById(){
+		try{
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setCharacterEncoding("utf-8");
+			PrintWriter out = response.getWriter();
+		
+			String str = null;
+			
+//			List<MP1001> lst = 
+			MP1001 employee = serviceMP1001.findById(empCode);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			str = mapper.writeValueAsString(employee);
+			
+			System.out.println(str);
+			
+			out.print(str);
+			out.flush();
+			out.close();
+		} catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+		return NONE;
+	}
+	
+	public String lookupAllEmployees(){
+		try{
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setCharacterEncoding("utf-8");
+			PrintWriter out = response.getWriter();
+		
+			List<MP1001> lst =  serviceMP1001.findAll();
+//			MP1001 employee = serviceMP1001.findById(empCode);
+
+			ObjectMapper mapper = new ObjectMapper();
+			
+			OutputStream outStream = new ByteArrayOutputStream();
+			mapper.writeValue(outStream, lst);
+			
+//			final byte[] data = outStream.toByteArray();
+			String str = outStream.toString();
+			
+//			str = mapper.writeValueAsString();
+			
+			System.out.println(str);
+			
+			out.print(str);
+			out.flush();
+			out.close();
+			
+			return NONE;
+		} catch(Exception ex){
+			System.out.println(ex.getMessage());
+			return ERROR;
+		}
+	}
+	
 	public static Log getLog() {
 		return log;
 	}
@@ -556,4 +622,22 @@ public class ItService extends ActionSupport {
 	public void setLateEarlyList(List<LateEarlyDto> lateEarlyList) {
 		this.lateEarlyList = lateEarlyList;
 	}
+
+	public String getEmpCode() {
+		return empCode;
+	}
+
+	public void setEmpCode(String empCode) {
+		this.empCode = empCode;
+	}
+
+	public IMP1001Service getServiceMP1001() {
+		return serviceMP1001;
+	}
+
+	public void setServiceMP1001(IMP1001Service serviceMP1001) {
+		this.serviceMP1001 = serviceMP1001;
+	}
+
+		
 }

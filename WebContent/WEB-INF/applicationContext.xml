@@ -1411,6 +1411,9 @@
 	</bean>
 	<!-- ItService -->
 	<bean name="itServiceBean" class="action.ItService" scope="prototype">
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
 	</bean>
 <!-- Bean配置信息 -->
 
