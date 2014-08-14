@@ -1,9 +1,9 @@
 package dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import dto.LateEarlyDto;
 import entity.CHECKINOUT;
 import entity.MP1001;
 import entity.MP2003;
@@ -45,4 +45,8 @@ public interface IMP2003DAO {
 	public abstract List<MP2003> getAbnormalReptData(Map<String, String> propMap);
 	
 	public abstract List<MP2003> getLateEarlyReptData(Map<String, String> propMap);
+	
+	public MP2003 findByDateAndEmp(Date date, MP1001 emp);
+	
+	public List<MP2003> pickUpAbnormalRecordsList(Date date);
 }

@@ -1,15 +1,23 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class StandardWorkTime {
+public class StandardWorkTime implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8446753098493041723L;
 	private int id;	
 //	private String employeeNum;
 	private Date dayDate;
 //	private int circleDayIdx; //for which day in circle
 	private Date stdClockInTime;
 	private Date stdClockOutTime;
-	private boolean manuallyChangeFlag; /*change flag, if true, no need to calcualte the time, because it's changed manually by people*/
+	private Boolean manuallyChangeFlag; /*change flag, if true, no need to calcualte the time, because it's changed manually by people*/
+	private String comments; //1. normal, 2.Public Holiday, 3.Speical Day, 4.Leave
+	private Integer lateMinutes;
+	private Integer earlyMinutes;
 	
 	
 	private MP1001 employee;
@@ -58,16 +66,34 @@ public class StandardWorkTime {
 	public void setCircleDay(EachCircleDay circleDay) {
 		this.circleDay = circleDay;
 	}
-	public boolean isManuallyChangeFlag() {
-		return manuallyChangeFlag;
-	}
-	public void setManuallyChangeFlag(boolean manuallyChangeFlag) {
-		this.manuallyChangeFlag = manuallyChangeFlag;
-	}
 	public MP0011 getDetailChangeLog() {
 		return detailChangeLog;
 	}
 	public void setDetailChangeLog(MP0011 detailChangeLog) {
 		this.detailChangeLog = detailChangeLog;
+	}
+	public Boolean getManuallyChangeFlag() {
+		return manuallyChangeFlag;
+	}
+	public void setManuallyChangeFlag(Boolean manuallyChangeFlag) {
+		this.manuallyChangeFlag = manuallyChangeFlag;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	public Integer getLateMinutes() {
+		return lateMinutes;
+	}
+	public void setLateMinutes(Integer lateMinutes) {
+		this.lateMinutes = lateMinutes;
+	}
+	public Integer getEarlyMinutes() {
+		return earlyMinutes;
+	}
+	public void setEarlyMinutes(Integer earlyMinutes) {
+		this.earlyMinutes = earlyMinutes;
 	}
 }

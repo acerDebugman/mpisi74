@@ -2,6 +2,7 @@ package common;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -777,6 +778,17 @@ public class Constant {
 		return rs;		
 	}
 	
+	//no need to calculate the present status
+	public static Map<String, Boolean> pickUpPresentExemptList(){
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		
+		map.put("M0001", true);
+		map.put("M0002", true);
+		map.put("M0003", true);
+
+		return map;
+	}
+	
 	public static String LOGIN_SUCCESS = "Logon Success";
 	public static String LOGIN_FAILURE = "Logon failure";
 	public static String RESET_PWD = "Reset Password";
@@ -800,6 +812,12 @@ public class Constant {
 	public static String officeEndWorkTime_0 = "13:00:00"; //lunch time between 13:00:00 -- 14:00:00
 	public static String officeStartWorkTime_1 = "14:00:00";
 	public static String officeEndWorkTime_1 = "16:30:00";
+	
+	//for clean lady time
+	public static String cleanLadyStartWorkTime_0 = "07:30:59";
+	public static String cleanLadyEndWorkTime_0 = "13:00:00"; //lunch time between 13:00:00 -- 14:00:00
+	public static String cleanLadyStartWorkTime_1 = "14:00:00";
+	public static String cleanLadyEndWorkTime_1 = "16:00:00";
 //	public static java.util.Date startEpoch = new java.util.Date(0); //java.util.Date(0) in database will be 1970-01-01 02:00:00, different from 1970-01-01 00:00:00
 	public static String startEpoch = "1970-01-01 00:00:00";
 

@@ -36,4 +36,10 @@ public interface IMP1001Service {
 	
 	// 自定义查询条件及排序方式
 	public abstract List<MP1001> findData(String search,String order, int pageNum, int pageCount);
+	
+	public List<MP1001> pickUpRequiredPresentEmployeeList();
+
+	public List<MP1001> findByEmployeeStringList(String strEmplyeeList);
+	
+	public List<MP1001> findAbsolutelyAll();
 }

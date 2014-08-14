@@ -6,6 +6,7 @@ import java.util.Map;
 
 import dao.ICHECKINOUTDAO;
 import entity.CHECKINOUT;
+import entity.MP1001;
 import entity.USERINFO;
 
 public class CHECKINOUTService implements ICHECKINOUTService{
@@ -62,6 +63,14 @@ public class CHECKINOUTService implements ICHECKINOUTService{
     	return dao.fetchAllDayRecords(date);
     }
     
+    public List<CHECKINOUT> fetchEmployeeDailyRecords(Date date, MP1001 emp){
+    	return dao.fetchEmployeeDailyRecords(date, emp);
+    }
+    
+    public CHECKINOUT fetchLatestDayRecord(Date date){
+    	return dao.fetchLatestDayRecord(date);
+    }
+    
     /**
      * @return the dao
      */
@@ -76,6 +85,8 @@ public class CHECKINOUTService implements ICHECKINOUTService{
         this.dao = dao;
     }
     
-    
+    public long fetchTotalRecordsCounter(){
+    	return dao.fetchTotalRecordsCounter();
+    }
 }
 

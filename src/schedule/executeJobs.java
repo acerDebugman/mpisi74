@@ -32,66 +32,107 @@ public class executeJobs {
 	private ExecuteJobsService serviceExecuteJob;
 	
 	// 每天凌晨一点自动计算员工上下班异常
+//	public void executeJob1() throws SQLException {
+//		String parameter ="";
+//		Connection connSql = null;
+//		//log.info("------Execute Job1 Start------");
+//		try {
+//			CommonJobMethod.loadDataToHrSystem(true, null);
+//			
+//			connSql = CommonJobMethod.getDBConnection();
+//			List<MP2003> mp2003List =CommonJobMethod.getAllData(connSql,parameter);
+//			
+//			Map<String,String> mp23Map = new HashMap<String,String>();
+//			for(MP2003 mp23 : mp2003List){
+//				mp23Map.put(mp23.getMP2003_EMPLOYEE_NUM().toUpperCase() + "#@" +mp23.getMP2003_DATETIME().substring(0,10).trim(), "");
+//			}
+//			
+//			Map<String, MP1001> empDateMap =  CommonJobMethod.getEmployeeInfoList(connSql); //get all employees of normal work day
+//			Map<String, MP1001> newEmpDateMap = new HashMap<String, MP1001>();
+//			int date1, date2;
+//			for(Map.Entry<String, MP1001> entry : empDateMap.entrySet()){ //empDataMap contains all normal records,but it's empty 
+//				date1 = Integer.parseInt(entry.getKey().split("#@")[1].replace("-", ""));
+//				date2 = Integer.parseInt(entry.getValue().getMP1001_ENTRY_DATE().substring(0,10).replace("-", ""));
+//				if(!mp23Map.containsKey(entry.getKey()) && date1 >= date2 ){ //mp23Map contains all the clock records,if it doesn't contains the normal records,the empty record will insert into MP2003 table;   
+//					newEmpDateMap.put(entry.getKey(), entry.getValue());
+//					System.out.println("Line: key:[" + entry.getKey() + "]  date1: [" + date1 + "] date2: [" + date2 + "]");
+//				}
+//			}
+//			
+//			CommonJobMethod.insertEmptyAttendanceRecord(newEmpDateMap, connSql); //insert into empty records
+//			System.out.println("insert finish");
+//			mp2003List =CommonJobMethod.getAllData(connSql,parameter); //this time will get all mp2003 records
+//			CommonJobMethod.dataConvert2003(mp2003List,connSql);
+//			//CommonJobMethod.mergeShiftWorkSchedule(mp2003List, connSql);
+//			System.out.println("dataConvert finish");
+//			CommonJobMethod.update2003(mp2003List,connSql);
+//			System.out.println("update finish");
+//			
+//			//job 11
+//			executeJob11();
+//			
+//			//add one new shift work schedule records 
+//			executeJob14();
+//			
+//			//delete some employuee's attendance information, exclude all shift worker's
+//			CommonJobMethod.deleteSpecialEmployeesAbnormal(connSql);
+//
+//			connSql.close();
+//			//send abnormal emails, as shift workers have no emails, so send to their manager. 
+//			//get all yesterday Abnormal email to manager, not only for shiftworker
+//			CommonJobMethod.sendAbnormalEmails();
+//			
+//			//job 12
+////			executeJob12();
+//			
+//			//email info all success did
+//			Mail mail = new Mail();
+//			String to = Constant.ADMIN_MAIL;
+//			mail.setSubject("Auto Calculate Attendance Records");
+//			mail.setContent("Dear Colleagues,\r\n \r\n Please note that The batch has been executed at " + UtilDate.get24DateTime());
+//			mail.setTo(to);
+//			mail.send();
+//			
+//			//log.info("------Execute Job1 Finish------");
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//			//log.info(e.getMessage());
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			//log.info(e.getMessage());
+//		}catch(ParseException pe){
+//			pe.printStackTrace();
+//			//log.info(pe.getMessage());
+//		}
+//		finally{
+//			if(connSql!=null){
+//				connSql.close();
+//			}
+//		}
+//	}
+//	
+	//only for send email now~
 	public void executeJob1() throws SQLException {
 		String parameter ="";
 		Connection connSql = null;
 		//log.info("------Execute Job1 Start------");
 		try {
-			CommonJobMethod.loadDataToHrSystem(true, null);
 			
-			connSql = CommonJobMethod.getDBConnection();
-			List<MP2003> mp2003List =CommonJobMethod.getAllData(connSql,parameter);
+			executeJob11(); //execute shift worker calcuale here (temporary)
 			
-			Map<String,String> mp23Map = new HashMap<String,String>();
-			for(MP2003 mp23 : mp2003List){
-				mp23Map.put(mp23.getMP2003_EMPLOYEE_NUM().toUpperCase() + "#@" +mp23.getMP2003_DATETIME().substring(0,10).trim(), "");
-			}
-			
-			Map<String, MP1001> empDateMap =  CommonJobMethod.getEmployeeInfoList(connSql); //get all employees of normal work day
-			Map<String, MP1001> newEmpDateMap = new HashMap<String, MP1001>();
-			int date1, date2;
-			for(Map.Entry<String, MP1001> entry : empDateMap.entrySet()){ //empDataMap contains all normal records,but it's empty 
-				date1 = Integer.parseInt(entry.getKey().split("#@")[1].replace("-", ""));
-				date2 = Integer.parseInt(entry.getValue().getMP1001_ENTRY_DATE().substring(0,10).replace("-", ""));
-				if(!mp23Map.containsKey(entry.getKey()) && date1 >= date2 ){ //mp23Map contains all the clock records,if it doesn't contains the normal records,the empty record will insert into MP2003 table;   
-					newEmpDateMap.put(entry.getKey(), entry.getValue());
-					System.out.println("Line: key:[" + entry.getKey() + "]  date1: [" + date1 + "] date2: [" + date2 + "]");
-				}
-			}
-			
-			CommonJobMethod.insertEmptyAttendanceRecord(newEmpDateMap, connSql); //insert into empty records
-			System.out.println("insert finish");
-			mp2003List =CommonJobMethod.getAllData(connSql,parameter); //this time will get all mp2003 records
-			CommonJobMethod.dataConvert2003(mp2003List,connSql);
-			//CommonJobMethod.mergeShiftWorkSchedule(mp2003List, connSql);
-			System.out.println("dataConvert finish");
-			CommonJobMethod.update2003(mp2003List,connSql);
-			System.out.println("update finish");
-			
-			//job 11
-			executeJob11();
-			
-			//add one new shift work schedule records 
-			executeJob14();
-			
-			//delete some employuee's attendance information, exclude all shift worker's
-			CommonJobMethod.deleteSpecialEmployeesAbnormal(connSql);
-
-			connSql.close();
-			//send abnormal emails, as shift workers have no emails, so send to their manager. 
-			//get all yesterday Abnormal email to manager, not only for shiftworker
-			CommonJobMethod.sendAbnormalEmails();
-			
-			//job 12
-//			executeJob12();
+//			serviceExecuteJob.
+			Date today = new Date();
+			serviceExecuteJob.sendAbnormalEmailToEmployee(today);
+			CommonJobMethod.sendAbnormalEmailsToManager();
 			
 			//email info all success did
 			Mail mail = new Mail();
 			String to = Constant.ADMIN_MAIL;
-			mail.setSubject("Auto Calculate Attendance Records");
+			mail.setSubject("Joe New Test Abnormal Attendance Records");
 			mail.setContent("Dear Colleagues,\r\n \r\n Please note that The batch has been executed at " + UtilDate.get24DateTime());
 			mail.setTo(to);
-			mail.send();
+//			mail.send();
+			mail.sendTextHtml();
 			
 			//log.info("------Execute Job1 Finish------");
 		} catch (ClassNotFoundException e) {
@@ -100,8 +141,8 @@ public class executeJobs {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			//log.info(e.getMessage());
-		}catch(ParseException pe){
-			pe.printStackTrace();
+//		}catch(ParseException pe){
+//			pe.printStackTrace();
 			//log.info(pe.getMessage());
 		}
 		finally{
@@ -627,7 +668,7 @@ public class executeJobs {
 				date2 = Integer.parseInt(entry.getValue().getMP1001_ENTRY_DATE().substring(0,10).replace("-", ""));
 				if(!mp23Map.containsKey(entry.getKey()) && date1 >= date2 ){ //mp23Map contains all the clock records,if it doesn't contains the normal records,the empty record will insert into MP2003 table;   
 					newEmpDateMap.put(entry.getKey(), entry.getValue());
-					System.out.println("Line: key:[" + entry.getKey() + "]  date1: [" + date1 + "] date2: [" + date2 + "]");
+//					System.out.println("Line: key:[" + entry.getKey() + "]  date1: [" + date1 + "] date2: [" + date2 + "]");
 				}
 			}
 			
@@ -905,13 +946,28 @@ public class executeJobs {
 	//fetch data every 5 miniuts
 	public void executeJob18(){
 		try{
-			serviceExecuteJob.fetchAttendanceRecords();
+//			serviceExecuteJob.fetchAttendanceRecords();
+//			serviceExecuteJob.test();
+			serviceExecuteJob.test_2();
+//			serviceExecuteJob.procudeTomorrowStandardWorktime()
 		}
 		catch(Exception ex){
 			System.out.println(ex.getMessage());
 		}
 	}
-
+	
+	public void executeJob19(){
+		try{
+			serviceExecuteJob.fetchAttendanceRecords();
+//			serviceExecuteJob.fetchTodayIncrementAttendanceRecords();
+			
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+	}
+	
+	
 	
 	//----------------------------------------------------------------------------
 	

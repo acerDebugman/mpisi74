@@ -63,7 +63,7 @@ public class Mail {
    
     public void sendTextHtml(){
 	    try{
-		    // Get system properties
+//		    // Get system properties
 //		    Properties props = System.getProperties();
 //		    // Setup mail server
 //		    props.put("mail.smtp.host", host);

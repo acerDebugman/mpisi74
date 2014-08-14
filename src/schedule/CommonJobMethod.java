@@ -38,8 +38,7 @@ public class CommonJobMethod {
 	// 取得人资系统数据库的链接
 	public static Connection getDBConnection() throws ClassNotFoundException, SQLException{
 //		String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr";
-		//String sqlUrl = "jdbc:jtds:sqlserver://192.168.53.71:1433/mpisiHr_test;instance=JOE";
-		String sqlUrl = "jdbc:jtds:sqlserver://MPC050141:1433/mpisiHr;instance=JOE";
+		String sqlUrl = "jdbc:jtds:sqlserver://MPC050141:1433/mpisiHrVAB;instance=JOE";
 		String classforname = "net.sourceforge.jtds.jdbc.Driver";
 		String uid = "sa";
 		String pwd = "IDpt463";
@@ -51,8 +50,8 @@ public class CommonJobMethod {
 		return connSql;
 	}
 	public static Connection getDBConnection2() throws ClassNotFoundException, SQLException{
-//		String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.172:1433/oldFinger";
-		String sqlUrl = "jdbc:jtds:sqlserver://MPC050141:1433/testFinger;instance=JOE";
+		String sqlUrl = "jdbc:jtds:sqlserver://192.168.50.172:1433/oldFinger";
+//		String sqlUrl = "jdbc:jtds:sqlserver://MPC050141:1433/testFinger;instance=JOE";
 		String classforname = "net.sourceforge.jtds.jdbc.Driver";
 		String uid = "sa";
 		String pwd = "IDpt463";
@@ -2237,7 +2236,7 @@ public class CommonJobMethod {
 	
 	//for whole company
 	//MP2003_STATUS: == 1 : Abnormal, == 2 : Leave
-	public static void sendAbnormalEmails() throws ClassNotFoundException, SQLException{
+	public static void sendAbnormalEmailsToManager() throws ClassNotFoundException, SQLException{
 		Connection conn = getDBConnection();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());

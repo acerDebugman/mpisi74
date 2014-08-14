@@ -103,25 +103,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>executeJob17</value>
 		</property>
 	</bean>
-	
-	<!-- for instant attendance record calculate -->
-	<bean id="quartzDetail12" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject">
-		  <ref bean="executeJobs"/>
-		</property>
-		<property name="targetMethod">
-		  <value>executeJob19</value>
-		</property>
-	</bean>
 <!--===== Trigger =====-->
 	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail1"/>
 		</property>
 		<property name="cronExpression">
-			<!-- <value>0 0 1 * * ?</value> -->
-			<value>0 30 23 * * ?</value>  <!-- change to 23:30 every night -->
-			 <!-- <value>0 0/5 * * * ?</value> -->
+			<value>0 0 1 * * ?</value>
+			<!--  <value>0 0/15 * * * ?</value> -->
 		</property>
 	</bean>
 	<bean id="quartzTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
@@ -206,14 +195,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 0 11 * * ?</value> <!-- every day 11:00 am -->
 		</property>
 	</bean>
-	<bean id="quartzTrigger12" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail">
-		  <ref bean="quartzDetail12"/>
-		</property>
-		<property name="cronExpression">
-		  <value>0 5/7 4-23 * * ?</value> <!-- every day 11:00 am -->
-		</property>
-	</bean>
 <!--===== Schedule =====-->
 	<bean autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
@@ -229,7 +210,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			    <ref local="quartzTrigger9"/>
 			    <ref local="quartzTrigger10"/>
 			    <ref local="quartzTrigger11"/>
-			    <ref local="quartzTrigger12"/>
 			</list>
 		</property>
 	</bean>
@@ -261,11 +241,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="dataSourceHr" parent="parentDataSource">
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property> --> 
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.53.71:1433/mpisiHr;instance=JOE"></property> -->
- 		<property name="url" value="jdbc:jtds:sqlserver://localhost:1433/mpisiHrVAB;instance=JOE"></property>
+ 		<property name="url" value="jdbc:jtds:sqlserver://localhost:1433/mpisiHR;instance=JOE"></property>
 	</bean>
 	<bean id="dataSourceFinger" parent="parentDataSource">
-		<property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/oldFinger"></property>
-		<!-- <property name="url" value="jdbc:jtds:sqlserver://MPC050141:1433/testFinger;instance=JOE"></property> -->
+		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/oldFinger"></property> -->
+		<property name="url" value="jdbc:jtds:sqlserver://localhost:1433/testFinger;instance=JOE"></property>
 	</bean>
 	
 	<bean id="dataSource" class="common.DynamicDataSource">
@@ -292,7 +272,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 				<!-- sqlserver2005 -->
 				<prop key="hibernate.dialect">common.SQLServerLocalDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
-				<!-- <prop key="hibernate.format_sql">true</prop> -->
+				<prop key="hibernate.format_sql">true</prop>
 			</props>
 		</property>
 		<property name="mappingResources">
@@ -380,15 +360,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			</list>
 		</property>
 	</bean>
-
+	
 	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 	    <property name="sessionFactory" ref="sessionFactory"></property>
-	</bean>
-	
-	<bean name="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
 	</bean>
 	
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
@@ -399,28 +373,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</tx:attributes>
 	</tx:advice>
 	
-	<tx:advice id="quartzTxAdvice" transaction-manager="transactionManager">
-		<tx:attributes>
-			<tx:method name="*" propagation="REQUIRED"/>
-		</tx:attributes>
-	</tx:advice>
-	
 	<aop:config>
 		<aop:advisor advice-ref="txAdvice" pointcut="execution(* dao.*.*(..))"/>
-		<aop:advisor advice-ref="quartzTxAdvice" pointcut="execution(public * common.AttendanceCalculator.proceed(..))"/>
 	</aop:config>
-	
-	<!-- <aop:config proxy-target-class="true">
-		<aop:aspect id="myAspect" ref="calculatorInterceptor">
-			<aop:pointcut expression="execution(public * action.ApplyLeaveAction.*(..))" id="approveLeaveApplication"/>
-			<aop:pointcut expression="action.ApplyLeaveAction.ApproveLeave()" id="approveLeaveApplication"/>
-			
-			<aop:after pointcut-ref="approveLeaveApplication" method="afterLeaveApplicationApproval"/>
-			<aop:after pointcut="execution(public * action.ApplyLeaveAction.ApproveLeave(..))" method="afterLeaveApplicationApproval"/>
-		</aop:aspect>
-	</aop:config> -->
-
-
 	
 <!-- Dao配置信息 -->
 	<bean id="HOLIDAYDAO" class="dao.HOLIDAYDAO">
@@ -1524,10 +1479,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="serviceCHECKINOUT">
 			<ref bean="CHECKINOUTService" />
 		</property>
-		<!-- add attendance calculator -->
-		<property name="attendanceCalculator">
-			<ref bean="AttendanceCalcualtor" />
-		</property>
 	</bean>
 	<!-- RoomsMngAction -->
 	<bean name="roomsMngBean" class="action.RoomsMngAction" scope="prototype">
@@ -1588,9 +1539,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<property name="serviceMP0006">
 				<ref bean="MP0006Service"/>
 			</property>
-			<property name="serviceMP2003">
-				<ref bean="MP2003Service" />
-			</property>
 	</bean>
 
 	<bean id="executeJobs" class="schedule.executeJobs">
@@ -1629,8 +1577,4 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<ref bean="MP2003Service" />
 		</property>
 	</bean>
-	
-<!-- AOP configuration -->
-	<bean id="calculatorInterceptor" class="aop.AttendanceCalculatorInterceptor" >
-	</bean>	
 </beans>

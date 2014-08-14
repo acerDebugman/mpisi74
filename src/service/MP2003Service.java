@@ -203,4 +203,12 @@ public class MP2003Service implements IMP2003Service {
 		
 		return rs;
 	}
+	
+	public MP2003 findByDateAndEmp(Date date, MP1001 emp){
+		return dao.findByDateAndEmp(date, emp);
+	}
+	
+	public List<MP2003> pickUpAbnormalRecordsList(Date date){
+		return dao.pickUpAbnormalRecordsList(date);
+	}
 }

@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +25,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.struts2.ServletActionContext;
 
+import schedule.ExecuteJobsService;
 import schedule.executeJobs;
 
 import com.itextpdf.text.Rectangle;
@@ -35,13 +35,11 @@ import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.parser.RegionTextRenderFilter;
 import com.itextpdf.text.pdf.parser.RenderFilter;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
-import com.mchange.v2.sql.filter.RecreatePackage;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import common.ExcelUtil;
 
 import dto.LateEarlyDto;
-import entity.JE0101;
 
 public class ItService extends ActionSupport {
 	private static final Log log = LogFactory.getLog(LoginAction.class);
@@ -52,6 +50,8 @@ public class ItService extends ActionSupport {
 	
 	public String filename;
 	public String downloadFile;
+	
+	public ExecuteJobsService serviceExecuteJobs;
 	
 	private List<LateEarlyDto> lateEarlyList = new ArrayList<LateEarlyDto>();
 	
@@ -507,6 +507,18 @@ public class ItService extends ActionSupport {
 		return NONE;
 	}
 	
+	
+	
+	public String fetchAttendanceRcd() throws Exception {
+		serviceExecuteJobs.fetchAttendanceRecords();
+		return SUCCESS;
+	}
+	
+	public String transportWorkTimePatter() throws Exception {
+		serviceExecuteJobs.getAttendanceCalculator().transportAllEmployeeWorkTime();
+		return SUCCESS;
+	}
+	
 	public static Log getLog() {
 		return log;
 	}
@@ -555,5 +567,13 @@ public class ItService extends ActionSupport {
 
 	public void setLateEarlyList(List<LateEarlyDto> lateEarlyList) {
 		this.lateEarlyList = lateEarlyList;
+	}
+
+	public ExecuteJobsService getServiceExecuteJobs() {
+		return serviceExecuteJobs;
+	}
+
+	public void setServiceExecuteJobs(ExecuteJobsService serviceExecuteJobs) {
+		this.serviceExecuteJobs = serviceExecuteJobs;
 	}
 }

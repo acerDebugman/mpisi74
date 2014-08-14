@@ -1,7 +1,10 @@
 package service;
 
+import java.util.Date;
 import java.util.List;
 
+import entity.MP0010;
+import entity.MP1001;
 import entity.StandardWorkTime;
 
 public interface IStandardWorkTimeService {
@@ -14,4 +17,8 @@ public interface IStandardWorkTimeService {
 	public abstract List<StandardWorkTime> findAll();
 	
 	public abstract void update(StandardWorkTime item);
+	
+	public abstract List<MP0010> fetchAllPatternSpecialDays(StandardWorkTime item);
+	
+	public StandardWorkTime fetchSpecificDayWorkTime(MP1001 emp, Date date);
 }

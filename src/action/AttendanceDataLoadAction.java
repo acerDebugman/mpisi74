@@ -1,24 +1,24 @@
 package action;
 
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.struts2.ServletActionContext;
 
+import schedule.CommonJobMethod;
 import schedule.executeJobs;
 import service.IAC0006Service;
 import service.IAC0007Service;
@@ -32,6 +32,7 @@ import service.IMP2003Service;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import common.AttendanceCalculator;
 import common.Constant;
 import common.CustomerContextHolder;
 import common.ExcelUtil;
@@ -40,7 +41,7 @@ import common.LogUtil;
 import entity.CHECKINOUT;
 import entity.MP1001;
 import entity.MP1010;
-import entity.MP2008;
+import entity.MP2003;
 
 public class AttendanceDataLoadAction extends ActionSupport{
 	private static final long serialVersionUID = 5884129028125351753L;
@@ -56,6 +57,8 @@ public class AttendanceDataLoadAction extends ActionSupport{
 	private IAC0007Service serviceAC0007;
 	private IAC0008Service serviceAC0008;
 	private IAC0009Service serviceAC0009;
+	
+	private AttendanceCalculator attendanceCalculator;
 	
 	private List<CHECKINOUT> checkinoutInfoList = new ArrayList<CHECKINOUT>();
 	
@@ -97,6 +100,12 @@ public class AttendanceDataLoadAction extends ActionSupport{
 	private String optPdf = "0";
 	private String optExecute = "0";
 	private String optReview = "0";
+	
+	
+	//--------for calculation
+	private String fromDate;
+	private String endDate;
+	private String empCode;
 	
     /* 
 	* @getDownloadFile 此方法对应的是struts.xml文件中的： <param 
@@ -269,6 +278,8 @@ public class AttendanceDataLoadAction extends ActionSupport{
 	    	executeJobs jobs = new executeJobs();
 //	    	jobs.executeJob1();
 	    	jobs.executeJob13();
+	        
+	        
 	    	
 	    	return SUCCESS;
 	    }catch(Exception ex){
@@ -280,6 +291,88 @@ public class AttendanceDataLoadAction extends ActionSupport{
 	        }
 	        return "error";
 	    }
+	}
+	
+	//mannually calculation part
+	public String manuallyCalculateAttendance(){
+		ActionContext context = ActionContext.getContext();
+	    Map<String,Object> session = context.getSession();
+	    MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
+	    String empNum = employeeData.getMP1001_EMPLOYEE_NUM();
+		try{
+			//----------------------------Operation History------------------
+	        LogUtil logUtil = new LogUtil();
+	        logUtil.setServiceMP0011(serviceMP0011);
+	        logUtil.writeOperationLog(empNum,employeeData.getMP1001_PREFERED_NAME(),"Calculate Attendance Data");
+	        //----------------------------Operation History------------------
+	        
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        Calendar calFrom = Calendar.getInstance();
+	        calFrom.setTime(sdf.parse(fromDate));
+	        Calendar calEnd = Calendar.getInstance();
+	        calEnd.setTime(sdf.parse(endDate));
+	        Date today = new Date();
+	        if(attendanceCalculator.datetimeCompare(calEnd.getTime(), today, "dd") >= 0){ //if end day equal or after today, then set it to yesterday
+	        	calEnd.setTime(today);
+	        	calEnd.add(Calendar.DAY_OF_MONTH, -1);
+	        }
+	        
+	        
+	        //calcualtion part -------------------
+	        List<MP1001> lst = new ArrayList<MP1001>();
+	        
+	        if(null != empCode && !empCode.equals("")){
+	        	MP1001 mp11 = serviceMP1001.findById(empCode);
+	        	lst.add(mp11);
+	        }
+	        else{
+//	        	lst = serviceMP1001.pickUpRequiredPresentEmployeeList();
+	        	List<MP1001> oldEmpList = serviceMP1001.pickUpRequiredPresentEmployeeList();
+				/*this part for seprate shift work employees temporary******/
+				Set<String> shiftWorkerSet = CommonJobMethod.getAllShiftWorkEmployeeNums(today);
+//				List<MP1001> empList = new ArrayList<MP1001>();
+				Iterator it = shiftWorkerSet.iterator();
+				Map<String, Boolean> shiftWorkerMap = new HashMap<String, Boolean>();
+				while(it.hasNext()){
+					String code = (String)it.next();
+					shiftWorkerMap.put(code, true);
+				}
+				for(MP1001 tmp : oldEmpList){ //transport to other list
+					if(!shiftWorkerMap.containsKey(tmp.getMP1001_EMPLOYEE_NUM())){
+//						empList.add(tmp);
+						lst.add(tmp);
+					}
+				}
+				/*<<<<<<<<<<<<<<<<<<<<*/
+	        }
+	        
+	        //delete records of exempt employees
+        	Map<String, Boolean> exemptMap = Constant.pickUpPresentExemptList();
+	        
+        	while(attendanceCalculator.datetimeCompare(calFrom.getTime(), calEnd.getTime(), "dd") <= 0){//can calculate today
+        		for(MP1001 emp: lst){ //employee list should be inside, it's not easy to reverse the date again
+	        		attendanceCalculator.proceed(calFrom.getTime(), emp);
+	        		attendanceCalculator.calculatePresenceStatus(calFrom.getTime(), emp);
+	        	}
+        		
+        		//delete
+        		for(Map.Entry<String, Boolean> entry : exemptMap.entrySet()){
+	        		String s = entry.getKey();
+	        		MP1001 emp = serviceMP1001.findById(s);
+	        		MP2003 mp23 = serviceMP2003.findByDateAndEmp(calFrom.getTime(), emp);
+	        		if(null != mp23){
+	        			serviceMP2003.delete(mp23);
+	        		}
+        		}
+        		
+        		calFrom.add(Calendar.DAY_OF_MONTH, 1); //add one day
+	        }
+
+			return SUCCESS;
+		} catch(Exception ex){
+			ex.printStackTrace();
+			return ERROR;
+		}
 	}
 	// 重新取得分页数据
 	private void getCHECKINOUTInfoByPage(Map<String,String> propMap, int _pageNum, String empId){
@@ -891,5 +984,29 @@ public class AttendanceDataLoadAction extends ActionSupport{
 	public void setServiceMP1010(IMP1010Service serviceMP1010) {
 		this.serviceMP1010 = serviceMP1010;
 	}
-
+	public String getFromDate() {
+		return fromDate;
+	}
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getEmpCode() {
+		return empCode;
+	}
+	public void setEmpCode(String empCode) {
+		this.empCode = empCode;
+	}
+	public AttendanceCalculator getAttendanceCalculator() {
+		return attendanceCalculator;
+	}
+	public void setAttendanceCalculator(AttendanceCalculator attendanceCalculator) {
+		this.attendanceCalculator = attendanceCalculator;
+	}
+	
 }

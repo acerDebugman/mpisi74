@@ -1,9 +1,14 @@
 package entity;
 
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class DetailDayWorkTime {
+public class DetailDayWorkTime implements Serializable {
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4424839531001520836L;
 		private int id;
         private String name;
         private Date fromTime;

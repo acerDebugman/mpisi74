@@ -1,7 +1,9 @@
 package dao;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +15,6 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import common.Constant;
 import common.UtilDate;
-import dto.AbnormalReptRecdDto;
-import dto.LateEarlyDto;
 
 import entity.CHECKINOUT;
 import entity.MP1001;
@@ -1113,5 +1113,23 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		}
 		
 		return rs;
+	}
+	
+	public MP2003 findByDateAndEmp(Date date, MP1001 emp){
+		MP2003 mp23 = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		return (MP2003)session.createQuery("from MP2003 m where convert(varchar(10), m.MP2003_DATETIME, 120)=:theDay and m.MP2003_EMPLOYEE_NUM=:empCode")
+								.setParameter("theDay", sdf.format(date))
+								.setParameter("empCode", emp.getMP1001_EMPLOYEE_NUM())
+								.uniqueResult();
+	}
+	
+	public List<MP2003> pickUpAbnormalRecordsList(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		return session.createQuery("from MP2003 m where m.MP2003_DATETIME=:theDate and MP2003_COMMENT like '%Abnormal%'")
+				.setString("theDate", sdf.format(date))
+				.list();
 	}
 }

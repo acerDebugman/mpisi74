@@ -1,6 +1,7 @@
 package service;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,4 +47,9 @@ public interface IMP2003Service {
 	public abstract List<AbnormalReptRecdDto> getAbnormalReptData(Map<String, String> propMap);
 	
 	public abstract List<LateEarlyDto> getLateEarlyReptData(Map<String, String> propMap) throws ParseException;
+	
+	public MP2003 findByDateAndEmp(Date date, MP1001 emp);
+	
+	public List<MP2003> pickUpAbnormalRecordsList(Date date);
+
 }

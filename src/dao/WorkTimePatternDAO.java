@@ -31,6 +31,12 @@ public class WorkTimePatternDAO implements IWorkTimePatternDAO {
 //				.setParameter("wId", id)
 //				.uniqueResult();
 	}
+	
+	public WorkTimePattern findByName(String wtpName){
+		return (WorkTimePattern)sessionFactory.getCurrentSession().createQuery("from WorkTimePattern w where w.name like '%:wtpName%'")
+				.setString("wtpName", wtpName)
+				.uniqueResult();
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")

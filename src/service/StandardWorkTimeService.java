@@ -1,8 +1,11 @@
 package service;
 
+import java.util.Date;
 import java.util.List;
 
 import dao.IStandardWorkTimeDAO;
+import entity.MP0010;
+import entity.MP1001;
 import entity.StandardWorkTime;
 
 public class StandardWorkTimeService implements IStandardWorkTimeService {
@@ -46,4 +49,11 @@ public class StandardWorkTimeService implements IStandardWorkTimeService {
 		this.dao = dao;
 	}
 
+	public List<MP0010> fetchAllPatternSpecialDays(StandardWorkTime item){
+		return this.dao.fetchAllPatternSpecialDays(item);
+	}
+	
+	public StandardWorkTime fetchSpecificDayWorkTime(MP1001 emp, Date date){
+		return dao.fetchSpecificDayWorkTime(emp, date);
+	}
 }

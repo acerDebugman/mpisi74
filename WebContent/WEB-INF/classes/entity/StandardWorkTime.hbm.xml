@@ -24,10 +24,19 @@
         <property name="manuallyChangeFlag" type="java.lang.Boolean">
         	<column name="manuallyChangeFlag" not-null="false" />
         </property>
+        <property name="comments" type="java.lang.String">
+        	<column name="comments" not-null="false" />
+        </property>
+        <property name="lateMinutes" type="java.lang.Integer">
+        	<column name="lateMinutes" not-null="false" />
+        </property>
+        <property name="earlyMinutes" type="java.lang.Integer">
+        	<column name="earlyMinutes" not-null="false" />
+        </property>
         
         <many-to-one name="employee" class="entity.MP1001" column="employeeCode">
         </many-to-one>
-        <many-to-one name="circleDay" class="entity.EachCircleDay" column="circleDayIdx"></many-to-one>
-        <many-to-one name="detailChangeLog" class="entity.MP0011" column="manuallyChangeLogId" unique="true"></many-to-one>
+        <many-to-one name="circleDay" class="entity.EachCircleDay" column="circleDayId"></many-to-one>
+        <many-to-one name="detailChangeLog" class="entity.MP0011" not-null="false" column="manuallyChangeLogId" unique="true"></many-to-one>
     </class>
 </hibernate-mapping>

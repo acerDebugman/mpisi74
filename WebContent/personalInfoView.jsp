@@ -188,8 +188,21 @@ display:none;
                      <td class="table_none table_none_NoWidth">
                          <s:property value="mp1001.MP1001_PHYSICAL_ADDRESS"/>
                      </td>
-                     <td></td>
-                     <td></td>
+                     <td class="table_body table_body_NoWidth">Employee Status</td>
+                     <td class="table_none table_none_NoWidth">
+                     	<s:if test="mp1001.MP1001_STATUS == 1" >
+                     		Temporary
+                     	</s:if>
+                     	<s:elseif test="mp1001.MP1001_STATUS == 2">
+                     		Employed
+                     	</s:elseif>
+                     	<s:elseif test="mp1001.MP1001_STATUS == 3">
+                     		Unemployed
+                     	</s:elseif>
+                     	<s:else>
+                         	<s:property value="mp1001.MP1001_"/>
+                         </s:else>
+                     </td>
                  </tr>
              </table>
              

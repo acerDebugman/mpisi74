@@ -43,6 +43,11 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<MP1001> findAbsolutelyAll() {
+		return getHibernateTemplate().find("from MP1001 ");
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<MP1001> findbyDepartmentId(String departmentID) {
 		return getHibernateTemplate().find("from MP1001 where (MP1001_STATUS = '1' or MP1001_STATUS = '2') and MP1001_DEPARTMENT_ID = '" + departmentID + "' " );
 	}
@@ -478,5 +483,11 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 		log.info("Count:" + retList.size());
 		return retList;
 	}
-	
+
+	public List<MP1001> findByEmployeeStringList(String strEmplyeeList){
+		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		List<MP1001> lst = session.createQuery("from MP1001 m where m.MP1001_EMPLOYEE_NUM in (" + strEmplyeeList + ")").list();
+		
+		return lst;
+	}
 }

@@ -1,7 +1,12 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import schedule.CommonJobMethod;
+
+import common.Constant;
 
 import dao.IMP1001DAO;
 import entity.MP1001;
@@ -17,6 +22,10 @@ public class MP1001Service implements IMP1001Service {
 
 	public List<MP1001> findAll() {
 		return dao.findAll();
+	}
+	
+	public List<MP1001> findAbsolutelyAll(){
+		return dao.findAbsolutelyAll();
 	}
 	
 	public List<MP1001> findbyDepartmentId(String departmentID){
@@ -74,5 +83,31 @@ public class MP1001Service implements IMP1001Service {
 	
 	public void saveTransaction(MP1001 mp1001,MP1005 mp1005,String educationList,String workList){
 		dao.saveTransaction(mp1001, mp1005, educationList, workList);
+	}
+	
+	//all present employees
+	public List<MP1001> pickUpRequiredPresentEmployeeList(){
+		List<MP1001> lst = dao.findAll();
+		Map<String, Boolean> exemptMap = Constant.pickUpPresentExemptList();
+		
+//		for(int i = 0, size = lst.size(); i < size; i++){
+//			if(exemptMap.containsKey(lst.get(i).getMP1001_EMPLOYEE_NUM())){
+//				lst.remove(i);
+//				i--;
+//				size--; //important,otherwise out of bound error
+//			}
+//		}
+		List<MP1001> newList = new ArrayList<MP1001>();
+		for(MP1001 emp : lst){
+			if(!exemptMap.containsKey(emp.getMP1001_EMPLOYEE_NUM())){
+				newList.add(emp);
+			}
+		}
+		
+		return newList;
+	}
+	
+	public List<MP1001> findByEmployeeStringList(String strEmplyeeList){
+		return dao.findByEmployeeStringList(strEmplyeeList);
 	}
 }

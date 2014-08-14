@@ -24,5 +24,8 @@
         <property name="MP0010_OTHER2" type="java.lang.String">
             <column name="MP0010_OTHER2" length="10" not-null="false" />
         </property>
+        
+        <many-to-one name="workTimePattern" class="entity.WorkTimePattern" column="workTimePatternId" >
+        </many-to-one>
     </class>
 </hibernate-mapping>

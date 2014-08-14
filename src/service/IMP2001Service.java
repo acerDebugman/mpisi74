@@ -1,5 +1,6 @@
 package service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,4 +31,6 @@ public interface IMP2001Service {
 	public abstract int getLeaveApplyReportRowCount(String employeeNum, String departmentId, String fromDate, String toDate);
 	
 	public abstract List<MP2001> getLeaveApplyReport(String employeeNum, String departmentId, String fromDate, String toDate, int PAGE_NUM, int PAGE_COUNT);
+	
+	public abstract List<MP2001> locateAppliationByOneDate(Date date, MP1001 emp);
 }

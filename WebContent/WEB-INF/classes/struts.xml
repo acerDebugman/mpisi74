@@ -639,6 +639,7 @@
 		<action name="departmentInfoSave" class="departmentMngBean" method="departmentInfoSave">
 			<result name="edit">departmentAdd.jsp</result>
 			<result name="add">departmentAdd.jsp</result>
+			<result name="success">departmentAdd.jsp</result>
 			<interceptor-ref name="sessioncheck"/>
 		</action>
 		<action name="departmentPositionSetInit" class="departmentMngBean" method="departmentPositionSetInit">
@@ -1490,6 +1491,11 @@
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
 		
+		<!--  mannual calcualte date part, in AttendanceDataLoadBean -->
+		<action name="manuallyCalculateAttendance" class="AttendanceDataLoadBean" method="manuallyCalculateAttendance">
+			<result name="success">CHECKINOUTInfoMng.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
 				
 <!-- IT Request -->
 		<action name="itServiceMngInit" class="itServiceBean" method="itServiceMngInit">
@@ -1509,6 +1515,15 @@
 		</action>
 		
 		<action name="lateEarlyJobTest" class="itServiceBean" method="lateEarlyJobTest">
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="fetchAttendanceRcd" class="itServiceBean" method="fetchAttendanceRcd">
+			<result name="success">pages/itService/main.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="transportWorkTimePatter" class="itServiceBean" method="transportWorkTimePatter">
+			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
 		<!-- <action name="lateAndEarlyExcel" class="itServiceBean" method="lateAndEarlyExcel">

@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import entity.CHECKINOUT;
+import entity.MP1001;
 import entity.USERINFO;
 
 public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO{
@@ -220,6 +221,40 @@ public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO
         session.close();
         
         return list;
+    }
+    
+    public List<CHECKINOUT> fetchEmployeeDailyRecords(Date date, MP1001 emp){
+    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	List<CHECKINOUT> list = session.createQuery("select c from CHECKINOUT c, USERINFO u where " +
+    			" u.SSN=:empCode and c.USERID=u.USERID and convert(varchar(10), c.CHECKTIME, 120)=:theDate " +
+    			" order by c.CHECKTIME ASC")
+    			.setString("empCode", emp.getMP1001_EMPLOYEE_NUM())
+    			.setString("theDate", sdf.format(date))
+    			.list();
+    	
+    	return list;
+    }
+    
+    public CHECKINOUT fetchLatestDayRecord(Date date){
+    	CHECKINOUT rcd = null;
+    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//    	List<CHECKINOUT> list = session.createQuery("select c from CHECKINOUT c where convert(varchar(10), c.CHECKTIME, 120)=:theDate " +
+    	rcd = (CHECKINOUT)session.createQuery("select c from CHECKINOUT c where convert(varchar(10), c.CHECKTIME, 120)=:theDate " +
+    			" order by c.CHECKTIME DESC")
+    			.setString("theDate", sdf.format(date))
+    			.setMaxResults(1)
+    			.uniqueResult();
+    	
+    	return rcd;
+    }
+
+    public long fetchTotalRecordsCounter(){
+    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+    	long counter = (Long)session.createQuery("select count(*) from CHECKINOUT").uniqueResult();
+    	
+    	return counter;
     }
 }
 

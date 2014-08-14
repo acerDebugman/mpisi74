@@ -44,7 +44,7 @@
         	<key column="workTimePatternId" />
         	<one-to-many class="entity.EachCircleDay" />
         </set>
-        <set name="allSpecialDays" inverse="true" lazy="false" fetch="select" order-by=" ASC">
+        <set name="allSpecialDays" inverse="true" lazy="true" fetch="select" order-by="id ASC">
         	<key column="workTimePatternId" />
         	<one-to-many class="entity.MP0010" />
         </set>

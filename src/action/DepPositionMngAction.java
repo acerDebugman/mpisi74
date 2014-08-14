@@ -444,6 +444,12 @@ public class DepPositionMngAction extends ActionSupport{
 		}
 	}
 	
+	public void validateDepartmentInfoSave(){
+		if(mp0002.getMP0002_DEPARTMENT_NUM().equals("")){
+			addFieldError("MP0002_DEPARTMENT_NUM", "erroro~");
+		}
+	}
+	
 	// 部门职位设置页面初始化
 	public String departmentPositionSetInit(){
 		ActionContext context = ActionContext.getContext();

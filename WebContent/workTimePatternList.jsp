@@ -47,7 +47,7 @@ function addDefaultPattern(){
 <body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
 <form id="form2" name="form2" method="post">
 <%-- <input id="parameterType" name="parameterType" value="${parameterType}" type="hidden" /> --%>
-<input id="defaultPattern" name="defaultPattern" type="button" value="Add Default Pattern" onclick="addDefaultPattern()"></input>
+<!-- <input id="defaultPattern" name="defaultPattern" type="button" value="Add Default Pattern" onclick="addDefaultPattern()"></input> -->
 <table class="table-box" cellspacing="1" border="0" style="background-color:White;border-width:0px;">
     <tr class="table_title" align="center">
         <th scope="col">WorkTime Pattern</th>

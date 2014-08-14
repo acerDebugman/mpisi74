@@ -1,16 +1,21 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WorkTimePattern {
+public class WorkTimePattern implements Serializable {
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 658223812329767791L;
 		private int id;
         private int circleDays;
         private String description;
         private String name;
-        private boolean calPubHolidayFlag; //true calculate public holiday
-        private boolean calSpecialDayFlag; //true calculate special day
-        private boolean applyLeaveIgnorePublicHolidayFlag; //apply leave ignore public holiday
+        private Boolean calPubHolidayFlag; //true calculate public holiday
+        private Boolean calSpecialDayFlag; //true calculate special day
+        private Boolean applyLeaveIgnorePublicHolidayFlag; //apply leave ignore public holiday
         private Double initialAnnualLeaveDays; //calcualte annual day from employee start day
         private Double addAnnualHoursPM;
         private Double initialSickLeaveDays;

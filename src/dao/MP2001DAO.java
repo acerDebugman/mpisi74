@@ -1,8 +1,10 @@
 package dao;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -471,5 +473,37 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 			retList.add(mp21);				
 		}
 		return retList;
+	}
+	
+	
+	/*
+	 * 1. one day can only belong to one leave application
+	 * 2. if date = "2014-08-01"
+	 * 3. this method can fetch one cross day applicaiton such as : "2014-07-31 08:00:00" -- "2014-08-01"
+	 *    or can fetch one day application but one day application can repeat. 
+	 *    such as : "2014-08-01 09:00:00" -- "2014-08-01 10:00:00" and "2014-08-01 14:00:00" -- "2014-08-01 15:00:00"
+	 *    so the return type is a list   
+	 */
+	public List<MP2001> locateAppliationByOneDate(Date date, MP1001 emp){
+		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		List<MP2001> list = session.createQuery("from MP2001 m where " +
+				" MP2001_APPROVAL='3' " + //approval  
+				" and MP2001_STATUS='0' " + //not delete
+				" and convert(varchar(10), m.MP2001_FROM_DATETIME, 120)<=:theDate" +
+				" and convert(varchar(10), m.MP2001_TO_DATETIME, 120)>=:theDate" +
+				" and m.MP2001_EMPLOYEE_NUM='" + emp.getMP1001_EMPLOYEE_NUM() + "' " +
+				" order by m.MP2001_FROM_DATETIME ")
+				.setParameter("theDate", sdf.format(date))
+				.list();
+
+		for(MP2001 m : list){
+			session.evict(m); //detach all object, actually , next we should use DTO to get all the data, not use the Entity, because entity will persistence in cache
+		}
+		
+		return list;
+//		return session.createQuery("from MP2001 m where m. <= :theDate and m.MP2001_TO_DATETIME >= :theDate")
+//				.setDate("theDate", date)
+//				.list();
 	}
 }

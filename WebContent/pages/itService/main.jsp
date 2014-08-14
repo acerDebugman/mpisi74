@@ -33,5 +33,13 @@
 <s:form action="lateEarlyJobTest" method="post" theme="simple">
 	<s:submit value="Late early job execute" />
 </s:form>
+
+<s:form action="fetchAttendanceRcd" method="post" theme="simple">
+	<s:submit value="10mins fetch date test" />
+</s:form>
+
+<s:form action="transportWorkTimePatter" method="post" theme="simple">
+	<s:submit value="transport work time pattern" />
+</s:form>
 </body>
 </html>

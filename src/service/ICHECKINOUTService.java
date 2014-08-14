@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import entity.CHECKINOUT;
+import entity.MP1001;
 import entity.USERINFO;
 
 public interface ICHECKINOUTService {
@@ -33,4 +34,10 @@ public interface ICHECKINOUTService {
     public abstract void save(USERINFO userinfo);
     
     public abstract List<CHECKINOUT> fetchAllDayRecords(Date date);
+    
+    public List<CHECKINOUT> fetchEmployeeDailyRecords(Date date, MP1001 emp);
+    
+    public CHECKINOUT fetchLatestDayRecord(Date date);
+    
+    public long fetchTotalRecordsCounter();
 }

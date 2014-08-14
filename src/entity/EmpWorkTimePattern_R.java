@@ -1,8 +1,13 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class EmpWorkTimePattern_R {
+public class EmpWorkTimePattern_R implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4931924087699620945L;
 	private int id;
 //	private String employeeCode;
 //	private int workTimePatterId;

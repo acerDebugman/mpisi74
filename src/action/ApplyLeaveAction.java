@@ -6969,11 +6969,12 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		try{
 //			executeJobs jb = new executeJobs();
 			//calculate shift work
-//			jb.executeJob11();
+			jb.executeJob11();
 			
 			
 			//test part
-			jb.executeJob18();
+//			jb.executeJob19();
+//			jb.executeJob1();
 			return NONE;
 		}
 		catch(Exception e){

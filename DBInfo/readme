@@ -1,0 +1,66 @@
+0. create database: collation : Chinese_Taiwan_stroke_CI_AS
+1. create tables first
+2. import data into system, when import data, don't choose enable identity insert if you have changed table identity as indetity increase
+3. add some additional system configuration
+4. add tables constraint
+/*
+* if a new table have identity id property, but old table have, so don't use enable identity insert, because default Import Wizard will import
+* null into id primary key. this isn't allowed by DB. so this part you need to seperate with other tables.
+* 
+*/
+
+/*
+* 	database name :  HRSystem + V + Version Code ---- V means Version
+												 ---- Version Code use :  place code + version code
+												 ---- AB represents A Header Office, version B
+												 ---- BA represents B Great Wall, version A
+												 ---- CA represents C Kimbravt, version A
+					 
+*	For HeadOffice : HRsystemVAA
+*	For GreateWall : HRSystemVBA
+*	For Kimbravt   : HRSystemVCA 
+*/
+/*
+Publish change
+1. login part, allow no password log on
+2. send email part
+3. change CommonJobMethod connection address 
+4. change applicationContext.xml database address
+*/
+/*
+about HR system upload file folder
+*/
+
+/*------20140808
+  ------update log
+*/
+work time pattern :
+0. added tables:
+	DetailDayWorkTime;
+	EachCircleDay;
+	WorkTimePattern;
+	EmpWorkTimePattern_R;
+	StandardWorkTime;
+	
+1. have changed table :
+   MP0010 :  add primary key id with identity autoincrease. 
+   			 special work time for patterns, add workTimePatternId for MP0010.
+   			 NB: don't import this table when  
+   
+
+2. add system configuration:
+insert into MP0006(MP0006_CODE, MP0006_VALUE) values('LATEST_CHECKTIME', '2014-08-12 00:00:01'); /*this part for checktime compare*/   
+
+Transport database :
+1. create tables 
+2. import data except table MP0010
+3. import MP0010 without identity insert
+4. insert into LATEST_CHECKTIME record into MP0006 
+5. constraints for tables
+5. add default worktime patten records
+6. transport employee default work time pattern
+7. deploy web app
+	7.1 disable insert default pattern
+	7.2 disable test page
+	7.3 disable implement shift worker calculation button
+
