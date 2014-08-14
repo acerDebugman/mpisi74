@@ -220,6 +220,7 @@
 	
 <!-- 	<bean id="parentDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
 	<bean id="parentDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <!-- <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"></property> -->
         <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"></property>
 		<property name="username" value="sa"></property>
 		<property name="password" value="IDpt463"></property>
@@ -352,9 +353,15 @@
       <tx:method name="*"/>
     </tx:attributes>
   </tx:advice>
-  <aop:config>
+  
+  <aop:config proxy-target-class="true">
     <aop:pointcut id="allDaoFunctions" expression="execution(public * daoImpl.*.*(..))"/>
     <aop:advisor advice-ref="txAdvice" pointcut-ref="allDaoFunctions"/>
+    <aop:aspect ref="loggerInterceptor">
+    	<aop:pointcut id="leaveApplicationInit" expression="execution(public * action.ApplyLeaveAction.workingHourRecordsListInit(..))"/>
+    	<aop:before method="beforeLog" pointcut-ref="leaveApplicationInit"/>
+    	<aop:after method="afterLog" pointcut-ref="leaveApplicationInit"/>
+    </aop:aspect>
   </aop:config>
 	
 <!-- Dao配置信息 -->
@@ -1416,5 +1423,6 @@
 		</property>
 	</bean>
 <!-- Bean配置信息 -->
-
+	<bean name="loggerInterceptor" class="interceptor.LoggerInterceptor">
+	</bean>
 </beans>
