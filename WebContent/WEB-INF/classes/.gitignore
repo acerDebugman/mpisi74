@@ -1,13 +1,4 @@
-/action
-/beans.xml
-/common
-/dao
-/daoImpl
-/dto
 /entity
-/interceptor
 /log4j.properties
-/schedule
-/service
 /struts.xml
 /template

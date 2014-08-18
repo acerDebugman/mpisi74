@@ -46,6 +46,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import common.ExcelUtil;
 
 import dto.LateEarlyDto;
+import dto.MP1001Dto;
 import entity.MP1001;
 
 public class ItService extends ActionSupport {
@@ -520,6 +521,7 @@ public class ItService extends ActionSupport {
 		try{
 			HttpServletResponse response = ServletActionContext.getResponse();
 			response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 		
 			String str = null;
@@ -527,8 +529,10 @@ public class ItService extends ActionSupport {
 //			List<MP1001> lst = 
 			MP1001 employee = serviceMP1001.findById(empCode);
 			
+			MP1001Dto dto = convertMP1001ToDto(employee); 
+			
 			ObjectMapper mapper = new ObjectMapper();
-			str = mapper.writeValueAsString(employee);
+			str = mapper.writeValueAsString(dto);
 			
 			System.out.println(str);
 			
@@ -539,6 +543,20 @@ public class ItService extends ActionSupport {
 			System.out.println(ex.getMessage());
 		}
 		return NONE;
+	}
+	
+	public MP1001Dto convertMP1001ToDto(MP1001 emp){
+		MP1001Dto dto = new MP1001Dto();
+		
+		dto.setMP1001_DEPARTMENT_ID(emp.getMP1001_DEPARTMENT_ID());
+		dto.setMP1001_DEPARTMENT_NAME(emp.getMP1001_DEPARTMENT_NAME());
+		dto.setMP1001_EMPLOYEE_NUM(emp.getMP1001_EMPLOYEE_NUM());
+		dto.setMP1001_EMPLOYEE_ID(emp.getMP1001_EMPLOYEE_ID());
+		dto.setMP1001_FIRSTNAME(emp.getMP1001_FIRSTNAME());
+		dto.setMP1001_PREFERED_NAME(emp.getMP1001_PREFERED_NAME());
+		dto.setMP1001_SURNAME(emp.getMP1001_SURNAME());
+		
+		return dto;
 	}
 	
 	public String lookupAllEmployees(){
