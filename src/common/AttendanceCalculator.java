@@ -434,7 +434,9 @@ public class AttendanceCalculator {
 		mp23.setMP2003_EMPLOYEE_NUM(emp.getMP1001_EMPLOYEE_NUM());
 		
 		int size = recordsList.size();
-		if(stdItem.getStdClockInTime().equals(epochTime) || stdItem.getStdClockOutTime().equals(epochTime)){ //no work today,holiday, special day, or leave
+//		if(stdItem.getStdClockInTime().equals(epochTime) || stdItem.getStdClockOutTime().equals(epochTime)){ //no work today,holiday, special day, or leave
+		if(datetimeCompare(stdItem.getStdClockInTime(), epochTime, "ss") == 0 || 
+				datetimeCompare(stdItem.getStdClockOutTime(), epochTime, "ss") == 0){ //no work today,holiday, special day, or leave. this approach is better
 			if(0 == size){//and no records
 				sb.append(" ");
 			}

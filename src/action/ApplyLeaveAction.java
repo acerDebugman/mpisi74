@@ -3322,6 +3322,16 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 					checkinout.setUSEREXTFMT(1);
 					checkinout.setMEMOINFO("");
 					
+					CHECKINOUT checkinout_1 = new CHECKINOUT();
+					checkinout_1.setUSERID(usrId);
+					checkinout_1.setCHECKTYPE("I");
+					checkinout_1.setVERIFYCODE(1);
+					checkinout_1.setSENSORID("999");
+					checkinout_1.setWORKCODE(0);
+					checkinout_1.setSN("2364259440003");
+					checkinout_1.setUSEREXTFMT(1);
+					checkinout_1.setMEMOINFO("");
+					
 					String startTime = mp2003.getMP2003_DATETIME() + " 08:00";
 					String finishTime = mp2003.getMP2003_DATETIME() + " 16:30";
 					String shiftDStartTime = mp2003.getMP2003_DATETIME() + " 06:00";
@@ -3360,8 +3370,11 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 						checkinout.setCHECKTIME(startTime);
 						serviceCHECKINOUT.save(checkinout);
 						
-						checkinout.setCHECKTIME(finishTime);
-						serviceCHECKINOUT.save(checkinout);
+//						checkinout.setCHECKTIME(finishTime);
+//						serviceCHECKINOUT.save(checkinout);  //some times it doesn't work, because the flushMode problem(...I think so...)
+						
+						checkinout_1.setCHECKTIME(finishTime);
+						serviceCHECKINOUT.save(checkinout_1);
 					}
 				}
 				CustomerContextHolder.remove();
