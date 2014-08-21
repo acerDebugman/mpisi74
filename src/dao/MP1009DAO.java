@@ -5,38 +5,44 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
+
 import entity.MP1009;
 
-public class MP1009DAO extends HibernateDaoSupport implements IMP1009DAO{
+public class MP1009DAO  implements IMP1009DAO{
+	private SessionFactory sessionFactory;
+	
 	public void save(MP1009 mp1009) {
 		if (mp1009 != null) {
-			getHibernateTemplate().save(mp1009);
+			sessionFactory.getCurrentSession().save(mp1009);
 		}
 	}
 
 	public void delete(MP1009 mp1009) {
-		getHibernateTemplate().delete(mp1009);
+		sessionFactory.getCurrentSession().delete(mp1009);
 	}
 
 	public MP1009 findById(int _key) {
-		return (MP1009) getHibernateTemplate().get("entity.MP1009", _key);
+		return (MP1009) sessionFactory.getCurrentSession().get("entity.MP1009", _key);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP1009> findAll() {
-		return getHibernateTemplate().find("from MP1009 where 1=1 ");
+//		return getHibernateTemplate().find("from MP1009 where 1=1 ");
+		return sessionFactory.getCurrentSession().createQuery("from MP1009 where 1=1 ").list();
 	}
 
 	public void update(MP1009 mp1009) {
-		getHibernateTemplate().update(mp1009);
+		sessionFactory.getCurrentSession().update(mp1009);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<MP1009> findByProperty(String name, String value){
 		try{
-			String queryString = " from MP1009 as mp19 where mp19." + name + " = ?";
-			return getHibernateTemplate().find(queryString, value);
+//			String queryString = " from MP1009 as mp19 where mp19." + name + " = ?";
+//			return getHibernateTemplate().find(queryString, value);
+			String queryString = " from MP1009 as mp19 where mp19." + name + " = '" + value + "'";
+			return sessionFactory.getCurrentSession().createQuery(queryString).list();
 		}catch(RuntimeException ex){
 			throw ex;
 		}
@@ -44,8 +50,9 @@ public class MP1009DAO extends HibernateDaoSupport implements IMP1009DAO{
 	
 	public List<MP1009> findByProperty(String employeeNum,String employeeName,String documentName, int PAGE_NUM, int PAGE_COUNT){
 		StringBuffer queryString = new StringBuffer();
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
+				
 		queryString.append(" select ");
 		queryString.append(" mp19.MP1009_SEQ, ");
 		queryString.append(" mp19.MP1009_EMPLOYEE_NUM, ");
@@ -76,7 +83,7 @@ public class MP1009DAO extends HibernateDaoSupport implements IMP1009DAO{
 		
 		@SuppressWarnings("unchecked")
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP1009 mp19 = new MP1009();
 		List<MP1009> retList = new ArrayList<MP1009>();
@@ -126,6 +133,14 @@ public class MP1009DAO extends HibernateDaoSupport implements IMP1009DAO{
 		}
 
 		return retList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 	
 	

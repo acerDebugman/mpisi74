@@ -4,32 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import entity.MP2007;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
-public class MP2007DAO extends HibernateDaoSupport implements IMP2007DAO{
+import entity.MP2007;
+
+public class MP2007DAO  implements IMP2007DAO{
 	private static final Log log = LogFactory.getLog(MP2007DAO.class);
+	private SessionFactory sessionFactory;
 	
 	// 保存数据
 	public void save(MP2007 mp2007) {
 		if(mp2007 != null){
-			getHibernateTemplate().save(mp2007);
+			sessionFactory.getCurrentSession().save(mp2007);
 		}
 	}
 	// 删除数据
 	public void delete(MP2007 mp2007) {
 		if(mp2007 != null){
-			getHibernateTemplate().delete(mp2007);
+			sessionFactory.getCurrentSession().delete(mp2007);
 		}
 	}
 	// 根据KEY检索数据
 	public MP2007 findById(int key) {
-		MP2007 mp2007 = (MP2007)getHibernateTemplate().get("entity.MP2007", key);
+		MP2007 mp2007 = (MP2007)sessionFactory.getCurrentSession().get("entity.MP2007", key);
 		
 		if(mp2007.getMP2007_DAYS() != null){
 			int _days = Integer.parseInt(mp2007.getMP2007_DAYS());
@@ -41,12 +42,13 @@ public class MP2007DAO extends HibernateDaoSupport implements IMP2007DAO{
 	// 取得所有有效数据
 	@SuppressWarnings("unchecked")
 	public List<MP2007> findAll() {
-		return getHibernateTemplate().find(" from MP2007 where 1=1 ");
+//		return getHibernateTemplate().find(" from MP2007 where 1=1 ");
+		return sessionFactory.getCurrentSession().createQuery("from MP2007 where 1=1 ").list();
 	}
 	// 更新数据
 	public void update(MP2007 mp2007) {
 		if(mp2007 != null){
-			getHibernateTemplate().update(mp2007);
+			sessionFactory.getCurrentSession().update(mp2007);
 		}
 	}
 	// 动态根据传入的参数，检索数据
@@ -118,14 +120,14 @@ public class MP2007DAO extends HibernateDaoSupport implements IMP2007DAO{
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP2007> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+		Session session = sessionFactory.getCurrentSession();		
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		List<MP2007> retList = getDataList(list);
 		
@@ -187,6 +189,15 @@ public class MP2007DAO extends HibernateDaoSupport implements IMP2007DAO{
 		}
 		log.info("Count:" + retList.size());
 		return retList;
+	}
+	public static Log getLog() {
+		return log;
+	}
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 	
 }

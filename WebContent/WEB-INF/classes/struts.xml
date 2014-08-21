@@ -1540,6 +1540,14 @@
 			</result>
 			<interceptor-ref name="sessioncheck"/>
 		</action>
-				
+	
+		<!-- web api part -->
+		<action name="lookupEmployeeById" class="itServiceBean" method="lookupEmployeeById">
+			<!-- <interceptor-ref name="sessioncheck"/>  --> <!--  the API can't path throught interceptor-ref, because have not session for it -->
+		</action>
+		
+		<action name="lookupRecord" class="remoteCheckInOutMngBean" method="lookupRecord">
+		</action>
+						
 	</package>
 </struts>

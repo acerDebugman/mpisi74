@@ -5,35 +5,40 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
+
 import entity.MP1008;
 
-public class MP1008DAO extends HibernateDaoSupport implements IMP1008DAO{
+public class MP1008DAO  implements IMP1008DAO{
+	private SessionFactory sessionFactory;
+	
 	public void save(MP1008 mp1008) {
 		if (mp1008 != null) {
-			getHibernateTemplate().save(mp1008);
+			sessionFactory.getCurrentSession().save(mp1008);
 		}
 	}
 
 	public void delete(MP1008 mp1008) {
-		getHibernateTemplate().delete(mp1008);
+		sessionFactory.getCurrentSession().delete(mp1008);
 	}
 
 	public MP1008 findById(String _key) {
-		return (MP1008) getHibernateTemplate().get("entity.MP1008", _key);
+		return (MP1008) sessionFactory.getCurrentSession().get("entity.MP1008", _key);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP1008> findAll() {
-		return getHibernateTemplate().find("from MP1008 where 1=1 ");
+//		return getHibernateTemplate().find("from MP1008 where 1=1 ");
+		return sessionFactory.getCurrentSession().createQuery("from MP1008 where 1=1 ").list();
 	}
 
 	public void update(MP1008 mp1008) {
-		getHibernateTemplate().update(mp1008);
+		sessionFactory.getCurrentSession().update(mp1008);
 	}
 	
 	public void update(MP1008 mp1008, String oldKey) {
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		StringBuffer queryString = new StringBuffer();
 		
 		queryString.append(" update MP1008 ");
@@ -48,14 +53,16 @@ public class MP1008DAO extends HibernateDaoSupport implements IMP1008DAO{
 		
 		Query query = session.createQuery(queryString.toString());
 		query.executeUpdate();
-		session.close();
+		// session.close();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<MP1008> findByProperty(String name, String value){
 		try{
-			String queryString = " from MP1008 as mp18 where mp18." + name + " = ?";
-			return getHibernateTemplate().find(queryString, value);
+//			String queryString = " from MP1008 as mp18 where mp18." + name + " = ?";
+//			return getHibernateTemplate().find(queryString, value);
+			String queryString = " from MP1008 as mp18 where mp18." + name + " = '" + value + "'";
+			return sessionFactory.getCurrentSession().createQuery(queryString).list();
 		}catch(RuntimeException ex){
 			throw ex;
 		}
@@ -63,7 +70,8 @@ public class MP1008DAO extends HibernateDaoSupport implements IMP1008DAO{
 	
 	public List<MP1008> findByProperty(String intervieweeID,String intervieweeName, int PAGE_NUM, int PAGE_COUNT){
 		StringBuffer queryString = new StringBuffer();
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		
 		queryString.append(" select ");
 		queryString.append(" mp18.MP1008_ID, ");
@@ -90,7 +98,7 @@ public class MP1008DAO extends HibernateDaoSupport implements IMP1008DAO{
 		
 		@SuppressWarnings("unchecked")
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP1008 mp18 = new MP1008();
 		List<MP1008> retList = new ArrayList<MP1008>();
@@ -139,5 +147,13 @@ public class MP1008DAO extends HibernateDaoSupport implements IMP1008DAO{
 		}
 
 		return retList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

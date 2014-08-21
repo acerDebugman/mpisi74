@@ -12,35 +12,38 @@ import java.util.Map;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import entity.MP1001;
 import entity.MP2001;
 
-public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
+public class MP2001DAO  implements IMP2001DAO {
+	private SessionFactory sessionFactory;
+	
 
 	public void save(MP2001 mp2001) {
 		if (mp2001 != null) {
-			getHibernateTemplate().save(mp2001);
+			sessionFactory.getCurrentSession().save(mp2001);
 		}
 	}
 
 	public void delete(MP2001 mp2001) {
-		getHibernateTemplate().delete(mp2001);
+		sessionFactory.getCurrentSession().delete(mp2001);
 	}
 
 	public MP2001 findById(String leaveNum) {
-		return (MP2001) getHibernateTemplate().get("entity.MP2001", leaveNum);
+		return (MP2001) sessionFactory.getCurrentSession().get("entity.MP2001", leaveNum);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP2001> findAll() {
-		return getHibernateTemplate().find("from MP2001 where MP2001_STATUS = '0' ");
+//		return getHibernateTemplate().find("from MP2001 where MP2001_STATUS = '0' ");
+		return sessionFactory.getCurrentSession().createQuery("from MP2001 where MP2001_STATUS = '0' ").list();
 	}
 
 	public void update(MP2001 mp2001) {
-		getHibernateTemplate().update(mp2001);
+		sessionFactory.getCurrentSession().update(mp2001);
 	}
 	
 	public List<MP2001> findByProperty(String name, String value, boolean flag) {
@@ -51,7 +54,7 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 			int year2 = 0;
 			
 			StringBuffer queryString = new StringBuffer();
-			Session session = getHibernateTemplate().getSessionFactory().openSession();
+			Session session = sessionFactory.getCurrentSession();
 			
 			queryString.append(" from MP2001 mp2, MP1001 mp11 ");
 			queryString.append(" where 1=1 ");
@@ -98,7 +101,7 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 				retList.add(mp2001);
 			}
 
-			session.close();
+			// session.close();
 			
 		    return retList;
 		}catch(RuntimeException ex){
@@ -109,7 +112,7 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 	@SuppressWarnings("unchecked")
 	public List<MP2001> findByDate(String empNum,String date){
 		StringBuffer queryString = new StringBuffer();
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		
 		queryString.append(" from MP2001 ");
 		queryString.append(" where 1=1 ");
@@ -124,7 +127,7 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 	    @SuppressWarnings("rawtypes")
 		List list = query.list();
 	    
-	    session.close();
+	    // session.close();
 		
 	    return list;
 	}
@@ -133,7 +136,7 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 	public boolean checkLeaveDay(String _fromDate, String _toDate, String _empNum){
 		boolean ret = false;
 		try{
-			Session session = getHibernateTemplate().getSessionFactory().openSession();
+			Session session = sessionFactory.getCurrentSession();
 			
 			StringBuffer queryString = new StringBuffer();
 			queryString.append("select *  ");
@@ -150,7 +153,7 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 			
 			Query query = session.createSQLQuery(queryString.toString());
 			List<Object[]> list = query.list();
-			session.close();
+			// session.close();
 			
 			if(list.size() > 0){
 				ret = true;
@@ -236,7 +239,8 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 			
 			List<MP2001> retList = new ArrayList<MP2001>();
 			@SuppressWarnings("rawtypes")
-			List temp = getHibernateTemplate().find(queryString.toString());
+//			List temp = getHibernateTemplate().find(queryString.toString());
+			List temp = sessionFactory.getCurrentSession().createQuery(queryString.toString()).list();
 			for(int m=0,n=temp.size(); m < n; m++){
 				Object[] obj = (Object[]) temp.get(m);
 				MP2001 mp2001 = (MP2001)obj[0];
@@ -331,8 +335,9 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 		// 排序字段
 		queryString.append(" order by mp2.MP2001_NUM desc");
 		
-		return getHibernateTemplate().executeFind(new HibernateCallback(){
-			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+//		return getHibernateTemplate().executeFind(new HibernateCallback(){
+//			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				Session session = sessionFactory.getCurrentSession();
 				Query query = session.createQuery(queryString.toString());
 				if(pageNum>0){
 					query.setFirstResult((pageNum -1)*pageCount);
@@ -353,8 +358,8 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 					retList.add(mp2001);
 				}
 				return retList;
-			}
-		});
+//			}
+//		});
 	}
 	
 	public int getLeaveApplyReportRowCount(String employeeNum, String departmentId, String fromDate, String toDate){
@@ -365,7 +370,7 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 	@SuppressWarnings("unchecked")
 	public List<MP2001> getLeaveApplyReport(String employeeNum, String departmentId, String fromDate, String toDate, int PAGE_NUM, int PAGE_COUNT){
 		StringBuffer queryString = new StringBuffer();
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		
 		queryString.append(" select  ");
 		queryString.append(" mp21.MP2001_NUM, ");
@@ -427,7 +432,7 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 		}
 		
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP2001 mp21 = new MP2001();
 		List<MP2001> retList = new ArrayList<MP2001>();
@@ -485,7 +490,8 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 	 *    so the return type is a list   
 	 */
 	public List<MP2001> locateAppliationByOneDate(Date date, MP1001 emp){
-		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+//		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<MP2001> list = session.createQuery("from MP2001 m where " +
 				" MP2001_APPROVAL='3' " + //approval  
@@ -505,5 +511,13 @@ public class MP2001DAO extends HibernateDaoSupport implements IMP2001DAO {
 //		return session.createQuery("from MP2001 m where m. <= :theDate and m.MP2001_TO_DATETIME >= :theDate")
 //				.setDate("theDate", date)
 //				.list();
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

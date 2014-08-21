@@ -2240,7 +2240,7 @@ public class CommonJobMethod {
 		Connection conn = getDBConnection();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		cal.add(Calendar.DAY_OF_MONTH, -1); //yesterday
+//		cal.add(Calendar.DAY_OF_MONTH, -1); //yesterday, right now the date have changed to today 23:30
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		boolean abnormalFlag = false;
@@ -2251,7 +2251,8 @@ public class CommonJobMethod {
 		List<MP2003> attendanceRecordList = new ArrayList<MP2003>();
 		//PreparedStatement st = conn.prepareStatement(sb.toString());
 		StringBuffer sb = new StringBuffer();
-		sb.append("select * from MP2003 where MP2003_STATUS='1' and MP2003_DATETIME='");
+//		sb.append("select * from MP2003 where MP2003_STATUS='1' and MP2003_DATETIME='");
+		sb.append("select * from MP2003 where MP2003_COMMENT like '%Abnormal%' and MP2003_DATETIME='"); //here use string to describe it
 		sb.append(sdf.format(cal.getTime()));
 		sb.append("'");
 		Statement st = conn.createStatement();

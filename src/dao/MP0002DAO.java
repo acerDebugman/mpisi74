@@ -5,22 +5,25 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
+
 import entity.MP0002;
 
-public class MP0002DAO extends HibernateDaoSupport implements IMP0002DAO{
+public class MP0002DAO  implements IMP0002DAO{
+	private SessionFactory sessionFactory;
+	
 	public void save(MP0002 mp0002) {
 		if (mp0002 != null) {
-			getHibernateTemplate().save(mp0002);
+			sessionFactory.getCurrentSession().save(mp0002);
 		}
 	}
 
 	public void delete(MP0002 mp0002) {
-		getHibernateTemplate().delete(mp0002);
+		sessionFactory.getCurrentSession().delete(mp0002);
 	}
 
 	public MP0002 findById(int seq) {
-		return (MP0002) getHibernateTemplate().get("entity.MP0002", seq);
+		return (MP0002) sessionFactory.getCurrentSession().get("entity.MP0002", seq);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -31,11 +34,12 @@ public class MP0002DAO extends HibernateDaoSupport implements IMP0002DAO{
 		}else{
 			sql = " from MP0002 where 1=1 order by MP0002_DEPARTMENT_NAME ";
 		}
-		return getHibernateTemplate().find(sql);
+//		return getHibernateTemplate().find(sql);
+		return sessionFactory.getCurrentSession().createQuery(sql).list();
 	}
 
 	public void update(MP0002 mp0002) {
-		getHibernateTemplate().update(mp0002);
+		sessionFactory.getCurrentSession().update(mp0002);
 	}
 
 	public List<MP0002> findByProperty(String name, String value){
@@ -71,14 +75,15 @@ public class MP0002DAO extends HibernateDaoSupport implements IMP0002DAO{
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP0002> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+//		// session.close();
 		
 		List<MP0002> retList = getDataList(list);
 		
@@ -110,5 +115,13 @@ public class MP0002DAO extends HibernateDaoSupport implements IMP0002DAO{
 			retList.add(mp0002);
 		}
 		return retList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

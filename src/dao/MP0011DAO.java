@@ -2,41 +2,47 @@ package dao;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.MP0011;
 
-public class MP0011DAO extends HibernateDaoSupport implements IMP0011DAO{
+public class MP0011DAO  implements IMP0011DAO{
+	private SessionFactory sessionFactory;
+	
 	public void save(MP0011 mp0011) {
 		if (mp0011 != null) {
-			getHibernateTemplate().save(mp0011);
+			sessionFactory.getCurrentSession().save(mp0011);
 		}
 	}
 
 	public void delete(MP0011 mp0011) {
-		getHibernateTemplate().delete(mp0011);
+		sessionFactory.getCurrentSession().delete(mp0011);
 	}
 
 	public MP0011 findById(String _key) {
-		return (MP0011) getHibernateTemplate().get("entity.MP0011", _key);
+		return (MP0011) sessionFactory.getCurrentSession().get("entity.MP0011", _key);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP0011> findAll() {
-		return getHibernateTemplate().find("from MP0011 where 1=1 ");
+//		return getHibernateTemplate().find("from MP0011 where 1=1 ");
+		return sessionFactory.getCurrentSession().createQuery("from MP0011 where 1=1 ").list();
 	}
 
 	public void update(MP0011 mp0011) {
-		getHibernateTemplate().update(mp0011);
+		sessionFactory.getCurrentSession().update(mp0011);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<MP0011> findByProperty(String name, String value){
 		try{
-			String queryString = " from MP0011 as mp19 where mp19." + name + " = ?";
-			return getHibernateTemplate().find(queryString, value);
+//			String queryString = " from MP0011 as mp19 where mp19." + name + " = ?";
+//			return getHibernateTemplate().find(queryString, value);
+			String queryString = " from MP0011 as mp19 where mp19." + name + " = '" + value + "'";
+			return sessionFactory.getCurrentSession().createQuery(queryString).list();
 		}catch(RuntimeException ex){
 			throw ex;
 		}
@@ -89,14 +95,15 @@ public class MP0011DAO extends HibernateDaoSupport implements IMP0011DAO{
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP0011> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+//		// session.close();
 		
 		List<MP0011> retList = getDataList(list);
 		
@@ -159,6 +166,14 @@ public class MP0011DAO extends HibernateDaoSupport implements IMP0011DAO{
 		}
 
 		return retList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 	
 }

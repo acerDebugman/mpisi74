@@ -3,17 +3,18 @@ package dao;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.JE0201;
 
-public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
-
+public class JE0201DAO  implements IJE0201DAO {
+	private SessionFactory sessionFactory;
+	
 	@Override
 	public void save(JE0201 je0201) {
 		// TODO Auto-generated method stub
 		if(null != je0201){
-			getHibernateTemplate().save(je0201);
+			sessionFactory.getCurrentSession().save(je0201);
 		}
 	}
 
@@ -21,28 +22,30 @@ public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
 	public void delete(JE0201 je0201) {
 		// TODO Auto-generated method stub
 		if(null != je0201){
-			getHibernateTemplate().delete(je0201);
+			sessionFactory.getCurrentSession().delete(je0201);
 		}
 	}
 
 	@Override
 	public JE0201 findByKey(String key) {
 		// TODO Auto-generated method stub
-		return (JE0201)getHibernateTemplate().get("entity.JE0201", key);
+		return (JE0201)sessionFactory.getCurrentSession().get("entity.JE0201", key);
 	}
 
 	@Override
 	public JE0201 findByValue(String value) {
 		// TODO Auto-generated method stub
-		//return (JE0201)getHibernateTemplate().get("entity.JE0201", value);
-		return (JE0201)getHibernateTemplate().find(" from JE0201 where JE0201_VALUE='" + value + "'");
+		//return (JE0201)sessionFactory.getCurrentSession().get("entity.JE0201", value);
+//		return (JE0201)getHibernateTemplate().find(" from JE0201 where JE0201_VALUE='" + value + "'");
+		return (JE0201)sessionFactory.getCurrentSession().createQuery(" from JE0201 where JE0201_VALUE='" + value + "'").list();
 	}
 	
 	@Override
 	public JE0201 findByType(String type) {
 		// TODO Auto-generated method stub
-		//return (JE0201)getHibernateTemplate().get("entity.JE0201", value);
-		return (JE0201)getHibernateTemplate().find(" from JE0201 where JE0201_VALUE='" + type + "'");
+		//return (JE0201)sessionFactory.getCurrentSession().get("entity.JE0201", value);
+//		return (JE0201)getHibernateTemplate().find(" from JE0201 where JE0201_VALUE='" + type + "'");
+		return (JE0201)sessionFactory.getCurrentSession().createQuery(" from JE0201 where JE0201_VALUE='" + type + "'").list();
 	}
 	
 
@@ -50,13 +53,14 @@ public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
 	@SuppressWarnings("unchecked")
 	public List<JE0201> findAll() {
 		// TODO Auto-generated method stub
-		return getHibernateTemplate().find("from JE0201");
+//		return getHibernateTemplate().find("from JE0201");
+		return sessionFactory.getCurrentSession().createQuery("from JE0201").list();
 	}
 
 	@Override
 	public void update(JE0201 je0201) {
 		// TODO Auto-generated method stub
-		getHibernateTemplate().update(je0201);
+		sessionFactory.getCurrentSession().update(je0201);
 	}
 
 	@Override
@@ -77,7 +81,8 @@ public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
 			sb.append(" and JE0201_ROOM_DES='" + columnMap.get("JE0201_ROOM_DES") + "' ");
 		}
 		
-		return getHibernateTemplate().find(sb.toString());
+//		return getHibernateTemplate().find(sb.toString());
+		return sessionFactory.getCurrentSession().createQuery(sb.toString()).list();
 	}
 
 	@Override
@@ -102,6 +107,15 @@ public class JE0201DAO extends HibernateDaoSupport implements IJE0201DAO {
 			sb.append(order);
 		}
 		
-		return getHibernateTemplate().find(sb.toString());
+//		return getHibernateTemplate().find(sb.toString());
+		return sessionFactory.getCurrentSession().createQuery(sb.toString()).list();
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

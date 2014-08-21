@@ -1,11 +1,14 @@
 package action;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +16,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +32,9 @@ import org.apache.struts2.ServletActionContext;
 
 import schedule.ExecuteJobsService;
 import schedule.executeJobs;
+import service.MP1001Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
@@ -40,6 +47,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import common.ExcelUtil;
 
 import dto.LateEarlyDto;
+import dto.MP1001Dto;
+import entity.MP1001;
 
 public class ItService extends ActionSupport {
 	private static final Log log = LogFactory.getLog(LoginAction.class);
@@ -52,6 +61,8 @@ public class ItService extends ActionSupport {
 	public String downloadFile;
 	
 	public ExecuteJobsService serviceExecuteJobs;
+	public MP1001Service serviceMP1001;
+	public String empCode;
 	
 	private List<LateEarlyDto> lateEarlyList = new ArrayList<LateEarlyDto>();
 	
@@ -497,12 +508,78 @@ public class ItService extends ActionSupport {
 		ExcelUtil.SetCellsValue(rowNum, sheet, styles, datas);
 		
   	}
+	
+	public String lookupEmployeeById(){
+		try{
+			HttpServletResponse response = ServletActionContext.getResponse();
+//			response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json");
+			PrintWriter out = response.getWriter();
+			String str = null;
+			// List<MP1001> lst =
+			MP1001 employee = serviceMP1001.findById(empCode);
+			MP1001Dto dto = convertMP1001ToDto(employee);
+//			ObjectMapper mapper = new ObjectMapper();
+//			str = mapper.writeValueAsString(dto);
+			
+//			JSONObject jsonObj = new JSONObject();
+			
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.writeValue(out, dto);
+			
+			System.out.println(str);
+			out.print(str);
+			out.flush();
+			out.close();
+		} catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+		return NONE;
+	}
+	public MP1001Dto convertMP1001ToDto(MP1001 emp){
+		MP1001Dto dto = new MP1001Dto();
+		dto.setMP1001_DEPARTMENT_ID(emp.getMP1001_DEPARTMENT_ID());
+		dto.setMP1001_DEPARTMENT_NAME(emp.getMP1001_DEPARTMENT_NAME());
+		dto.setMP1001_EMPLOYEE_NUM(emp.getMP1001_EMPLOYEE_NUM());
+		dto.setMP1001_EMPLOYEE_ID(emp.getMP1001_EMPLOYEE_ID());
+		dto.setMP1001_FIRSTNAME(emp.getMP1001_FIRSTNAME());
+		dto.setMP1001_PREFERED_NAME(emp.getMP1001_PREFERED_NAME());
+		dto.setMP1001_SURNAME(emp.getMP1001_SURNAME());
+		return dto;
+	}
+	public String lookupAllEmployees(){
+		try{
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setCharacterEncoding("utf-8");
+			PrintWriter out = response.getWriter();
+			List<MP1001> lst = serviceMP1001.findAll();
+			// MP1001 employee = serviceMP1001.findById(empCode);
+			ObjectMapper mapper = new ObjectMapper();
+			OutputStream outStream = new ByteArrayOutputStream();
+			mapper.writeValue(outStream, lst);
+			// final byte[] data = outStream.toByteArray();
+			String str = outStream.toString();
+			// str = mapper.writeValueAsString();
+			System.out.println(str);
+			out.print(str);
+			out.flush();
+			out.close();
+			return NONE;
+		} catch(Exception ex){
+			System.out.println(ex.getMessage());
+			return ERROR;
+		}
+	}
 
 	public String lateEarlyJobTest(){
 		
-		executeJobs jobs = new executeJobs();
+//		executeJobs jobs = new executeJobs();
 		
-		jobs.executeJob12();
+//		jobs.executeJob12();
+		
+//		jobs.executeJob20();
+		
+		serviceExecuteJobs.fetchOtherBranchSiteRecords();
 		
 		return NONE;
 	}
@@ -576,4 +653,21 @@ public class ItService extends ActionSupport {
 	public void setServiceExecuteJobs(ExecuteJobsService serviceExecuteJobs) {
 		this.serviceExecuteJobs = serviceExecuteJobs;
 	}
+
+	public MP1001Service getServiceMP1001() {
+		return serviceMP1001;
+	}
+
+	public void setServiceMP1001(MP1001Service serviceMP1001) {
+		this.serviceMP1001 = serviceMP1001;
+	}
+
+	public String getEmpCode() {
+		return empCode;
+	}
+
+	public void setEmpCode(String empCode) {
+		this.empCode = empCode;
+	}
+	
 }

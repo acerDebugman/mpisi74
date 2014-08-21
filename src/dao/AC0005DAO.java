@@ -6,42 +6,47 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import common.Constant;
 
 import entity.AC0005;
 
-public class AC0005DAO extends HibernateDaoSupport implements IAC0005DAO {
+public class AC0005DAO  implements IAC0005DAO {
+	
+	private SessionFactory sessionFactory;
 	
 	public void save(AC0005 ac0005) {
 		if (ac0005 != null) {
-			getHibernateTemplate().save(ac0005);
+			sessionFactory.getCurrentSession().save(ac0005);
 		}
 	}
 
 	public void delete(AC0005 ac0005) {
-		getHibernateTemplate().delete(ac0005);
+		sessionFactory.getCurrentSession().delete(ac0005);
 	}
 
 	public AC0005 findById(String seq) {
-		return (AC0005) getHibernateTemplate().get("entity.AC0005", seq);
+		return (AC0005) sessionFactory.getCurrentSession().get("entity.AC0005", seq);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<AC0005> findAll() {
-		return getHibernateTemplate().find("from AC0005");
+//		return getHibernateTemplate().find("from AC0005");
+		return sessionFactory.getCurrentSession().createQuery("from AC0005").list();
 	}
 
 	public void update(AC0005 ac0005) {
-		getHibernateTemplate().update(ac0005);
+		sessionFactory.getCurrentSession().update(ac0005);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<AC0005> findByProperty(String name, String value){
 		try{
-			String queryString = " from AC0005 as bulletin where bulletin." + name + " = ?";
-			return getHibernateTemplate().find(queryString, value);
+//			String queryString = " from AC0005 as bulletin where bulletin." + name + " = ?";
+			String queryString = " from AC0005 as bulletin where bulletin." + name + " = '" + value + "'";
+//			return getHibernateTemplate().find(queryString, value);
+			return sessionFactory.getCurrentSession().createQuery(queryString).list();
 		}catch(RuntimeException ex){
 			throw ex;
 		}
@@ -100,14 +105,15 @@ public class AC0005DAO extends HibernateDaoSupport implements IAC0005DAO {
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<AC0005> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+//		// session.close();
 		
 		List<AC0005> retList = getDataList(list);
 		
@@ -141,5 +147,13 @@ public class AC0005DAO extends HibernateDaoSupport implements IAC0005DAO {
 			retList.add(ac0005);
 		}
 		return retList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

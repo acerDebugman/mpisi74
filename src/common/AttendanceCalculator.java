@@ -623,7 +623,7 @@ public class AttendanceCalculator {
 		int size = recordsList.size();
 //		if(stdItem.getStdClockInTime().equals(epochTime) || stdItem.getStdClockOutTime().equals(epochTime)){ //no work today,holiday, special day, or leave
 		if(datetimeCompare(stdItem.getStdClockInTime(), epochTime, "ss") == 0 || 
-				datetimeCompare(stdItem.getStdClockOutTime(),epochTime, "ss") == 0){ //no work today,holiday, special day, or leave
+				datetimeCompare(stdItem.getStdClockOutTime(), epochTime, "ss") == 0){ //no work today,holiday, special day, or leave
 			if(0 == size){//and no records
 				sb.append(" ");
 			}
@@ -641,99 +641,111 @@ public class AttendanceCalculator {
 			}
 		}
 		else{
-			if(0 == size){//and no records
-				if(!hasItStartedWorking(stdItem)){
-					sb.append(" ");
-				}
-				else if(hasItStartedWorking(stdItem) && !hasItStoppedWorking(stdItem)){
-					sb.append(" / No Clock In Records");
-				}
-				else{
-					sb.append(" / No Records Abnormal");
-					status = "1";
-				}
-			}
-			else if(1 == size){
-				CHECKINOUT clockInRd = pickUpClockInRecord(stdItem, recordsList);
-				
-				if(null != clockInRd && isLateClockIn(clockInRd, stdItem)){
-					int mins = deliverLateMinutes(clockInRd, stdItem);
-					stdItem.setLateMinutes(mins);
-					serviceStandardWorkTime.update(stdItem);
-					//should save to stadard work item
-					sb.append(" / Late " + translateTimeToHumanLikeWay(mins));
-				}
-				
-				//get last record
-				CHECKINOUT clockOutRd = pickUpClockOutRecord(stdItem, recordsList);
-				if(null != clockOutRd && isEarlyClockOut(clockOutRd, stdItem)){
-					int mins = deliverEarlyMinutes(clockOutRd, stdItem);
-					stdItem.setEarlyMinutes(mins);
-					serviceStandardWorkTime.update(stdItem);
-					sb.append(" / Early " + translateTimeToHumanLikeWay(mins));
-				}
-				
-				if(null != clockInRd){
-					startTime = clockInRd.getCHECKTIME().substring(0, 19);
-					startTimeDoor = clockInRd.getSENSORID();
-					if(!hasItStoppedWorking(stdItem)){
+			
+//			if(-1 != stdItem.getComments().indexOf("Leave") 
+//							|| -1 != stdItem.getComments().indexOf("Special") 
+//							|| -1 != stdItem.getComments().indexOf("Sat") 
+//							|| -1 != stdItem.getComments().indexOf("Sun") 
+//							|| -1 != stdItem.getComments().indexOf("Public Holiday")){
+//				//do nothing~
+//				sb.append(" /"); //later will sb.delete(0,3)
+//			}
+//			else {
+				if(0 == size){//and no records
+					if(!hasItStartedWorking(stdItem)){
 						sb.append(" ");
 					}
-					else{
-						sb.append(" / Abnormal No Clock Out"); //only have clock in records, no clockout records
+					else if(hasItStartedWorking(stdItem) && !hasItStoppedWorking(stdItem)){
+						sb.append(" / No Clock In Records");
+					}
+					else { //no @ holiday
+						sb.append(" / No Records Abnormal");
 						status = "1";
 					}
 				}
-				if(null != clockOutRd){
-					finishTime = clockOutRd.getCHECKTIME().substring(0, 19);
-					finishTimeDoor = clockOutRd.getSENSORID();
-					sb.append(" / Abnormal No Clock In"); 
-					status = "1";
-				}
-				
-			}
-			else {
-				//sort out
-				
-				//get first record
-				CHECKINOUT clockInRd = pickUpClockInRecord(stdItem, recordsList);
-				if(null != clockInRd && isLateClockIn(clockInRd, stdItem)){
-					int mins = deliverLateMinutes(clockInRd, stdItem);
-					stdItem.setLateMinutes(mins); //actually have no need to service.update, because it's Persistence object
-					serviceStandardWorkTime.update(stdItem);
-					sb.append(" / Late " + translateTimeToHumanLikeWay(mins));
-				}
-				
-				//get last record
-				CHECKINOUT clockOutRd = pickUpClockOutRecord(stdItem, recordsList);
-				if(null != clockOutRd && isEarlyClockOut(clockOutRd, stdItem)){
-					int mins = deliverEarlyMinutes(clockOutRd, stdItem);
-					stdItem.setEarlyMinutes(mins);
-					serviceStandardWorkTime.update(stdItem);
-					sb.append(" / Early " + translateTimeToHumanLikeWay(mins));
-				}
-				
-				if(null != clockInRd){
-					startTime = clockInRd.getCHECKTIME().substring(0, 19);
-					startTimeDoor = clockInRd.getSENSORID();
-				}
-				else{
-					sb.append(" / Abnormal No Clock In");
-					status = "1";
-				}
-				if(null != clockOutRd){
-					finishTime = clockOutRd.getCHECKTIME().substring(0, 19);
-					finishTimeDoor = clockOutRd.getSENSORID();
-				}
-				else{
-					if(!hasItStoppedWorking(stdItem)){ //if didn't work off, have no need to add comment
-						sb.append(" ");
+				else if(1 == size){
+					CHECKINOUT clockInRd = pickUpClockInRecord(stdItem, recordsList);
+					
+					if(null != clockInRd && isLateClockIn(clockInRd, stdItem)){
+						int mins = deliverLateMinutes(clockInRd, stdItem);
+						stdItem.setLateMinutes(mins);
+						serviceStandardWorkTime.update(stdItem);
+						//should save to stadard work item
+						sb.append(" / Late " + translateTimeToHumanLikeWay(mins));
 					}
-					else{
-						sb.append(" / Abnormal No Clock Out");
+					
+					//get last record
+					CHECKINOUT clockOutRd = pickUpClockOutRecord(stdItem, recordsList);
+					if(null != clockOutRd && isEarlyClockOut(clockOutRd, stdItem)){
+						int mins = deliverEarlyMinutes(clockOutRd, stdItem);
+						stdItem.setEarlyMinutes(mins);
+						serviceStandardWorkTime.update(stdItem);
+						sb.append(" / Early " + translateTimeToHumanLikeWay(mins));
+					}
+					
+					if(null != clockInRd){
+						startTime = clockInRd.getCHECKTIME().substring(0, 19);
+						startTimeDoor = clockInRd.getSENSORID();
+						if(!hasItStoppedWorking(stdItem)){
+							sb.append(" ");
+						}
+						else{
+							sb.append(" / Abnormal No Clock Out"); //only have clock in records, no clockout records
+							status = "1";
+						}
+					}
+					if(null != clockOutRd){
+						finishTime = clockOutRd.getCHECKTIME().substring(0, 19);
+						finishTimeDoor = clockOutRd.getSENSORID();
+						sb.append(" / Abnormal No Clock In"); 
 						status = "1";
 					}
+					
 				}
+				else {
+	
+					//sort out
+					
+					//get first record
+					CHECKINOUT clockInRd = pickUpClockInRecord(stdItem, recordsList);
+					if(null != clockInRd && isLateClockIn(clockInRd, stdItem)){
+						int mins = deliverLateMinutes(clockInRd, stdItem);
+						stdItem.setLateMinutes(mins); //actually have no need to service.update, because it's Persistence object
+						serviceStandardWorkTime.update(stdItem);
+						sb.append(" / Late " + translateTimeToHumanLikeWay(mins));
+					}
+					
+					//get last record
+					CHECKINOUT clockOutRd = pickUpClockOutRecord(stdItem, recordsList);
+					if(null != clockOutRd && isEarlyClockOut(clockOutRd, stdItem)){
+						int mins = deliverEarlyMinutes(clockOutRd, stdItem);
+						stdItem.setEarlyMinutes(mins);
+						serviceStandardWorkTime.update(stdItem);
+						sb.append(" / Early " + translateTimeToHumanLikeWay(mins));
+					}
+					
+					if(null != clockInRd){
+						startTime = clockInRd.getCHECKTIME().substring(0, 19);
+						startTimeDoor = clockInRd.getSENSORID();
+					}
+					else{
+						sb.append(" / Abnormal No Clock In");
+						status = "1";
+					}
+					if(null != clockOutRd){
+						finishTime = clockOutRd.getCHECKTIME().substring(0, 19);
+						finishTimeDoor = clockOutRd.getSENSORID();
+					}
+					else{
+						if(!hasItStoppedWorking(stdItem)){ //if didn't work off, have no need to add comment
+							sb.append(" ");
+						}
+						else{
+							sb.append(" / Abnormal No Clock Out");
+							status = "1";
+						}
+					}
+//				}
 			}
 		}
 //------------same logic-------------------------------------------------------------------		

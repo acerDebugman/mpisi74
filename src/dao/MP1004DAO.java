@@ -5,29 +5,31 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.MP1004;
 
-public class MP1004DAO extends HibernateDaoSupport implements IMP1004DAO {
-
+public class MP1004DAO  implements IMP1004DAO {
+	private SessionFactory sessionFactory;
+	
 	public void save(MP1004 mp1004) {
 		if (mp1004 != null) {
-			getHibernateTemplate().save(mp1004);
+			sessionFactory.getCurrentSession().save(mp1004);
 		}
 	}
 
 	public void delete(MP1004 mp1004) {
-		getHibernateTemplate().delete(mp1004);
+		sessionFactory.getCurrentSession().delete(mp1004);
 	}
 
 	public MP1004 findById(String employeeNum) {
-		return (MP1004) getHibernateTemplate().get("entity.MP1004", employeeNum);
+		return (MP1004) sessionFactory.getCurrentSession().get("entity.MP1004", employeeNum);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP1004> findAll() {
-		return getHibernateTemplate().find("from MP1004");
+//		return getHibernateTemplate().find("from MP1004");
+		return sessionFactory.getCurrentSession().createQuery("from MP1004").list();
 	}
 
 	public List<MP1004> findAll2(String employeeNum, String employeeName) {
@@ -48,7 +50,7 @@ public class MP1004DAO extends HibernateDaoSupport implements IMP1004DAO {
 	}
 	
 	public void update(MP1004 mp1004) {
-		getHibernateTemplate().update(mp1004);
+		sessionFactory.getCurrentSession().update(mp1004);
 	}
 
 	// 构建SQL语句
@@ -86,14 +88,15 @@ public class MP1004DAO extends HibernateDaoSupport implements IMP1004DAO {
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP1004> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		List<MP1004> retList = getDataList(list);
 		
@@ -129,5 +132,13 @@ public class MP1004DAO extends HibernateDaoSupport implements IMP1004DAO {
 		}
 		
 		return retList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

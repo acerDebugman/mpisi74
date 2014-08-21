@@ -88,5 +88,13 @@ public class CHECKINOUTService implements ICHECKINOUTService{
     public long fetchTotalRecordsCounter(){
     	return dao.fetchTotalRecordsCounter();
     }
+    
+    public List<CHECKINOUT> fetchDailyRecordsByUserId(Date date, int userId){
+    	return dao.fetchDailyRecordsByUserId(date, userId);
+    }
+    
+    public List<CHECKINOUT> fetchDailyRecordsByUserIdForDays(Date fromDate, Date endDate, int userId){
+    	return dao.fetchDailyRecordsByUserIdForDays(fromDate, endDate, userId);
+    }
 }
 

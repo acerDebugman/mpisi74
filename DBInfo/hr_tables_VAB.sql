@@ -786,6 +786,15 @@ create table StandardWorkTime(
 	primary key (id)
 );
 
+create table FingerSiteUserIdInfo(
+	id int identity not null,
+	employeeCode varchar(10), 
+	userId int,
+	branchSite varchar(10),
+	primary key (id)
+);
+
+
 insert into MP0006(MP0006_CODE, MP0006_VALUE) values('LATEST_CHECKTIME', '2014-08-12 00:00:01'); /*this part for checktime compare*/
 insert into MP0006(MP0006_CODE, MP0006_VALUE) values('LATEST_COUNTER', '0'); /*number of records compare*/
 
@@ -837,3 +846,8 @@ alter table MP0010
 	add constraint FK_MP0010_0
 	foreign key (workTimePatternId) 
 	references WorkTimePattern(id);
+
+alter table FingerSiteUserIdInfo
+	add constraint FK_FingerSiteUserIdInfo_0
+	foreign key (employeeCode)
+	references MP1001(MP1001_EMPLOYEE_NUM);

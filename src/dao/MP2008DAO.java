@@ -6,44 +6,47 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.MP2008;
 
-public class MP2008DAO extends HibernateDaoSupport implements IMP2008DAO{
+public class MP2008DAO  implements IMP2008DAO{
+	private SessionFactory sessionFactory;
+	
     // 保存数据
     public void save(MP2008 mp2008) {
         if(mp2008 != null){
-            getHibernateTemplate().save(mp2008);
+            sessionFactory.getCurrentSession().save(mp2008);
         }
     }
     // 删除数据
     public void delete(MP2008 mp2008) {
         if(mp2008 != null){
-            getHibernateTemplate().delete(mp2008);
+            sessionFactory.getCurrentSession().delete(mp2008);
         }
     }
     // 根据KEY检索数据
     public MP2008 findById(String key) {
-        	return (MP2008)getHibernateTemplate().get("entity.MP2008", key);
+        	return (MP2008)sessionFactory.getCurrentSession().get("entity.MP2008", key);
     }
     // 取得所有有效数据
     @SuppressWarnings("unchecked")
     public List<MP2008> findAll() {
-        return getHibernateTemplate().find(" from MP2008 where 1=1  ");
+//        return getHibernateTemplate().find(" from MP2008 where 1=1  ");
+    	return sessionFactory.getCurrentSession().createQuery("from MP2008 where 1=1 ").list();
     }
     // 更新数据
     public void update(MP2008 mp2008) {
         if(mp2008 != null){
-            getHibernateTemplate().update(mp2008);
+            sessionFactory.getCurrentSession().update(mp2008);
         }
     }
     // 更新数据
     public void executeStatement(String statement){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(statement);
         query.executeUpdate();
-        session.close();
+        // session.close();
     }
     // 动态根据传入的参数，检索数据
     public List<MP2008> findByProperty(String name, String value) {
@@ -237,7 +240,7 @@ public class MP2008DAO extends HibernateDaoSupport implements IMP2008DAO{
     // 检索数据
     @SuppressWarnings("unchecked")
     private List<MP2008> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(queryString.toString());
         
         //Query query = session.createQuery("select mp2008.MP2008_NUM,mp2008.MP2008_EMPLOYEE_NUM,mp2008.MP2008_DATE,mp2008.MP2008_HOURS,mp2008.MP2008_FROM_DATETIME,mp2008.MP2008_TO_DATETIME,mp2008.MP2008_REASON,mp2008.MP2008_APP_STATUS, mp2008.MP2008_DATA_STATUS,mp2008.MP2008_COMMENT,mp2008.MP2008_CREATE_USER,mp2008.MP2008_CREATE_DATETIME,mp2008.MP2008_EDIT_USER,mp2008.MP2008_EDIT_DATETIME,mp2008.MP2008_APPROVAL_USER,mp2008.MP2008_APPROVAL_DATETIME  from MP2008 mp2008, MP1001 mp11 where 1=1 and mp2008.MP2008_EMPLOYEE_NUM = mp11.MP1001_EMPLOYEE_NUM");
@@ -248,7 +251,7 @@ public class MP2008DAO extends HibernateDaoSupport implements IMP2008DAO{
             query.setMaxResults(PAGE_COUNT);
         }
         List<Object[]> list = query.list();
-        session.close();
+        // session.close();
 
         List<MP2008> retList = getDataList(list);
 
@@ -348,11 +351,11 @@ public class MP2008DAO extends HibernateDaoSupport implements IMP2008DAO{
     	queryString.append(" order by MP2008_EMPLOYEE_NUM, MP2008_APP_STATUS ");
     	
     	// 执行SQL语句
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(queryString.toString());
         
         List<Object[]> list = query.list();
-        session.close();
+        // session.close();
         
         // 解析SQL语句
         MP2008 mp2008 = new MP2008();
@@ -428,11 +431,11 @@ public class MP2008DAO extends HibernateDaoSupport implements IMP2008DAO{
     	queryString.append(" order by MP2008_EMPLOYEE_NUM, MP2008_APP_STATUS ");
     	
     	// 执行SQL语句
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(queryString.toString());
         
         List<Object[]> list = query.list();
-        session.close();
+        // session.close();
         
         // 解析SQL语句
         MP2008 mp2008 = new MP2008();
@@ -459,6 +462,12 @@ public class MP2008DAO extends HibernateDaoSupport implements IMP2008DAO{
         
         return  retList;
     }
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
     
 }
 

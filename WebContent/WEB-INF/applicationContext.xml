@@ -113,6 +113,16 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>executeJob19</value>
 		</property>
 	</bean>
+	
+	<!-- every 2 hours fetch remote data -->
+	<bean id="quartzDetail13" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob20</value>
+		</property>
+	</bean>
 <!--===== Trigger =====-->
 	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail">
@@ -214,6 +224,16 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>0 5/7 4-23 * * ?</value> <!-- every day 11:00 am -->
 		</property>
 	</bean>
+	
+	<bean id="quartzTrigger13" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail13"/>
+		</property>
+		<property name="cronExpression">
+		  <!-- <value>0 0 6-22 * * ?</value> -->
+		  <value>0 0 6-22 * * ?</value>
+		</property>
+	</bean>
 <!--===== Schedule =====-->
 	<bean autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
@@ -230,6 +250,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			    <ref local="quartzTrigger10"/>
 			    <ref local="quartzTrigger11"/>
 			    <ref local="quartzTrigger12"/>
+			    <ref local="quartzTrigger13"/>
 			</list>
 		</property>
 	</bean>
@@ -376,6 +397,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 				<value>entity/EmpWorkTimePattern_R.hbm.xml</value>
 				<value>entity/StandardWorkTime.hbm.xml</value>
 				<value>entity/WorkTimePattern.hbm.xml</value>
+				
+				<value>entity/FingerSiteUserIdInfo.hbm.xml</value>
 <!-- Entity配置信息 -->
 			</list>
 		</property>
@@ -405,20 +428,23 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</tx:attributes>
 	</tx:advice>
 	
-	<aop:config>
+	<!-- <aop:config>
 		<aop:advisor advice-ref="txAdvice" pointcut="execution(* dao.*.*(..))"/>
 		<aop:advisor advice-ref="quartzTxAdvice" pointcut="execution(public * common.AttendanceCalculator.proceed(..))"/>
-	</aop:config>
-	
-	<!-- <aop:config proxy-target-class="true">
-		<aop:aspect id="myAspect" ref="calculatorInterceptor">
-			<aop:pointcut expression="execution(public * action.ApplyLeaveAction.*(..))" id="approveLeaveApplication"/>
-			<aop:pointcut expression="action.ApplyLeaveAction.ApproveLeave()" id="approveLeaveApplication"/>
-			
-			<aop:after pointcut-ref="approveLeaveApplication" method="afterLeaveApplicationApproval"/>
-			<aop:after pointcut="execution(public * action.ApplyLeaveAction.ApproveLeave(..))" method="afterLeaveApplicationApproval"/>
-		</aop:aspect>
 	</aop:config> -->
+	
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* dao.*.*(..))"/>
+		<aop:advisor advice-ref="quartzTxAdvice" pointcut="execution(public * common.AttendanceCalculator.proceed(..))"/>
+		
+		<aop:aspect id="myAspect" ref="calculatorInterceptor">
+			<!-- <aop:pointcut expression="execution(public * action.ApplyLeaveAction.workingRecordsListSearch(..))" id="workingRecordsListSearch_pt"/> -->
+			<aop:pointcut expression="execution(public * action.ApplyLeaveAction.approvalLeaveInfo(..))" id="approvalLeaveInfo_pt"/>
+
+			<!-- <aop:after pointcut-ref="workingRecordsListSearch_pt" method="afterMethod"/> -->
+			<aop:after pointcut-ref="approvalLeaveInfo_pt" method="afterApprovalLeaveInfo"/>
+		</aop:aspect>
+	</aop:config>
 
 
 	
@@ -748,6 +774,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 	</bean>
 	<bean id="WorkTimePatternDAO" class="dao.WorkTimePatternDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="FingerSiteUserIdInfoDAO" class="dao.FingerSiteUserIdInfoDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
@@ -1085,6 +1117,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="WorkTimePatternService" class="service.WorkTimePatternService">
 		<property name="dao">
 			<ref bean="WorkTimePatternDAO" />
+		</property>
+	</bean>
+	<bean id="FingerSiteUserIdInfoService" class="service.FingerSiteUserIdInfoService" >
+		<property name="dao">
+			<ref bean="FingerSiteUserIdInfoDAO" />
 		</property>
 	</bean>
 <!-- Service配置信息 -->
@@ -1546,6 +1583,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="serviceExecuteJobs">
 			<ref bean="executeJobsService" />
 		</property>
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
 	</bean>
 	
 	<!-- work time pattern -->
@@ -1591,6 +1631,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<property name="serviceMP2003">
 				<ref bean="MP2003Service" />
 			</property>
+			<property name="serviceFingerSiteUseridInfo">
+				<ref bean="FingerSiteUserIdInfoService" />
+			</property>
+			<property name="serviceRemoteClient">
+				<ref bean="RemoteAttendanceRecordMngClientSide" />
+			</property>
 	</bean>
 
 	<bean id="executeJobs" class="schedule.executeJobs">
@@ -1631,6 +1677,38 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	</bean>
 	
 <!-- AOP configuration -->
-	<bean id="calculatorInterceptor" class="aop.AttendanceCalculatorInterceptor" >
-	</bean>	
+	<bean id="calculatorInterceptor" class="interceptor.AttendanceCalculatorInterceptor" >
+		<property name="attendanceCalculator">
+			<ref bean="AttendanceCalcualtor" />
+		</property>
+		<property name="serviceMP2001">
+			<ref bean="MP2001Service" />
+		</property>
+		<property name="serviceMP1001">
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceMP2003">
+			<ref bean="MP2003Service" />
+		</property>
+	</bean>
+	<bean id="remoteCheckInOutMngBean" class="webapi.RemoteCheckInOutMng">
+		<property name="serviceMP1001" >
+			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceCHECKINOUT">
+			<ref bean="CHECKINOUTService" />
+		</property>
+		<property name="dtoConverter">
+			<ref bean="EntityDtoConverter" />
+		</property>
+	</bean>
+	
+	<bean id="EntityDtoConverter" class="webapi.EntityDtoConverter">
+	</bean>
+		
+	<bean id="RemoteAttendanceRecordMngClientSide" class="webapi.RemoteAttendanceRecordMngClientSide">
+		<property name="converter">
+			<ref bean="EntityDtoConverter" />
+		</property>
+	</bean>
 </beans>

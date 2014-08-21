@@ -1,28 +1,27 @@
 package dao;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.JE0202;
 import entity.MP0002;
 import entity.MP1001;
 
-public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
+public class JE0202DAO  implements IJE0202DAO {
 	private static final Log log = LogFactory.getLog(JE0202DAO.class);
+	private SessionFactory sessionFactory;
+	
 	@Override
 	public void save(JE0202 je0202) {
 		// TODO Auto-generated method stub
 		if(null != je0202){
-			getHibernateTemplate().save(je0202);
+			sessionFactory.getCurrentSession().save(je0202);
 		}
 	}
 
@@ -30,28 +29,30 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 	public void delete(JE0202 je0202) {
 		// TODO Auto-generated method stub
 		if(null != je0202){
-			getHibernateTemplate().delete(je0202);
+			sessionFactory.getCurrentSession().delete(je0202);
 		}
 	}
 
 	@Override
 	public JE0202 findByKey(String key) {
 		// TODO Auto-generated method stub
-		return (JE0202)getHibernateTemplate().get("entity.JE0202", key);
+		return (JE0202)sessionFactory.getCurrentSession().get("entity.JE0202", key);
 	}
 
 	@Override
 	public JE0202 findByValue(String value) {
 		// TODO Auto-generated method stub
-		//return (JE0202)getHibernateTemplate().get("entity.JE0202", value);
-		return (JE0202)getHibernateTemplate().find(" from JE0202 where JE0202_VALUE='" + value + "'");
+		//return (JE0202)sessionFactory.getCurrentSession().get("entity.JE0202", value);
+//		return (JE0202)getHibernateTemplate().find(" from JE0202 where JE0202_VALUE='" + value + "'");
+		return (JE0202)sessionFactory.getCurrentSession().createQuery(" from JE0202 where JE0202_VALUE='" + value + "'").list();
 	}
 	
 	@Override
 	public JE0202 findByType(String type) {
 		// TODO Auto-generated method stub
-		//return (JE0202)getHibernateTemplate().get("entity.JE0202", value);
-		return (JE0202)getHibernateTemplate().find(" from JE0202 where JE0202_VALUE='" + type + "'");
+		//return (JE0202)sessionFactory.getCurrentSession().get("entity.JE0202", value);
+//		return (JE0202)getHibernateTemplate().find(" from JE0202 where JE0202_VALUE='" + type + "'");
+		return (JE0202)sessionFactory.getCurrentSession().createQuery(" from JE0202 where JE0202_VALUE='" + type + "'").list();
 	}
 	
 
@@ -59,13 +60,13 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 	@SuppressWarnings("unchecked")
 	public List<JE0202> findAll() {
 		// TODO Auto-generated method stub
-		return getHibernateTemplate().find("from JE0202");
+		return sessionFactory.getCurrentSession().createQuery("from JE0202").list();
 	}
 
 	@Override
 	public void update(JE0202 je0202) {
 		// TODO Auto-generated method stub
-		getHibernateTemplate().update(je0202);
+		sessionFactory.getCurrentSession().update(je0202);
 	}
 	
 
@@ -102,7 +103,8 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 			sb.append(" and JE0202_DES='" + columnMap.get("JE0202_DES") + "' ");
 		}
 	
-		return getHibernateTemplate().find(sb.toString());
+//		return getHibernateTemplate().find(sb.toString());
+		return sessionFactory.getCurrentSession().createQuery(sb.toString()).list();
 	}
 	
 	@Override
@@ -141,7 +143,8 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 			sb.append(strOrder);
 		}
 		
-		return getHibernateTemplate().find(sb.toString());
+//		return getHibernateTemplate().find(sb.toString());
+		return sessionFactory.getCurrentSession().createQuery(sb.toString()).list();
 	}
 	
 	@Override
@@ -203,11 +206,12 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 			final int pageSize = Integer.parseInt(columnMap.get("pageSize"));
 			final int currentPageNum = Integer.parseInt(columnMap.get("currentPageNum"));
 			
-			return getHibernateTemplate().executeFind(new HibernateCallback(){
-				@Override
-				public Object doInHibernate(Session session)
-						throws HibernateException, SQLException {
+//			return getHibernateTemplate().executeFind(new HibernateCallback(){
+//				@Override
+//				public Object doInHibernate(Session session)
+//						throws HibernateException, SQLException {
 					// TODO Auto-generated method stub
+				Session session = sessionFactory.getCurrentSession();
 					Query query = session.createQuery(sb.toString());
 					query.setFirstResult((currentPageNum - 1)*pageSize);
 					query.setMaxResults(pageSize);
@@ -215,12 +219,12 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 					List<JE0202> list = query.list();
 					
 					return list;
-				}
+//				}
 				
-			});
+//			});
 		}
 		else{
-			return getHibernateTemplate().find(sb.toString());
+			return sessionFactory.getCurrentSession().createQuery(sb.toString()).list();
 		}
 		}catch(RuntimeException e){
 			log.info(e.getMessage());
@@ -231,11 +235,12 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 	@Override
 	public int getAllRowsCount(){ //for page
 		//Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		session.beginTransaction();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
+//		session.beginTransaction();
 		int count = ((Long)session.createQuery("select count(*) from JE0202").iterate().next()).intValue();
-		session.getTransaction().commit();
-		session.close();
+//		session.getTransaction().commit();
+//		// session.close();
 		return count;
 	}
 	
@@ -271,18 +276,20 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 			sb.append(" and JE0202_DES='" + columnMap.get("JE0202_DES") + "' ");
 		}
 		
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		session.beginTransaction();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
+//		session.beginTransaction();
 		int count = ((Long)session.createQuery(sb.toString()).iterate().next()).intValue();
-		session.getTransaction().commit();
-		session.close();
+//		session.getTransaction().commit();
+//		// session.close();
 		return count;
 	}
 	
 	@Override
 	public void getSubscriberInfo(JE0202 je0202){
 		//get employee information
-		Session ss = getHibernateTemplate().getSessionFactory().openSession();
+//		Session ss = sessionFactory.getCurrentSession();
+		Session ss = sessionFactory.getCurrentSession();
 		Query query = ss.createQuery(" from MP1001 m where m.MP1001_EMPLOYEE_NUM=:employeeNum");
 		query.setParameter("employeeNum", je0202.getJE0202_USER_NUM());
 		MP1001 mp11 = (MP1001)query.uniqueResult();
@@ -294,6 +301,18 @@ public class JE0202DAO extends HibernateDaoSupport implements IJE0202DAO {
 		MP0002 mp02 = (MP0002)query2.uniqueResult();
 		je0202.setSubscriberDepartmentInfo(mp02);
 		
-		ss.close();
+//		ss.close();
+	}
+
+	public static Log getLog() {
+		return log;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

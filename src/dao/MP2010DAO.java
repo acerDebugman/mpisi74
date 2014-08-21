@@ -1,28 +1,26 @@
 package dao;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import entity.MP2010;
 
-public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
+public class MP2010DAO  implements IMP2010DAO {
 	private static final Log log = LogFactory.getLog(JE0202DAO.class);
-
+	private SessionFactory sessionFactory;
+	
 	@Override
 	public void save(MP2010 mp2010) {
 		// TODO Auto-generated method stub
 		if(null != mp2010){
-			getHibernateTemplate().save(mp2010);
+			sessionFactory.getCurrentSession().save(mp2010);
 		}
 	}
 
@@ -30,7 +28,7 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 	public void delete(MP2010 mp2010) {
 		// TODO Auto-generated method stub
 		if(null != mp2010){
-			getHibernateTemplate().delete(mp2010);
+			sessionFactory.getCurrentSession().delete(mp2010);
 		}
 	}
 
@@ -39,7 +37,7 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 		// TODO Auto-generated method stub
 		//return (MP2010)getHibernateTemplate().find("entity.MP2010", Integer.parseInt(key));
 		//return (MP2010)getHibernateTemplate().find(" from entity.MP2010 p where p.MP2010_ID=?", Integer.parseInt(key)).;
-		return (MP2010)getHibernateTemplate().get(MP2010.class, Integer.parseInt(key));
+		return (MP2010)sessionFactory.getCurrentSession().get(MP2010.class, Integer.parseInt(key));
 	}
 
 	@Override
@@ -51,13 +49,14 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 	@Override
 	public List<MP2010> findAll() {
 		// TODO Auto-generated method stub
-		return getHibernateTemplate().find("from MP2010");
+//		return getHibernateTemplate().find("from MP2010");
+		return sessionFactory.getCurrentSession().createQuery("from MP2010").list();
 	}
 
 	@Override
 	public void update(MP2010 mp2010) {
 		// TODO Auto-generated method stub
-		getHibernateTemplate().update(mp2010);
+		sessionFactory.getCurrentSession().update(mp2010);
 	}
 
 	@Override
@@ -102,7 +101,8 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 			sb.append(" and MP2010_BRANCH_SITE='" + columnMap.get("MP2010_BRANCH_SITE") + "' ");
 		}
 
-		return getHibernateTemplate().find(sb.toString());
+//		return getHibernateTemplate().find(sb.toString());
+		return sessionFactory.getCurrentSession().createQuery(sb.toString()).list();
 	}
 
 	@Override
@@ -132,7 +132,8 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 		}
 		sb.append(" " + strOrder);
 		
-		return getHibernateTemplate().find(sb.toString());
+//		return getHibernateTemplate().find(sb.toString());
+		return sessionFactory.getCurrentSession().createQuery(sb.toString()).list();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -160,7 +161,8 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 				}
 				
 			}
-			return (Long)getHibernateTemplate().find(queryString.toString()).iterator().next();
+//			return (Long)getHibernateTemplate().find(queryString.toString()).iterator().next();
+			return (Long)sessionFactory.getCurrentSession().createQuery(queryString.toString()).iterate().next();
 		}catch(RuntimeException e){
 			log.info(e.getMessage());
 			throw e;
@@ -197,8 +199,11 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 					final int pageNum = Integer.parseInt(columnNames.get("PAGE_NUM")); //which page
 					final int pageCount = Integer.parseInt(columnNames.get("PAGE_COUNT")); //per page numbers
 					
-					return getHibernateTemplate().executeFind(new HibernateCallback(){
-						public Object doInHibernate(org.hibernate.Session session) throws HibernateException, SQLException {
+//					return getHibernateTemplate().executeFind(new HibernateCallback(){
+//						public Object doInHibernate(org.hibernate.Session session) throws HibernateException, SQLException {
+					
+							Session session = sessionFactory.getCurrentSession();
+					
 							Query query = session.createQuery(queryString.toString());
 							query.setFirstResult((pageNum - 1) * pageCount);
 							query.setMaxResults(pageCount);
@@ -206,10 +211,11 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 							List<MP2010> list = query.list();
 							
 							return list;
-						}});
+//						}});
 			}
 			else{
-				return getHibernateTemplate().find(queryString.toString());
+//				return getHibernateTemplate().find(queryString.toString());
+				return sessionFactory.getCurrentSession().createQuery(queryString.toString()).list();
 			}
 
 		}catch(RuntimeException e){
@@ -243,5 +249,17 @@ public class MP2010DAO extends HibernateDaoSupport implements IMP2010DAO {
 	public void getSubscriberInfo(MP2010 mp2010) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public static Log getLog() {
+		return log;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

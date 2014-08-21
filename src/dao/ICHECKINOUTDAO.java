@@ -40,4 +40,8 @@ public interface ICHECKINOUTDAO {
     public CHECKINOUT fetchLatestDayRecord(Date date);
     
     public long fetchTotalRecordsCounter();
+    
+    public List<CHECKINOUT> fetchDailyRecordsByUserId(Date date, int userId);
+    
+    public List<CHECKINOUT> fetchDailyRecordsByUserIdForDays(Date fromDate, Date endDate, int userId);
 }

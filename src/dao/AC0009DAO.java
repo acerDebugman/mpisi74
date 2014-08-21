@@ -4,39 +4,43 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
+
 import entity.AC0009;
 
-public class AC0009DAO extends HibernateDaoSupport implements IAC0009DAO {
+public class AC0009DAO  implements IAC0009DAO {
+	private SessionFactory sessionFactory;
 	
 	public void save(AC0009 ac0009) {
 		if (ac0009 != null) {
-			getHibernateTemplate().save(ac0009);
+			sessionFactory.getCurrentSession().save(ac0009);
 		}
 	}
 
 	public void delete(AC0009 ac0009) {
-		getHibernateTemplate().delete(ac0009);
+		sessionFactory.getCurrentSession().delete(ac0009);
 	}
 
 	public AC0009 findById(String seq) {
-		return (AC0009) getHibernateTemplate().get("entity.AC0009", seq);
+		return (AC0009) sessionFactory.getCurrentSession().get("entity.AC0009", seq);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<AC0009> findAll() {
-		return getHibernateTemplate().find("from AC0009");
+//		return getHibernateTemplate().find("from AC0009");
+		return sessionFactory.getCurrentSession().createQuery("from AC0009").list();
 	}
 
 	public void update(AC0009 ac0009) {
-		getHibernateTemplate().update(ac0009);
+		sessionFactory.getCurrentSession().update(ac0009);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<AC0009> findByProperty(String name, String value){
 		try{
-			String queryString = " from AC0009 as bulletin where bulletin." + name + " = ?";
-			return getHibernateTemplate().find(queryString, value);
+			String queryString = " from AC0009 as bulletin where bulletin." + name + " = '" + value + "'";
+//			return getHibernateTemplate().find(queryString, value);
+			return sessionFactory.getCurrentSession().createQuery(queryString).list();
 		}catch(RuntimeException ex){
 			throw ex;
 		}
@@ -48,7 +52,7 @@ public class AC0009DAO extends HibernateDaoSupport implements IAC0009DAO {
 		
 		try{
 			StringBuffer queryString = new StringBuffer();
-			session = getHibernateTemplate().getSessionFactory().openSession();
+			session = sessionFactory.getCurrentSession();
 			
 			queryString.append(" select mp11.MP1001_COMPANY_EMAIL ");
 			queryString.append(" from AC0009 ac09,AC0008 ac08,MP1001 mp11 ");
@@ -72,17 +76,25 @@ public class AC0009DAO extends HibernateDaoSupport implements IAC0009DAO {
 				mailList =mailList + companyMail + ",";
 			}
 			
-			session.close();
+//			// session.close();
 		}catch(Exception ex){
 			System.out.println(ex.getMessage());
 		}
 		finally{
 			if(session.isConnected()){
-				session.close();
+//				// session.close();
 			}
 		}
 		
 		return mailList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 	
 	

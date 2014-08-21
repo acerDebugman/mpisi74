@@ -6,35 +6,41 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import common.Constant;
 
 import entity.AC0002;
 
-public class AC0002DAO extends HibernateDaoSupport implements IAC0002DAO {
+public class AC0002DAO implements IAC0002DAO {
+	private SessionFactory sessionFactory;
 	
 	public void save(AC0002 ac0002) {
 		if (ac0002 != null) {
-			getHibernateTemplate().save(ac0002);
+//			sessionFactory.getCurrentSession().save(ac0002);
+			sessionFactory.getCurrentSession().save(ac0002);
 		}
 	}
 
 	public void delete(AC0002 ac0002) {
-		getHibernateTemplate().delete(ac0002);
+//		sessionFactory.getCurrentSession().delete(ac0002);
+		sessionFactory.getCurrentSession().delete(ac0002);
 	}
 
 	public AC0002 findById(String seq) {
-		return (AC0002) getHibernateTemplate().get("entity.AC0002", seq);
+//		return (AC0002) sessionFactory.getCurrentSession().get("entity.AC0002", seq);
+		return (AC0002) sessionFactory.getCurrentSession().get("entity.AC0002", seq);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<AC0002> findAll() {
-		return getHibernateTemplate().find("from AC0002");
+//		return getHibernateTemplate().find("from AC0002");
+		return sessionFactory.getCurrentSession().createQuery("from AC0002").list();
 	}
 
 	public void update(AC0002 ac0002) {
-		getHibernateTemplate().update(ac0002);
+//		sessionFactory.getCurrentSession().update(ac0002);
+		sessionFactory.getCurrentSession().update(ac0002);
 	}
 	
 	public List<AC0002> findByProperty(String name, String value){
@@ -104,14 +110,15 @@ public class AC0002DAO extends HibernateDaoSupport implements IAC0002DAO {
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<AC0002> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		List<AC0002> retList = getDataList(list);
 		
@@ -150,5 +157,13 @@ public class AC0002DAO extends HibernateDaoSupport implements IAC0002DAO {
 			retList.add(ac0002);
 		}
 		return retList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

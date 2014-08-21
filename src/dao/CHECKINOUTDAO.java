@@ -9,46 +9,50 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.CHECKINOUT;
 import entity.MP1001;
 import entity.USERINFO;
 
-public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO{
+public class CHECKINOUTDAO  implements ICHECKINOUTDAO{
+	private SessionFactory sessionFactory;
+	
     // 保存数据
     public void save(CHECKINOUT checkinout) {
         if(checkinout != null){
-            getHibernateTemplate().save(checkinout);
+            sessionFactory.getCurrentSession().save(checkinout);
         }
     }
     // 删除数据
     public void delete(CHECKINOUT checkinout) {
         if(checkinout != null){
-            getHibernateTemplate().delete(checkinout);
+            sessionFactory.getCurrentSession().delete(checkinout);
         }
     }
     // 根据KEY检索数据
     public CHECKINOUT findById(String key) {
-        	return (CHECKINOUT)getHibernateTemplate().get("entity.CHECKINOUT", key);
+        	return (CHECKINOUT)sessionFactory.getCurrentSession().get("entity.CHECKINOUT", key);
     }
     // 取得所有有效数据
     @SuppressWarnings("unchecked")
     public List<CHECKINOUT> findAll() {
-        return getHibernateTemplate().find(" from CHECKINOUT where 1=1  ");
+//        return getHibernateTemplate().find(" from CHECKINOUT where 1=1  ");
+    	return sessionFactory.getCurrentSession().createQuery(" from CHECKINOUT where 1=1  ").list();
     }
     // 更新数据
     public void update(CHECKINOUT checkinout) {
         if(checkinout != null){
-            getHibernateTemplate().update(checkinout);
+            sessionFactory.getCurrentSession().update(checkinout);
         }
     }
     // 更新数据
     public void executeStatement(String statement){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+//        Session session = sessionFactory.getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(statement);
         query.executeUpdate();
-        session.close();
+//        // session.close();
     }
     // 动态根据传入的参数，检索数据
     public List<CHECKINOUT> findByProperty(String name, String value) {
@@ -127,14 +131,15 @@ public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO
     // 检索数据
     @SuppressWarnings("unchecked")
     private List<CHECKINOUT> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+//        Session session = sessionFactory.getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(queryString.toString());
         if( PAGE_NUM > 0 && PAGE_COUNT > 0){
             query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
             query.setMaxResults(PAGE_COUNT);
         }
         List<Object[]> list = query.list();
-        session.close();
+//        // session.close();
 
         List<CHECKINOUT> retList = getDataList(list);
 
@@ -177,10 +182,11 @@ public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO
         queryString.append(" where 1=1 ");
         queryString.append(" and userinfo.SSN = '" + employeeNum + "'");
 		
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+//        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(queryString.toString());
         List<Object[]> list = query.list();
-        session.close();
+//        // session.close();
         
         if(list != null && list.size() >0){
         	usrId = Integer.parseInt(list.get(0)[0].toString());
@@ -190,7 +196,7 @@ public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO
 	}
 	public void save(USERINFO userinfo) {
 		if (userinfo != null) {
-			getHibernateTemplate().save(userinfo);
+			sessionFactory.getCurrentSession().save(userinfo);
 		}
 	}
     
@@ -209,22 +215,24 @@ public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO
     	Date endTime = cal.getTime();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     	
-    	Session session = getHibernateTemplate().getSessionFactory().openSession();
-    	session.beginTransaction();
+//    	Session session = sessionFactory.getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
+//    	session.beginTransaction();
     	
         Query query = session.createQuery("select c from CHECKINOUT c where c.CHECKTIME>=:startDateTime and c.CHECKTIME<=:endDateTime")
         				.setString("startDateTime", sdf.format(startTime))
         				.setString("endDateTime", sdf.format(endTime));
         List<CHECKINOUT> list = query.list();
         
-        session.getTransaction().commit();
-        session.close();
+//        session.getTransaction().commit();
+//        // session.close();
         
         return list;
     }
     
     public List<CHECKINOUT> fetchEmployeeDailyRecords(Date date, MP1001 emp){
-    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+//    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     	List<CHECKINOUT> list = session.createQuery("select c from CHECKINOUT c, USERINFO u where " +
     			" u.SSN=:empCode and c.USERID=u.USERID and convert(varchar(10), c.CHECKTIME, 120)=:theDate " +
@@ -238,7 +246,8 @@ public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO
     
     public CHECKINOUT fetchLatestDayRecord(Date date){
     	CHECKINOUT rcd = null;
-    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+//    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 //    	List<CHECKINOUT> list = session.createQuery("select c from CHECKINOUT c where convert(varchar(10), c.CHECKTIME, 120)=:theDate " +
     	rcd = (CHECKINOUT)session.createQuery("select c from CHECKINOUT c where convert(varchar(10), c.CHECKTIME, 120)=:theDate " +
@@ -251,10 +260,41 @@ public class CHECKINOUTDAO extends HibernateDaoSupport implements ICHECKINOUTDAO
     }
 
     public long fetchTotalRecordsCounter(){
-    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+//    	Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
     	long counter = (Long)session.createQuery("select count(*) from CHECKINOUT").uniqueResult();
     	
     	return counter;
     }
+    
+    public List<CHECKINOUT> fetchDailyRecordsByUserId(Date date, int userId){
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	Session session = sessionFactory.getCurrentSession();
+    	return session.createQuery("from CHECKINOUT c where c.USERID=:userId and convert(varchar(10), c.CHECKTIME, 120)=:theDate " +
+    						" order by c.CHECKTIME desc")
+    						.setInteger("userId", userId)
+    						.setString("theDate", sdf.format(date))
+    						.list();
+    				
+    }
+    
+    public List<CHECKINOUT> fetchDailyRecordsByUserIdForDays(Date fromDate, Date endDate, int userId){
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	Session session = sessionFactory.getCurrentSession();
+    	return session.createQuery("from CHECKINOUT c where c.USERID=:userId and convert(varchar(10), c.CHECKTIME, 120) >= fromDate " +
+		    						" and convert(varchar(10), c.CHECKTIME, 120) <= endDate " +
+		    						" order by c.CHECKTIME desc")
+		    						.setInteger("userId", userId)
+		    						.setString("fromDate", sdf.format(fromDate))
+		    						.setString("endDate", sdf.format(endDate))
+		    						.list();
+    }
+    
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+	
 }
-

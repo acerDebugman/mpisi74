@@ -6,44 +6,48 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.MP1010;
 
-public class MP1010DAO extends HibernateDaoSupport implements IMP1010DAO{
+public class MP1010DAO  implements IMP1010DAO{
+	private SessionFactory sessionFactory;
+	
     // 保存数据
     public void save(MP1010 mp1010) {
         if(mp1010 != null){
-            getHibernateTemplate().save(mp1010);
+            sessionFactory.getCurrentSession().save(mp1010);
         }
     }
     // 删除数据
     public void delete(MP1010 mp1010) {
         if(mp1010 != null){
-            getHibernateTemplate().delete(mp1010);
+            sessionFactory.getCurrentSession().delete(mp1010);
         }
     }
     // 根据KEY检索数据
     public MP1010 findById(String key) {
-        	return (MP1010)getHibernateTemplate().get("entity.MP1010", key);
+        	return (MP1010)sessionFactory.getCurrentSession().get("entity.MP1010", key);
     }
     // 取得所有有效数据
     @SuppressWarnings("unchecked")
     public List<MP1010> findAll() {
-        return getHibernateTemplate().find(" from MP1010 where 1=1  ");
+//        return getHibernateTemplate().find(" from MP1010 where 1=1  ");
+    	return sessionFactory.getCurrentSession().createQuery("from MP1010 where 1=1 ").list();
     }
     // 更新数据
     public void update(MP1010 mp1010) {
         if(mp1010 != null){
-            getHibernateTemplate().update(mp1010);
+            sessionFactory.getCurrentSession().update(mp1010);
         }
     }
     // 更新数据
     public void executeStatement(String statement){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+//        Session session = sessionFactory.getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(statement);
         query.executeUpdate();
-        session.close();
+        // session.close();
     }
     // 动态根据传入的参数，检索数据
     public List<MP1010> findByProperty(String name, String value) {
@@ -137,14 +141,15 @@ public class MP1010DAO extends HibernateDaoSupport implements IMP1010DAO{
     // 检索数据
     @SuppressWarnings("unchecked")
     private List<MP1010> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+//        Session session = sessionFactory.getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(queryString.toString());
         if( PAGE_NUM > 0 && PAGE_COUNT > 0){
             query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
             query.setMaxResults(PAGE_COUNT);
         }
         List<Object[]> list = query.list();
-        session.close();
+        // session.close();
 
         List<MP1010> retList = getDataList(list);
 
@@ -182,4 +187,10 @@ public class MP1010DAO extends HibernateDaoSupport implements IMP1010DAO{
         }
         return retList;
     }
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 }

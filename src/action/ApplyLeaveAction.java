@@ -296,6 +296,8 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	//private String ;
 	private List<MP2010> shiftworkScheduleList;
 //	private IMP2010Service serviceMP2010;
+
+	private String todayDate; 
 	
     /* 
 	* @getDownloadFile 此方法对应的是struts.xml文件中的： <param 
@@ -2931,6 +2933,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	public String workingHourRecordsListInit() throws Exception{
 		ActionContext context = ActionContext.getContext();
 		Map<String, Object> session = context.getSession();
+		
+//		session.put("action", this);
+		
 		// 取得登陆人信息
 		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
 		
@@ -3004,6 +3009,9 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		    // 部门信息在登录后就缓存在Session中了
 		    departmentList = (List<MP0002>) session.get("DEPARTMENT_LIST");
 		    
+		    
+		    //for compare date 
+		    todayDate = sdf.format(today);
 			return SUCCESS;
 		}catch(Exception ex){
 		    log.info(ex.getMessage());
@@ -3016,8 +3024,12 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	public String workingRecordsListSearch() throws Exception{
 		ActionContext context = ActionContext.getContext();
 		Map<String, Object> session = context.getSession();
+		
+//		session.put("action", this);
+		
 		// 取得登陆人信息
 		MP1001 employeeData = (MP1001)session.get(Constant.EMPLOYEE_DATA);
+		
 		
 		try{
 			roleGroup = employeeData.getMP1001_GROUP();
@@ -3083,6 +3095,13 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		    departmentList = (List<MP0002>) session.get("DEPARTMENT_LIST");
 		    attendenceStatusList = Constant.getAbnormalType();
 		    
+		    
+
+		    //for compare date 
+		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		    Date today = new Date();
+		    todayDate = sdf.format(today);
+		    
 			return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
@@ -3144,6 +3163,13 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 			workingHourRecordList = serviceMp2003.findByPropertysPage(employeeData, pageNum, pageCount,employeeNum,fromDate,toDate,departmentID, attendenceStatus);
 			//dataConvert2003(workingHourRecordList,employeeData);
 			log.info("Data Size:" + workingHourRecordList.size());
+			
+			
+			//for compare date 
+		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		    Date today = new Date();
+		    todayDate = sdf.format(today);
+		    
 			return SUCCESS;
 		}catch(Exception ex){
 			log.info(ex.getMessage());
@@ -4405,6 +4431,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	public String ApproveLeave(){
 		ActionContext context = ActionContext.getContext();
 		Map<String, Object> session = context.getSession();
+//		session.put("action", this); //for after advice
 		MP1001 employeeData = (MP1001)session.get("EMPLOYEE_DATA");
 		
 		try{
@@ -6865,7 +6892,7 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 		headCellWidth.add(20);
 		headCellWidth.add(20);
 		headCellWidth.add(35);
-		headCellWidth.add(10);
+		headCellWidth.add(30);
 		headCellWidth.add(18);
 		headCellWidth.add(18);
 		headCellWidth.add(18);
@@ -6929,8 +6956,18 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 	        	//lateEarlyList.get(c);
 	        	datas[0] = lateEarlyList.get(c).getEmployeeNum();
 	        	datas[1] = sdf.format(lateEarlyList.get(c).getDate());
-	        	datas[2] = sdf.format(lateEarlyList.get(c).getClockInTime());
-	        	datas[3] = sdf.format(lateEarlyList.get(c).getClockOutTime());
+	        	if(lateEarlyList.get(c).getClockInTime() == null){
+	        		datas[2] = null;
+	        	}
+	        	else{
+	        		datas[2] = sdf.format(lateEarlyList.get(c).getClockInTime());
+	        	}
+	        	if(lateEarlyList.get(c).getClockOutTime() == null){
+	        		datas[3] = null;
+	        	}
+	        	else{
+	        		datas[3] = sdf.format(lateEarlyList.get(c).getClockOutTime());
+	        	}
 	        	datas[4] = lateEarlyList.get(c).getPreferedName();
 	        	datas[5] = lateEarlyList.get(c).getSurname();
 	        	datas[6] = lateEarlyList.get(c).getDepartmentName();
@@ -9083,5 +9120,13 @@ public class ApplyLeaveAction extends ActionSupport implements ServletRequestAwa
 
 	public void setJb(executeJobs jb) {
 		this.jb = jb;
+	}
+
+	public String getTodayDate() {
+		return todayDate;
+	}
+
+	public void setTodayDate(String todayDate) {
+		this.todayDate = todayDate;
 	}
 }

@@ -6,38 +6,41 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import common.Constant;
 
 import entity.MP7002;
 
-public class MP7002DAO extends HibernateDaoSupport implements IMP7002DAO{
+public class MP7002DAO  implements IMP7002DAO{
+	private SessionFactory sessionFactory;
+	
 	// 保存数据
 	public void save(MP7002 mp7002) {
 		if(mp7002 != null){
-			getHibernateTemplate().save(mp7002);
+			sessionFactory.getCurrentSession().save(mp7002);
 		}
 	}
 	// 删除数据
 	public void delete(MP7002 mp7002) {
 		if(mp7002 != null){
-			getHibernateTemplate().delete(mp7002);
+			sessionFactory.getCurrentSession().delete(mp7002);
 		}
 	}
 	// 根据KEY检索数据
 	public MP7002 findById(String key) {
-		return (MP7002)getHibernateTemplate().get("entity.MP7002", key);
+		return (MP7002)sessionFactory.getCurrentSession().get("entity.MP7002", key);
 	}
 	// 取得所有有效数据
 	@SuppressWarnings("unchecked")
 	public List<MP7002> findAll() {
-		return getHibernateTemplate().find(" from MP7002 where 1=1 and MP7002_STATUS = '1' ");
+//		return getHibernateTemplate().find(" from MP7002 where 1=1 and MP7002_STATUS = '1' ");
+		return sessionFactory.getCurrentSession().createQuery("from MP7002 where 1=1 and MP7002_STATUS = '1'").list();
 	}
 	// 更新数据
 	public void update(MP7002 mp7002) {
 		if(mp7002 != null){
-			getHibernateTemplate().update(mp7002);
+			sessionFactory.getCurrentSession().update(mp7002);
 		}
 	}
 	// 动态根据传入的参数，检索数据
@@ -126,14 +129,14 @@ public class MP7002DAO extends HibernateDaoSupport implements IMP7002DAO{
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP7002> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+		Session session = sessionFactory.getCurrentSession();		
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		List<MP7002> retList = getDataList(list);
 		
@@ -191,5 +194,11 @@ public class MP7002DAO extends HibernateDaoSupport implements IMP7002DAO{
 			retList.add(mp7002);
 		}
 		return retList;
+	}
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

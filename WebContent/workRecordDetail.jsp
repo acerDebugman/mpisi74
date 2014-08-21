@@ -32,7 +32,8 @@
         <td><s:property value="MP2003_FINISH_TIME_DOOR"></s:property></td>
         <td style="color:red;width:250px;"><s:property value="MP2003_COMMENT"></s:property></td>
         <td>
-<s:if test="MP2003_STATUS==1 &&  optApproval==1 && MP2003_EMPLOYEE_NUM != loginName && MP2003_DEPARTMENT_ID == depID">
+<%-- <s:if test="MP2003_STATUS==1 &&  optApproval==1 && MP2003_EMPLOYEE_NUM != loginName && MP2003_DEPARTMENT_ID == depID"> --%>
+<s:if test="MP2003_STATUS==1 &&  optApproval==1 && MP2003_EMPLOYEE_NUM != loginName && MP2003_DEPARTMENT_ID == depID && MP2003_DATETIME != todayDate">
             <input type="button" onclick="workTimeConfirm('<s:property value="MP2003_EMPLOYEE_NUM"/>','<s:property value="MP2003_DATETIME"/>')" id="confrimBtn" name="confrimBtn" value="Confirm" />
 </s:if>
 <s:if test="MP2003_STATUS==1 && roleGroup==3">

@@ -7,41 +7,46 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.AC0006;
 
-public class AC0006DAO extends HibernateDaoSupport implements IAC0006DAO {
+public class AC0006DAO  implements IAC0006DAO {
 	private static final Log log = LogFactory.getLog(AC0006DAO.class);
+	
+	private SessionFactory sessionFactory;
 	
 	public void save(AC0006 ac0006) {
 		if (ac0006 != null) {
-			getHibernateTemplate().save(ac0006);
+			sessionFactory.getCurrentSession().save(ac0006);
 		}
 	}
 
 	public void delete(AC0006 ac0006) {
-		getHibernateTemplate().delete(ac0006);
+		sessionFactory.getCurrentSession().delete(ac0006);
 	}
 
 	public AC0006 findById(String seq) {
-		return (AC0006) getHibernateTemplate().get("entity.AC0006", seq);
+		return (AC0006) sessionFactory.getCurrentSession().get("entity.AC0006", seq);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<AC0006> findAll() {
-		return getHibernateTemplate().find("from AC0006");
+//		return getHibernateTemplate().find("from AC0006");
+		return sessionFactory.getCurrentSession().createQuery("from AC0006").list();
 	}
 
 	public void update(AC0006 ac0006) {
-		getHibernateTemplate().update(ac0006);
+		sessionFactory.getCurrentSession().update(ac0006);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<AC0006> findByProperty(String name, String value){
 		try{
-			String queryString = " from AC0006 as ac06 where ac06." + name + " = ?";
-			return getHibernateTemplate().find(queryString, value);
+//			String queryString = " from AC0006 as ac06 where ac06." + name + " = ?";
+//			return getHibernateTemplate().find(queryString, value);
+			String queryString = " from AC0006 as ac06 where ac06." + name + " = '" + value + "'";
+			return sessionFactory.getCurrentSession().createQuery(queryString).list();
 		}catch(RuntimeException ex){
 			throw ex;
 		}
@@ -53,7 +58,8 @@ public class AC0006DAO extends HibernateDaoSupport implements IAC0006DAO {
 		Session session = null;
 		try{
 			StringBuffer queryString = new StringBuffer();
-			session = getHibernateTemplate().getSessionFactory().openSession();
+//			session = sessionFactory.getCurrentSession();
+			session = sessionFactory.getCurrentSession();
 			
 			queryString.append(" select ac06.AC0006_ROLE_NUM ");
 			queryString.append(" from AC0009 ac09, AC0006 ac06 ");
@@ -77,13 +83,13 @@ public class AC0006DAO extends HibernateDaoSupport implements IAC0006DAO {
 				resultValue = false;
 			}
 			
-			session.close();
+//			// session.close();
 		}catch(Exception ex){
 			log.info(ex.getMessage());
 		}
 		finally{
 			if(session.isConnected()){
-				session.close();
+//				// session.close();
 			}
 		}
 		return resultValue;
@@ -95,7 +101,8 @@ public class AC0006DAO extends HibernateDaoSupport implements IAC0006DAO {
 		
 		try{
 			StringBuffer queryString = new StringBuffer();
-			session = getHibernateTemplate().getSessionFactory().openSession();
+//			session = sessionFactory.getCurrentSession();
+			session = sessionFactory.getCurrentSession();
 			
 			queryString.append(" select ac09.AC0009_EMPLOYEE_NUM, ac06.AC0006_ROLE_NUM, ac06.AC0006_SYS_NUM, ac07.AC0007_FUN_NUM ");
 			queryString.append(" from AC0009 ac09,AC0006 ac06,AC0007 ac07 ");
@@ -118,14 +125,14 @@ public class AC0006DAO extends HibernateDaoSupport implements IAC0006DAO {
 				functionMap.put(_funNum, String.valueOf(i));
 			}
 			
-			session.close();
+//			// session.close();
 		}catch(Exception ex){
 			log.info(ex.getMessage());
 			functionMap = new HashMap<String,String>();
 		}
 		finally{
 			if(session.isConnected()){
-				session.close();
+//				// session.close();
 			}
 		}
 		
@@ -138,7 +145,8 @@ public class AC0006DAO extends HibernateDaoSupport implements IAC0006DAO {
 		
 		try{
 			StringBuffer queryString = new StringBuffer();
-			session = getHibernateTemplate().getSessionFactory().openSession();
+//			session = sessionFactory.getCurrentSession();
+			session = sessionFactory.getCurrentSession();
 			
 			queryString.append(" select ac09.AC0009_EMPLOYEE_NUM, ac06.AC0006_ROLE_NUM, ac06.AC0006_SYS_NUM, ac07.AC0007_FUN_NUM,ac08.AC0008_OPT_NUM ");
 			queryString.append(" from AC0009 ac09,AC0006 ac06,AC0007 ac07,AC0008 ac08 ");
@@ -167,18 +175,26 @@ public class AC0006DAO extends HibernateDaoSupport implements IAC0006DAO {
 				optMap.put(_optNum, String.valueOf(i));
 			}
 			
-			session.close();
+//			// session.close();
 		}catch(Exception ex){
 			log.info(ex.getMessage());
 			optMap = new HashMap<String,String>();
 		}
 		finally{
 			if(session.isConnected()){
-				session.close();
+//				// session.close();
 			}
 		}
 		
 		return optMap;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 	
 	

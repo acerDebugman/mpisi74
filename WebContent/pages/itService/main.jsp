@@ -41,5 +41,9 @@
 <s:form action="transportWorkTimePatter" method="post" theme="simple">
 	<s:submit value="transport work time pattern" />
 </s:form>
+
+<s:form action="transportWorkTimePatter" method="post" theme="simple">
+	<s:submit value="transport work time pattern" />
+</s:form>
 </body>
 </html>

@@ -4,19 +4,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import entity.MP1001;
 import entity.MP1005;
 
-public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
+public class MP1001DAO  implements IMP1001DAO {
+	
+	private SessionFactory sessionFactory;
 	
 	private static final Log log = LogFactory.getLog(MP1001DAO.class);
 	private Session session;
@@ -25,31 +28,34 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
     // 保存数据
 	public void save(MP1001 mp1001) {
 		if (mp1001 != null) {
-			getHibernateTemplate().save(mp1001);
+			sessionFactory.getCurrentSession().save(mp1001);
 		}
 	}
     // 删除数据
 	public void delete(MP1001 mp1001) {
-		getHibernateTemplate().delete(mp1001);
+		sessionFactory.getCurrentSession().delete(mp1001);
 	}
     // 根据关键字查询数据
 	public MP1001 findById(String employeeNum) {
-		return (MP1001) getHibernateTemplate().get("entity.MP1001", employeeNum);
+		return (MP1001) sessionFactory.getCurrentSession().get("entity.MP1001", employeeNum);
 	}
     // 查询所有数据
 	@SuppressWarnings("unchecked")
 	public List<MP1001> findAll() {
-		return getHibernateTemplate().find("from MP1001 where MP1001_STATUS = '1' or MP1001_STATUS = '2' ");
+//		return getHibernateTemplate().find("from MP1001 where MP1001_STATUS = '1' or MP1001_STATUS = '2' ");
+		return sessionFactory.getCurrentSession().createQuery("from MP1001 where MP1001_STATUS = '1' or MP1001_STATUS = '2' ").list();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<MP1001> findAbsolutelyAll() {
-		return getHibernateTemplate().find("from MP1001 ");
+//		return getHibernateTemplate().find("from MP1001 ");
+		return sessionFactory.getCurrentSession().createQuery("from MP1001 ").list();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<MP1001> findbyDepartmentId(String departmentID) {
-		return getHibernateTemplate().find("from MP1001 where (MP1001_STATUS = '1' or MP1001_STATUS = '2') and MP1001_DEPARTMENT_ID = '" + departmentID + "' " );
+//		return getHibernateTemplate().find("from MP1001 where (MP1001_STATUS = '1' or MP1001_STATUS = '2') and MP1001_DEPARTMENT_ID = '" + departmentID + "' " );
+		return sessionFactory.getCurrentSession().createQuery("from MP1001 where (MP1001_STATUS = '1' or MP1001_STATUS = '2') and MP1001_DEPARTMENT_ID = '" + departmentID + "' " ).list();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -70,22 +76,25 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 		
 		//return getHibernateTemplate().find("from MP1001 where MP1001_STATUS = '3' order by MP1001_RESIGN_DATE desc ");
 		
-		return getHibernateTemplate().find(sb.toString());
+//		return getHibernateTemplate().find(sb.toString());
+		return sessionFactory.getCurrentSession().createQuery(sb.toString()).list();
 	}
 	
 	// 查询所有email
 	@SuppressWarnings("unchecked")
 	public List<MP1001> findAllEmail(){
-		return getHibernateTemplate().find("from MP1001 where 1=1 and MP1001_STATUS = '2' and MP1001_COMPANY_EMAIL is not NULL and MP1001_COMPANY_EMAIL <> '' ");
+//		return getHibernateTemplate().find("from MP1001 where 1=1 and MP1001_STATUS = '2' and MP1001_COMPANY_EMAIL is not NULL and MP1001_COMPANY_EMAIL <> '' ");
+		return sessionFactory.getCurrentSession().createQuery("from MP1001 where 1=1 and MP1001_STATUS = '2' and MP1001_COMPANY_EMAIL is not NULL and MP1001_COMPANY_EMAIL <> '' ").list();
 	}
     // 更新数据
 	public void update(MP1001 mp1001) {
-		getHibernateTemplate().update(mp1001);
+		sessionFactory.getCurrentSession().update(mp1001);
 	}
 	// 更新数据
 	public void updateEmployeeNum(String oldValue, String newValue, String curUser) throws Exception{
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		session.beginTransaction();
+//		Session session = sessionFactory.getCurrentSession();
+//		session.beginTransaction();
+		Session session = sessionFactory.getCurrentSession();
 		
 		try{
 			//String queryString = " update MP1001 set MP1001_CHG_TIME = GETDATE(), MP1001_CHG_EMPLOYE= '" + curUser + "', MP1001_STATUS = '2', MP1001_EMPLOYEE_NUM = '" + newValue + "' where MP1001_EMPLOYEE_NUM = '" + oldValue + "'";
@@ -149,8 +158,8 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 		    query = session.createQuery(queryString);
 		    query.executeUpdate();*/
 		    
-		    session.getTransaction().commit();	    
-		    session.close();
+//		    session.getTransaction().commit();	    
+//		    // session.close();
 		}catch(Exception ex){
 			log.info(ex.getMessage());
 			session.getTransaction().rollback();
@@ -255,8 +264,11 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 				final int pageNum = Integer.parseInt(propertyMap.get("PAGE_NUM"));
 				final int pageCount = Integer.parseInt(propertyMap.get("PAGE_COUNT"));
 				
-				return getHibernateTemplate().executeFind(new HibernateCallback(){
-					public Object doInHibernate(Session session) throws HibernateException, SQLException {
+//				return getHibernateTemplate().executeFind(new HibernateCallback(){
+//					public Object doInHibernate(Session session) throws HibernateException, SQLException {
+					
+						Session session = sessionFactory.getCurrentSession();
+				
 						Query query = session.createQuery(queryString.toString());
 						query.setFirstResult((pageNum -1)*pageCount);
 						query.setMaxResults(pageCount);
@@ -264,10 +276,11 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 						List<MP1001> list = query.list();
 						
 						return list;
-					}});
+//					}});
 			}
 			else{
-				return getHibernateTemplate().find(queryString.toString());
+//				return getHibernateTemplate().find(queryString.toString());
+				return sessionFactory.getCurrentSession().createQuery(queryString.toString()).list();
 			}
 			//return getHibernateTemplate().find(queryString.toString());
 		}catch(RuntimeException ex){
@@ -279,7 +292,8 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 	@SuppressWarnings("unchecked")
 	public List<MP1001> getDepartmentHeadcount(){
 		StringBuffer queryString = new StringBuffer();
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		
 		queryString.append(" select ");
 		queryString.append(" mp02.MP0002_DEPARTMENT_NAME as MP1001_DEPARTMENT_NAME, ");
@@ -292,7 +306,7 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 		
 		Query query = session.createQuery(queryString.toString());
 		List<Object[]> list = query.list();
-		session.close();
+//		// session.close();
 		
 		MP1001 mp11 = new MP1001();
 		List<MP1001> retList = new ArrayList<MP1001>();
@@ -323,9 +337,9 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 	public void saveTransaction(MP1001 mp1001,MP1005 mp1005,String educationList,String workList){
 		//session = HibernateSessionFactory.getSession();
 		try{
-			transaction = session.beginTransaction();
+//			transaction = session.beginTransaction();
 			//session.save(“”);
-			transaction.commit();
+//			transaction.commit();
 		}catch (Exception e) {
 			log.info(e.getMessage());
 			e.printStackTrace();
@@ -409,14 +423,15 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP1001> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		List<MP1001> retList = getDataList(list);
 		
@@ -485,9 +500,16 @@ public class MP1001DAO extends HibernateDaoSupport implements IMP1001DAO {
 	}
 
 	public List<MP1001> findByEmployeeStringList(String strEmplyeeList){
-		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+//		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		List<MP1001> lst = session.createQuery("from MP1001 m where m.MP1001_EMPLOYEE_NUM in (" + strEmplyeeList + ")").list();
 		
 		return lst;
+	}
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

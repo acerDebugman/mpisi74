@@ -4,40 +4,42 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.MP2004;
 
-public class MP2004DAO extends HibernateDaoSupport implements IMP2004DAO {
-
+public class MP2004DAO  implements IMP2004DAO {
+	private SessionFactory sessionFactory;
+	
 	public void save(MP2004 mp2004) {
 		if (mp2004 != null) {
-			getHibernateTemplate().save(mp2004);
+			sessionFactory.getCurrentSession().save(mp2004);
 		}
 	}
 
 	public void delete(MP2004 mp2004) {
-		getHibernateTemplate().delete(mp2004);
+		sessionFactory.getCurrentSession().delete(mp2004);
 	}
 
 	public MP2004 findById(String seq) {
-		return (MP2004) getHibernateTemplate().get("entity.MP2004", seq);
+		return (MP2004) sessionFactory.getCurrentSession().get("entity.MP2004", seq);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP2004> findAll() {
-		return getHibernateTemplate().find("from MP2004 where 1 = 1 ");
+//		return getHibernateTemplate().find("from MP2004 where 1 = 1 ");
+		return sessionFactory.getCurrentSession().createQuery("from MP2004 where 1 = 1 ").list();
 	}
 
 	public void update(MP2004 mp2004) {
-		getHibernateTemplate().update(mp2004);
+		sessionFactory.getCurrentSession().update(mp2004);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<MP2004> findByProperty(String name, String value) {
 		try{
 			StringBuffer queryString = new StringBuffer();
-			Session session = getHibernateTemplate().getSessionFactory().openSession();
+			Session session = sessionFactory.getCurrentSession();
 			
 			queryString.append(" from MP2004 ");
 			queryString.append(" where 1=1 ");
@@ -47,7 +49,7 @@ public class MP2004DAO extends HibernateDaoSupport implements IMP2004DAO {
 		    @SuppressWarnings("rawtypes")
 			List list = query.list();
 		    
-		    session.close();
+		    // session.close();
 		    
 		    list = convertMP2004List(list);
 		    
@@ -74,6 +76,14 @@ public class MP2004DAO extends HibernateDaoSupport implements IMP2004DAO {
 		}
 		
 		return list;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
 }

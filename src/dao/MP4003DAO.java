@@ -9,30 +9,31 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import common.Constant;
 
 import entity.MP4003;
 
-public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
+public class MP4003DAO  implements IMP4003DAO{
 	private static final Log log = LogFactory.getLog(MP4003DAO.class);
+	private SessionFactory sessionFactory;
 	
 	// 保存数据
 	public void save(MP4003 mp4003) {
 		if(mp4003 != null){
-			getHibernateTemplate().save(mp4003);
+			sessionFactory.getCurrentSession().save(mp4003);
 		}
 	}
 	// 删除数据
 	public void delete(MP4003 mp4003) {
 		if(mp4003 != null){
-			getHibernateTemplate().delete(mp4003);
+			sessionFactory.getCurrentSession().delete(mp4003);
 		}
 	}
 	// 根据KEY检索数据
 	public MP4003 findById(int key) {
-		//return (PR1007)getHibernateTemplate().get("entity.PR1007", key);
+		//return (PR1007)sessionFactory.getCurrentSession().get("entity.PR1007", key);
 		StringBuffer queryString = new StringBuffer();
 
 		queryString = createSqlStatement();
@@ -52,16 +53,17 @@ public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
 	// 取得所有有效数据
 	@SuppressWarnings("unchecked")
 	public List<MP4003> findAll() {
-		return getHibernateTemplate().find(" from MP4003 mp43 where 1=1 order by mp43.MP4003_DEPARTMENT_ID,mp43.MP4003_ACCOUNTING_NUM ");
+//		return getHibernateTemplate().find(" from MP4003 mp43 where 1=1 order by mp43.MP4003_DEPARTMENT_ID,mp43.MP4003_ACCOUNTING_NUM ");
+		return sessionFactory.getCurrentSession().createQuery(" from MP4003 mp43 where 1=1 order by mp43.MP4003_DEPARTMENT_ID,mp43.MP4003_ACCOUNTING_NUM ").list();
 	}
 	// 更新数据
 	public void update(MP4003 mp4003) {
 		if(mp4003 != null){
-			getHibernateTemplate().update(mp4003);
+			sessionFactory.getCurrentSession().update(mp4003);
 		}
 	}
 	public void update2(String departmentID, String year, String month,String status){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		
 		StringBuffer queryString = new StringBuffer();
 		queryString.append(" update MP4003 set MP4003_STATUS = '" + status + "' ");
@@ -73,7 +75,7 @@ public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
 	    Query query = session.createQuery(queryString.toString());
 	    query.executeUpdate();
 	    
-	    session.close();
+	    // session.close();
 	}
 	// 动态根据传入的参数，检索数据
 	public List<MP4003> findByProperty(String name, String value) {
@@ -173,10 +175,10 @@ public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
 			queryString.append(" order by mp02.MP0002_DEPARTMENT_NAME,mp43.MP4003_YEAR  ");
 		}
 		
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP4003 mp4003 = new MP4003();
 		List<MP4003> retList = new ArrayList<MP4003>();
@@ -268,10 +270,10 @@ public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
 			queryString.append(" order by MP4003_ACCOUNTING_NUM  ");
 		}
 		
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP4003 mp4003 = new MP4003();
 		List<MP4003> retList = new ArrayList<MP4003>();
@@ -328,10 +330,10 @@ public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
 		queryString.append(" group by mp43.MP4003_DEPARTMENT_ID,mp02.MP0002_DEPARTMENT_NAME  ");
 		queryString.append(" order by mp02.MP0002_DEPARTMENT_NAME  ");
 
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP4003 mp4003 = new MP4003();
 		List<MP4003> retList = new ArrayList<MP4003>();
@@ -368,10 +370,10 @@ public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
 		queryString.append(" order by CAST(mp43.MP4003_MONTH as int)  ");
 		
 
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP4003 mp4003 = new MP4003();
 		List<MP4003> retList = new ArrayList<MP4003>();
@@ -429,14 +431,14 @@ public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP4003> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		List<MP4003> retList = getDataList(list);
 		
@@ -499,5 +501,11 @@ public class MP4003DAO extends HibernateDaoSupport implements IMP4003DAO{
 		}
 		log.info("Count:" + retList.size());
 		return retList;
+	}
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

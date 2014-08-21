@@ -10,8 +10,8 @@ import java.util.Map;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import common.Constant;
 import common.UtilDate;
@@ -20,34 +20,37 @@ import entity.CHECKINOUT;
 import entity.MP1001;
 import entity.MP2003;
 
-public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
-
+public class MP2003DAO  implements IMP2003DAO {
+	private SessionFactory sessionFactory;
+	
 	public void save(MP2003 mp2003) {
 		if (mp2003 != null) {
-			getHibernateTemplate().save(mp2003);
+			sessionFactory.getCurrentSession().save(mp2003);
 		}
 	}
 
 	public void delete(MP2003 mp2003) {
-		getHibernateTemplate().delete(mp2003);
+		sessionFactory.getCurrentSession().delete(mp2003);
 	}
 
 	public MP2003 findById(String employeeNum) {
-		return (MP2003) getHibernateTemplate().get("entity.MP2003", employeeNum);
+		return (MP2003) sessionFactory.getCurrentSession().get("entity.MP2003", employeeNum);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP2003> findAll() {
-		return getHibernateTemplate().find("from MP2003");
+//		return getHibernateTemplate().find("from MP2003");
+		return sessionFactory.getCurrentSession().createQuery("from MP2003").list();
 	}
 
 	public void update(MP2003 mp2003) {
-		getHibernateTemplate().update(mp2003);
+		sessionFactory.getCurrentSession().update(mp2003);
 	}
 	
     public void loadDataToHR(Map<String, CHECKINOUT> inoutMap, String condition){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		session.beginTransaction();
+//		Session session = sessionFactory.getCurrentSession();
+    	Session session = sessionFactory.getCurrentSession();
+//		session.beginTransaction();
 		StringBuffer queryString = new StringBuffer();
 		
 		// 删除数据
@@ -121,16 +124,17 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
         	mp23.setMP2003_FINISH_TIME(checkObj.getDate2());
         	mp23.setMP2003_FINISH_TIME_DOOR(checkObj.getDoor2());
         	mp23.setMP2003_FINISH_TIME_E(checkObj.getDate2());
-        	getHibernateTemplate().save(mp23);*/
+        	sessionFactory.getCurrentSession().save(mp23);*/
         	
         }
 		
-	    session.getTransaction().commit();	    
-	    session.close();
+//	    session.getTransaction().commit();	    
+//	    // session.close();
     }
 	
 	public void updateStatus(MP2003 mp2003){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		String status = mp2003.getMP2003_STATUS();
 		//String startTime = mp2003.getMP2003_DATETIME() + " 08:00";
 		//String finishTime = mp2003.getMP2003_DATETIME() + " 16:30";
@@ -157,7 +161,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		Query query = session.createQuery(updateSql.toString());
 		query.executeUpdate();
 		
-		session.close();
+//		// session.close();
 	}
 	
 	public void updateTimes(String empNum, String dateTime){
@@ -165,7 +169,8 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 			String startTime = dateTime + " 08:00";
 			String finishTime = dateTime + " 16:30";
 			
-			Session session = getHibernateTemplate().getSessionFactory().openSession();
+//			Session session = sessionFactory.getCurrentSession();
+			Session session = sessionFactory.getCurrentSession();
 			StringBuffer updateSql = new StringBuffer();
 			updateSql.append("update MP2003 ");
 			updateSql.append(" set MP2003_START_TIME = '" + startTime + "', ");
@@ -177,7 +182,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 			Query query = session.createQuery(updateSql.toString());
 			query.executeUpdate();
 			
-			session.close();
+//			// session.close();
 			
 		}catch(RuntimeException ex){
 			throw ex;
@@ -187,8 +192,10 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 	@SuppressWarnings("unchecked")
 	public List<MP2003> findByProperty(String name, String value) {
 		try{
-			String queryString = " from MP2003 as mp3 where mp3." + name + " = ?";
-			return getHibernateTemplate().find(queryString, value);
+//			String queryString = " from MP2003 as mp3 where mp3." + name + " = ?";
+//			return getHibernateTemplate().find(queryString, value);
+			String queryString = " from MP2003 as mp3 where mp3." + name + " = '" + value + "'";
+			return sessionFactory.getCurrentSession().createQuery(queryString).list();
 		}catch(RuntimeException ex){
 			throw ex;
 		}
@@ -203,8 +210,10 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		queryString.append(" from MP2003 as mp3 ");
 		queryString.append(" where 1=1 ");
 		
-		return getHibernateTemplate().executeFind(new HibernateCallback(){
-			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+//		return getHibernateTemplate().executeFind(new HibernateCallback(){
+//			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				Session session = sessionFactory.getCurrentSession(); 
+		
 				Query query = session.createQuery(queryString.toString());
 				query.setFirstResult((pageNum -1)*pageCount);
 				query.setMaxResults(pageCount);
@@ -212,12 +221,12 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 				List<MP2003> list = query.list();
 				
 				return list;
-			}});
+//			}});
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP2003> findByPropertys2(MP2003 _data) {
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 		StringBuffer queryString = new StringBuffer();
 		queryString.append("select ");
 		//queryString.append(" mp11.MP1001_EMPLOYEE_NUM,");
@@ -244,7 +253,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		Query query = session.createSQLQuery(queryString.toString());
 		
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP2003 mp23 = new MP2003();
 		List<MP2003> resultList = new ArrayList<MP2003>();
@@ -321,7 +330,8 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 	}
 	
 	public List<MP2003> findByPropertys(MP2003 _data) {
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		StringBuffer queryString = new StringBuffer();
 		queryString.append("select ");
 		queryString.append(" mp11.MP1001_EMPLOYEE_NUM,");
@@ -347,7 +357,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		Query query = session.createSQLQuery(queryString.toString());
 		
 		List<Object[]> list = query.list();
-		session.close();
+//		// session.close();
 		
 		MP2003 mp23 = new MP2003();
 		List<MP2003> resultList = new ArrayList<MP2003>();
@@ -425,7 +435,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<MP2003> getPdfData(String empNum, String fromDate, String FinishDate,String depId,String attendenceStatus){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Session session = sessionFactory.getCurrentSession();
 
 		StringBuffer queryString = new StringBuffer();
 		queryString.append("select ");
@@ -483,7 +493,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		Query query = session.createSQLQuery(queryString.toString());
 		
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		MP2003 mp23 = new MP2003();
 		List<MP2003> resultList = new ArrayList<MP2003>();
@@ -568,7 +578,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 	@SuppressWarnings("unchecked")
 	public List<MP2003> findByPropertysPage(MP1001 employeeData,int pageNum,int pageCount,String empNum, String fromDate, String FinishDate,String depId,String attendenceStatus) {
 		try{
-			Session session = getHibernateTemplate().getSessionFactory().openSession();
+			Session session = sessionFactory.getCurrentSession();
 			//String role = employeeData.getMP1001_GROUP();
 
 			StringBuffer queryString = new StringBuffer();
@@ -651,7 +661,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 			}
 			
 			List<Object[]> list = query.list();
-			session.close();
+			// session.close();
 			
 			MP2003 mp23 = new MP2003();
 			List<MP2003> resultList = new ArrayList<MP2003>();
@@ -739,7 +749,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 	@SuppressWarnings("unchecked")
 	public int getRowCountByPropertys(MP1001 employeeData,String empNum, String fromDate, String FinishDate,String depId,String attendenceStatus){
 		try{
-			Session session = getHibernateTemplate().getSessionFactory().openSession();
+			Session session = sessionFactory.getCurrentSession();
 			//String role = employeeData.getMP1001_GROUP();
 
 			StringBuffer queryString = new StringBuffer();
@@ -817,7 +827,7 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 			Query query = session.createSQLQuery(queryString.toString());
 			
 			List<Object[]> list = query.list();
-			session.close();
+			// session.close();
 			
 			return list.size();
 		}catch(RuntimeException ex){
@@ -860,13 +870,14 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		sb.append(" order by MP1001_EMPLOYEE_NUM, MP0002_DEPARTMENT_NAME ASC");
 		
 		//Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		session.beginTransaction();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
+//		session.beginTransaction();
 //		Query query = session.createQuery(sb.toString());
 		Query query = session.createSQLQuery(sb.toString());
 		List<Object[]> objList = query.list();
-		session.getTransaction().commit();
-		session.close();		
+//		session.getTransaction().commit();
+//		// session.close();		
 		
 		for(int i = 0, j = objList.size(); i < j; i++){
 			MP2003 mp23 = new MP2003();
@@ -962,13 +973,14 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		sb.append(" order by MP1001_EMPLOYEE_NUM, MP0002_DEPARTMENT_NAME ASC");
 		
 		//Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
-		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		session.beginTransaction();
+//		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
+//		session.beginTransaction();
 //		Query query = session.createQuery(sb.toString());
 		Query query = session.createSQLQuery(sb.toString());
 		List<Object[]> objList = query.list();
-		session.getTransaction().commit();
-		session.close();		
+//		session.getTransaction().commit();
+//		// session.close();		
 		
 		for(int i = 0, j = objList.size(); i < j; i++){
 			MP2003 mp23 = new MP2003();
@@ -1048,13 +1060,13 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 		}
 		sb.append(" order by MP0002_DEPARTMENT_NAME, MP2003_DATETIME ");
 		
-		Session ss = getHibernateTemplate().getSessionFactory().openSession();
-		ss.beginTransaction();
+		Session ss = sessionFactory.getCurrentSession();
+//		ss.beginTransaction();
 
 		Query query = ss.createSQLQuery(sb.toString());
 		List<Object[]> objList = query.list();
-		ss.getTransaction().commit();
-		ss.close();
+//		ss.getTransaction().commit();
+//		ss.close();
 		
 		for(int i = 0, j = objList.size(); i < j; i++){
 			MP2003 mp23 = new MP2003();
@@ -1118,7 +1130,8 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 	public MP2003 findByDateAndEmp(Date date, MP1001 emp){
 		MP2003 mp23 = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+//		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		return (MP2003)session.createQuery("from MP2003 m where convert(varchar(10), m.MP2003_DATETIME, 120)=:theDay and m.MP2003_EMPLOYEE_NUM=:empCode")
 								.setParameter("theDay", sdf.format(date))
 								.setParameter("empCode", emp.getMP1001_EMPLOYEE_NUM())
@@ -1127,9 +1140,18 @@ public class MP2003DAO extends HibernateDaoSupport implements IMP2003DAO {
 	
 	public List<MP2003> pickUpAbnormalRecordsList(Date date){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+//		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		return session.createQuery("from MP2003 m where m.MP2003_DATETIME=:theDate and MP2003_COMMENT like '%Abnormal%'")
 				.setString("theDate", sdf.format(date))
 				.list();
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

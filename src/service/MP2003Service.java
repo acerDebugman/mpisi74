@@ -141,7 +141,11 @@ public class MP2003Service implements IMP2003Service {
 		return rs;
 	}
 	
+	//here is mainly convert one object to another object
+	//here the problem is if it's  early/late, but it's also abnormal~
+	//how to cope with it ?
 	public List<LateEarlyDto> getLateEarlyReptData(Map<String, String> propMap) throws ParseException {
+		
 		List<LateEarlyDto> rs = new ArrayList<LateEarlyDto>();
 		
 		List<MP2003> mp23List = dao.getLateEarlyReptData(propMap);
@@ -154,13 +158,19 @@ public class MP2003Service implements IMP2003Service {
     	
 		for(MP2003 mp23 : mp23List){
 			LateEarlyDto recordDto = new LateEarlyDto();
-			Date in = sdf.parse(mp23.getMP2003_START_TIME());
 	                		
-    		cal.setTime(sdf.parse(mp23.getMP2003_DATETIME()));//this is start
+    		cal.setTime(sdf.parse(mp23.getMP2003_DATETIME()));//this is standard start
     		cal.set(Calendar.HOUR_OF_DAY, 8);
     		cal.set(Calendar.MINUTE, 0);
     		cal.set(Calendar.SECOND, 0);
     		
+    		Date in = null;
+    		if(null == mp23.getMP2003_START_TIME() || mp23.getMP2003_START_TIME().equals("")){
+    			 in = cal.getTime();
+    		}
+    		else{
+    			in = sdf.parse(mp23.getMP2003_START_TIME());
+    		}
     		calInOut.setTime(in);
     		//Date startTime = cal.getTime();
     		//if(in.after(startTime)){
@@ -170,15 +180,20 @@ public class MP2003Service implements IMP2003Service {
     			recordDto.setLateMins((int)((i - s)/(1000*60)));
     		}
 	    	
-    		Date out = sdf.parse(mp23.getMP2003_FINISH_TIME());
-	         
-    		calInOut.setTime(out);
     		cal.setTime(sdf.parse(mp23.getMP2003_DATETIME())); //this is end
     		cal.set(Calendar.HOUR_OF_DAY, 16);
     		cal.set(Calendar.MINUTE, 30);
     		cal.set(Calendar.SECOND, 0);
-    		//Date startTime = cal.getTime();
-    		//if(in.after(startTime)){
+    		
+    		Date out = null;
+    		if(null == mp23.getMP2003_FINISH_TIME() || mp23.getMP2003_FINISH_TIME().equals("")){
+    			 out = cal.getTime();
+    		}
+    		else{
+    			out = sdf.parse(mp23.getMP2003_FINISH_TIME());
+    		}
+    		calInOut.setTime(out);
+    		
     		if(cal.after(calInOut)){
     			Long s = cal.getTime().getTime();
     			Long o = out.getTime();
@@ -196,8 +211,18 @@ public class MP2003Service implements IMP2003Service {
     		recordDto.setDepartmentName(mp23.getMP2003_DEPARTMENT_NAME());
     		recordDto.setStatus(mp23.getMP2003_COMMENT());
     		recordDto.setDate(sdf.parse(mp23.getMP2003_DATETIME()));
-    		recordDto.setClockInTime(sdf.parse(mp23.getMP2003_START_TIME()));
-    		recordDto.setClockOutTime(sdf.parse(mp23.getMP2003_FINISH_TIME()));
+    		if(null == mp23.getMP2003_START_TIME() || mp23.getMP2003_START_TIME().equals("")){
+    			recordDto.setClockInTime(null);
+    		}
+    		else{
+    			recordDto.setClockInTime(sdf.parse(mp23.getMP2003_START_TIME()));
+    		}
+    		if(null == mp23.getMP2003_FINISH_TIME() || mp23.getMP2003_FINISH_TIME().equals("")){
+    			recordDto.setClockOutTime(null);
+    		}
+    		else{
+    			recordDto.setClockOutTime(sdf.parse(mp23.getMP2003_FINISH_TIME()));
+    		}
     		rs.add(recordDto);
 		}
 		

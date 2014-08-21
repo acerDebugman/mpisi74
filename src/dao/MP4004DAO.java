@@ -9,30 +9,31 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import common.Constant;
 
 import entity.MP4004;
 
-public class MP4004DAO extends HibernateDaoSupport implements IMP4004DAO{
+public class MP4004DAO  implements IMP4004DAO{
 	private static final Log log = LogFactory.getLog(MP4004DAO.class);
+	private SessionFactory sessionFactory;
 	
 	// 保存数据
 	public void save(MP4004 mp4004) {
 		if(mp4004 != null){
-			getHibernateTemplate().save(mp4004);
+			sessionFactory.getCurrentSession().save(mp4004);
 		}
 	}
 	// 删除数据
 	public void delete(MP4004 mp4004) {
 		if(mp4004 != null){
-			getHibernateTemplate().delete(mp4004);
+			sessionFactory.getCurrentSession().delete(mp4004);
 		}
 	}
 	// 根据KEY检索数据
 	public MP4004 findById(int key) {
-		return (MP4004)getHibernateTemplate().get("entity.MP4004", key);
+		return (MP4004)sessionFactory.getCurrentSession().get("entity.MP4004", key);
 /*		StringBuffer queryString = new StringBuffer();
 
 		queryString = createSqlStatement();
@@ -52,12 +53,13 @@ public class MP4004DAO extends HibernateDaoSupport implements IMP4004DAO{
 	// 取得所有有效数据
 	@SuppressWarnings("unchecked")
 	public List<MP4004> findAll() {
-		return getHibernateTemplate().find(" from MP4004 mp44 ");
+//		return getHibernateTemplate().find(" from MP4004 mp44 ");
+		return sessionFactory.getCurrentSession().createQuery("from MP4004 mp44 ").list();
 	}
 	// 更新数据
 	public void update(MP4004 mp4004) {
 		if(mp4004 != null){
-			getHibernateTemplate().update(mp4004);
+			sessionFactory.getCurrentSession().update(mp4004);
 		}
 	}
 	// 动态根据传入的参数，检索数据
@@ -134,14 +136,14 @@ public class MP4004DAO extends HibernateDaoSupport implements IMP4004DAO{
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP4004> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+		Session session = sessionFactory.getCurrentSession();		
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		List<MP4004> retList = getDataList(list);
 		
@@ -195,5 +197,11 @@ public class MP4004DAO extends HibernateDaoSupport implements IMP4004DAO{
 		}
 		log.info("Count:" + retList.size());
 		return retList;
+	}
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

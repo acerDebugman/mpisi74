@@ -12,10 +12,13 @@ import java.util.Set;
 
 import service.DetailDayWorkTimeService;
 import service.ICHECKINOUTService;
+import service.IFingerSiteUserIdInfoService;
 import service.IMP0002Service;
 import service.IMP0006Service;
 import service.IMP1001Service;
 import service.IMP2003Service;
+import webapi.RemoteAttendanceRecordMngClientSide;
+import webapi.RemoteCheckInOutMng;
 
 import common.AttendanceCalculator;
 import common.Constant;
@@ -26,6 +29,7 @@ import common.UtilCommon;
 import dto.AttendanceRecordDto;
 import dto.CheckInOutDto;
 import entity.CHECKINOUT;
+import entity.FingerSiteUserIdInfo;
 import entity.MP0002;
 import entity.MP0006;
 import entity.MP1001;
@@ -37,6 +41,9 @@ public class ExecuteJobsService {
 	private IMP0002Service serviceMP0002;
 	private IMP0006Service serviceMP0006;
 	private IMP2003Service serviceMP2003;
+	private RemoteCheckInOutMng remoteCheckRecordsMng;
+	private IFingerSiteUserIdInfoService serviceFingerSiteUseridInfo;
+	private RemoteAttendanceRecordMngClientSide serviceRemoteClient; 
 	
 	
 	private DetailDayWorkTimeService serviceDetailDayWorkTime;
@@ -191,7 +198,8 @@ public class ExecuteJobsService {
 		        //delete records of exempt employees
 	        	Map<String, Boolean> exemptMap = Constant.pickUpPresentExemptList();
 	        	
-	        	while(attendanceCalculator.datetimeCompare(calFrom.getTime(), calEnd.getTime(), "dd") <= 0){//can calculate today, //@here because this kind of problem always happen at night  
+//	        	while(attendanceCalculator.datetimeCompare(calFrom.getTime(), calEnd.getTime(), "dd") <= 0){//can calculate today, //@here because this kind of problem always happen at night
+	        	while(attendanceCalculator.datetimeCompare(calFrom.getTime(), calEnd.getTime(), "dd") < 0){//do calculte now, but calculate later,don't return
 	        		for(MP1001 emp: lst){ //employee list should be inside, it's not easy to reverse the date again
 		        		attendanceCalculator.proceed(calFrom.getTime(), emp);
 		        		attendanceCalculator.calculatePresenceStatus(calFrom.getTime(), emp);
@@ -215,8 +223,9 @@ public class ExecuteJobsService {
 	        	mp06Counter.setMP0006_VALUE(String.valueOf(latestCounter));
 	        	serviceMP0006.update(mp06Counter);
 			}
-			
-			return ;
+			else{
+				return ;
+			}
 		}
 		
 		//get all employees
@@ -482,7 +491,27 @@ public class ExecuteJobsService {
 	}
 	
 	
-	
+	//every 2 hours fetch data from other branch site, start from 06:00 to 22:00
+	public void fetchOtherBranchSiteRecords(){
+		
+		List<FingerSiteUserIdInfo> lst = serviceFingerSiteUseridInfo.findAll();
+		
+		Date today = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(today);
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Date fromDate = cal.getTime();
+		Date endDate = today;
+		
+		for(FingerSiteUserIdInfo item : lst){
+			serviceRemoteClient.findByFingerSiteUserIdInfo(item, fromDate, endDate);
+		}
+
+		//find first, 
+		
+		//if exist, do nothing
+		
+	}
 	
 //-------------------------------------------------------------------	
 	public ICHECKINOUTService getServiceCheckInOut() {
@@ -541,6 +570,31 @@ public class ExecuteJobsService {
 	public void setServiceMP2003(IMP2003Service serviceMP2003) {
 		this.serviceMP2003 = serviceMP2003;
 	}
-	
+
+	public RemoteCheckInOutMng getRemoteCheckRecordsMng() {
+		return remoteCheckRecordsMng;
+	}
+
+	public void setRemoteCheckRecordsMng(RemoteCheckInOutMng remoteCheckRecordsMng) {
+		this.remoteCheckRecordsMng = remoteCheckRecordsMng;
+	}
+
+	public IFingerSiteUserIdInfoService getServiceFingerSiteUseridInfo() {
+		return serviceFingerSiteUseridInfo;
+	}
+
+	public void setServiceFingerSiteUseridInfo(
+			IFingerSiteUserIdInfoService serviceFingerSiteUseridInfo) {
+		this.serviceFingerSiteUseridInfo = serviceFingerSiteUseridInfo;
+	}
+
+	public RemoteAttendanceRecordMngClientSide getServiceRemoteClient() {
+		return serviceRemoteClient;
+	}
+
+	public void setServiceRemoteClient(
+			RemoteAttendanceRecordMngClientSide serviceRemoteClient) {
+		this.serviceRemoteClient = serviceRemoteClient;
+	}
 	
 }

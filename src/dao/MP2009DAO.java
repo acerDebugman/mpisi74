@@ -7,46 +7,49 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import common.UtilCommon;
 
 import entity.MP2009;
 
-public class MP2009DAO extends HibernateDaoSupport implements IMP2009DAO{
+public class MP2009DAO  implements IMP2009DAO{
+	private SessionFactory sessionFactory;
+	
     // 保存数据
     public void save(MP2009 mp2009) {
         if(mp2009 != null){
-            getHibernateTemplate().save(mp2009);
+            sessionFactory.getCurrentSession().save(mp2009);
         }
     }
     // 删除数据
     public void delete(MP2009 mp2009) {
         if(mp2009 != null){
-            getHibernateTemplate().delete(mp2009);
+            sessionFactory.getCurrentSession().delete(mp2009);
         }
     }
     // 根据KEY检索数据
     public MP2009 findById(String key) {
-        	return (MP2009)getHibernateTemplate().get("entity.MP2009", key);
+        	return (MP2009)sessionFactory.getCurrentSession().get("entity.MP2009", key);
     }
     // 取得所有有效数据
     @SuppressWarnings("unchecked")
     public List<MP2009> findAll() {
-        return getHibernateTemplate().find(" from MP2009 where 1=1  ");
+//        return getHibernateTemplate().find(" from MP2009 where 1=1  ");
+    	return sessionFactory.getCurrentSession().createQuery("from MP2009 where 1=1").list();
     }
     // 更新数据
     public void update(MP2009 mp2009) {
         if(mp2009 != null){
-            getHibernateTemplate().update(mp2009);
+            sessionFactory.getCurrentSession().update(mp2009);
         }
     }
     // 更新数据
     public void executeStatement(String statement){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(statement);
         query.executeUpdate();
-        session.close();
+        // session.close();
     }
     // 动态根据传入的参数，检索数据
     public List<MP2009> findByProperty(String name, String value) {
@@ -130,14 +133,14 @@ public class MP2009DAO extends HibernateDaoSupport implements IMP2009DAO{
     // 检索数据
     @SuppressWarnings("unchecked")
     private List<MP2009> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(queryString.toString());
         if( PAGE_NUM > 0 && PAGE_COUNT > 0){
             query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
             query.setMaxResults(PAGE_COUNT);
         }
         List<Object[]> list = query.list();
-        session.close();
+        // session.close();
 
         List<MP2009> retList = getDataList(list);
 
@@ -184,4 +187,10 @@ public class MP2009DAO extends HibernateDaoSupport implements IMP2009DAO{
         }
         return retList;
     }
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 }

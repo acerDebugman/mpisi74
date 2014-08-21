@@ -6,44 +6,47 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import entity.MP8005;
 
-public class MP8005DAO extends HibernateDaoSupport implements IMP8005DAO{
+public class MP8005DAO  implements IMP8005DAO{
+	private SessionFactory sessionFactory;
+	
     // 保存数据
     public void save(MP8005 mp8005) {
         if(mp8005 != null){
-            getHibernateTemplate().save(mp8005);
+            sessionFactory.getCurrentSession().save(mp8005);
         }
     }
     // 删除数据
     public void delete(MP8005 mp8005) {
         if(mp8005 != null){
-            getHibernateTemplate().delete(mp8005);
+            sessionFactory.getCurrentSession().delete(mp8005);
         }
     }
     // 根据KEY检索数据
     public MP8005 findById(String key) {
-        	return (MP8005)getHibernateTemplate().get("entity.MP8005", key);
+        	return (MP8005)sessionFactory.getCurrentSession().get("entity.MP8005", key);
     }
     // 取得所有有效数据
     @SuppressWarnings("unchecked")
     public List<MP8005> findAll() {
-        return getHibernateTemplate().find(" from MP8005 where 1=1  ");
+//        return getHibernateTemplate().find(" from MP8005 where 1=1  ");
+    	return sessionFactory.getCurrentSession().createQuery("from MP8005 where 1=1  ").list();
     }
     // 更新数据
     public void update(MP8005 mp8005) {
         if(mp8005 != null){
-            getHibernateTemplate().update(mp8005);
+            sessionFactory.getCurrentSession().update(mp8005);
         }
     }
     // 更新数据
     public void executeStatement(String statement){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(statement);
         query.executeUpdate();
-        session.close();
+        // session.close();
     }
     // 动态根据传入的参数，检索数据
     public List<MP8005> findByProperty(String name, String value) {
@@ -160,10 +163,10 @@ public class MP8005DAO extends HibernateDaoSupport implements IMP8005DAO{
     	}
     	queryString.append(" group by mp8005.MP8005_DEPARTMENT, mp0002.MP0002_DEPARTMENT_NAME, mp8005.MP8005_REVIEW_PERIOD ");
     	
-    	Session session = getHibernateTemplate().getSessionFactory().openSession();
+    	Session session = sessionFactory.getCurrentSession();
     	Query query = session.createQuery(queryString.toString());
     	List<Object[]> list = query.list();
-    	session.close();
+    	// session.close();
     	
     	MP8005 mp8005 = new MP8005();
     	List<MP8005> retList = new ArrayList<MP8005>();
@@ -206,14 +209,14 @@ public class MP8005DAO extends HibernateDaoSupport implements IMP8005DAO{
     // 检索数据
     @SuppressWarnings("unchecked")
     private List<MP8005> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(queryString.toString());
         if( PAGE_NUM > 0 && PAGE_COUNT > 0){
             query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
             query.setMaxResults(PAGE_COUNT);
         }
         List<Object[]> list = query.list();
-        session.close();
+        // session.close();
 
         List<MP8005> retList = getDataList(list);
 
@@ -245,5 +248,11 @@ public class MP8005DAO extends HibernateDaoSupport implements IMP8005DAO{
         }
         return retList;
     }
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 }
 

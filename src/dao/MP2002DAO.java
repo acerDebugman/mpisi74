@@ -2,32 +2,34 @@ package dao;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.SessionFactory;
 
 import common.UtilCommon;
 
 import entity.MP1001;
 import entity.MP2002;
 
-public class MP2002DAO extends HibernateDaoSupport implements IMP2002DAO {
-
+public class MP2002DAO  implements IMP2002DAO {
+	private SessionFactory sessionFactory;
+	
 	public void save(MP2002 mp2002) {
 		if (mp2002 != null) {
-			getHibernateTemplate().save(mp2002);
+			sessionFactory.getCurrentSession().save(mp2002);
 		}
 	}
 
 	public void delete(MP2002 mp2002) {
-		getHibernateTemplate().delete(mp2002);
+		sessionFactory.getCurrentSession().delete(mp2002);
 	}
 
 	@SuppressWarnings("unchecked")
 	public MP2002 findById(String employeeNum) {
-		//return (MP2002) getHibernateTemplate().get("entity.MP2002", employeeNum);
+		//return (MP2002) sessionFactory.getCurrentSession().get("entity.MP2002", employeeNum);
 		try{
-			Session session = getHibernateTemplate().getSessionFactory().openSession();
+			Session session = sessionFactory.getCurrentSession();
 
 			StringBuffer queryString = new StringBuffer();
 			queryString.append("select ");
@@ -57,7 +59,7 @@ public class MP2002DAO extends HibernateDaoSupport implements IMP2002DAO {
 			Query query = session.createSQLQuery(queryString.toString());
 			
 			List<Object[]> list = query.list();
-			session.close();
+			// session.close();
 			
 			MP2002 mp22 = new MP2002();
 			if(list != null && list.size() > 0){
@@ -87,18 +89,21 @@ public class MP2002DAO extends HibernateDaoSupport implements IMP2002DAO {
 
 	@SuppressWarnings("unchecked")
 	public List<MP2002> findAll() {
-		return getHibernateTemplate().find("from MP2002");
+//		return getHibernateTemplate().find("from MP2002");
+		return sessionFactory.getCurrentSession().createQuery("from MP2002").list();
 	}
 
 	public void update(MP2002 mp2002) {
-		getHibernateTemplate().update(mp2002);
+		sessionFactory.getCurrentSession().update(mp2002);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<MP2002> findByProperty(String name, String value) {
 		try{
-			String queryString = " from MP2002 as mp2 where mp2." + name + " = ?";
-			return getHibernateTemplate().find(queryString, value);
+//			String queryString = " from MP2002 as mp2 where mp2." + name + " = ?";
+//			return getHibernateTemplate().find(queryString, value);
+			String queryString = " from MP2002 as mp2 where mp2." + name + " = '" + value + "'";
+			return sessionFactory.getCurrentSession().createQuery(queryString).list();
 		}catch(RuntimeException ex){
 			throw ex;
 		}
@@ -179,14 +184,14 @@ public class MP2002DAO extends HibernateDaoSupport implements IMP2002DAO {
 	// 检索数据
 	@SuppressWarnings("unchecked")
 	private List<MP2002> executeSqlStatement(StringBuffer queryString,int PAGE_NUM, int PAGE_COUNT){
-		Session session = getHibernateTemplate().getSessionFactory().openSession();		
+		Session session = sessionFactory.getCurrentSession();		
 		Query query = session.createQuery(queryString.toString());
 		if( PAGE_NUM > 0 && PAGE_COUNT > 0){
 			query.setFirstResult((PAGE_NUM -1)*PAGE_COUNT);
 			query.setMaxResults(PAGE_COUNT);
 		}
 		List<Object[]> list = query.list();
-		session.close();
+		// session.close();
 		
 		List<MP2002> retList = getDataList(list);
 		
@@ -218,5 +223,13 @@ public class MP2002DAO extends HibernateDaoSupport implements IMP2002DAO {
 			resultList.add(mp22);
 		}
 		return resultList;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

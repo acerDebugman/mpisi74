@@ -1,32 +1,44 @@
 package dao;
 
 import java.util.List;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import org.hibernate.SessionFactory;
+
 import entity.MP1007;
 
-public class MP1007DAO extends HibernateDaoSupport implements IMP1007DAO {
-
+public class MP1007DAO  implements IMP1007DAO {
+	private SessionFactory sessionFactory;
+	
 	public void save(MP1007 mp1007) {
 		if (mp1007 != null) {
-			getHibernateTemplate().save(mp1007);
+			sessionFactory.getCurrentSession().save(mp1007);
 		}
 	}
 
 	public void delete(MP1007 mp1007) {
-		getHibernateTemplate().delete(mp1007);
+		sessionFactory.getCurrentSession().delete(mp1007);
 	}
 
 	public MP1007 findById(String employeeNum) {
-		return (MP1007) getHibernateTemplate().get("entity.MP1007", employeeNum);
+		return (MP1007) sessionFactory.getCurrentSession().get("entity.MP1007", employeeNum);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<MP1007> findAll() {
-		return getHibernateTemplate().find("from MP1007");
+//		return getHibernateTemplate().find("from MP1007");
+		return sessionFactory.getCurrentSession().createQuery("from MP1007").list();
 	}
 
 	public void update(MP1007 mp1007) {
-		getHibernateTemplate().update(mp1007);
+		sessionFactory.getCurrentSession().update(mp1007);
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
 }

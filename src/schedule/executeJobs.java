@@ -966,7 +966,16 @@ public class executeJobs {
 			System.out.println(ex.getMessage());
 		}
 	}
-	
+
+	//every 2 hours fetch data from other branch site, start from 06:00 to 22:00 
+	public void executeJob20(){
+		try{
+			serviceExecuteJob.fetchOtherBranchSiteRecords();
+		}
+		catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+	}
 	
 	
 	//----------------------------------------------------------------------------
