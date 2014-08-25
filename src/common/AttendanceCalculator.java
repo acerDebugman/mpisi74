@@ -117,25 +117,31 @@ public class AttendanceCalculator {
 		
 		List<DetailDayWorkTime> list = new ArrayList(cd.getDetailWorkTimeItems());
 		if(0 == list.size()){ //can't find DetailDayRecords, it should be Saturday or Sunday 
-			if(Calendar.SATURDAY == calDate.get(Calendar.DAY_OF_WEEK)){ //
+			if(wtp.isCalPubHolidayFlag() && Calendar.SATURDAY == calDate.get(Calendar.DAY_OF_WEEK)){ //
 				item.setComments("Sat");
 			}
-			else if(Calendar.SUNDAY == calDate.get(Calendar.DAY_OF_WEEK)){ //
+			else if(wtp.isCalPubHolidayFlag() && Calendar.SUNDAY == calDate.get(Calendar.DAY_OF_WEEK)){ //
 				item.setComments("Sun");
 			}
-			//if it's not Saturday or Sunday...
+			//if it's not Saturday or Sunday...or it has no need to calculate the public holiday 
 			item.setStdClockInTime(new Date(0));
 			item.setStdClockOutTime(new Date(0));
 		}
 		else{
 			//here need to compare the mid night or non midnight, currently only support shiftwork mode
-//			if(sdf_2.format(list.get(0).getFromTime()).equals("00:00:00")){
-////				item.setStdClockInTime();
-//				item.setStdClockOutTime(sdf_0.parse(sdf_1.format(date) + " " + sdf_2.format(list.get(0).getToTime())));
-//			}
+			Calendar stdClockInCal = Calendar.getInstance();
+			Calendar stdClockOutCal = Calendar.getInstance();
+
+			DetailDayWorkTime dFirst = list.get(0);
+			DetailDayWorkTime dLast = list.get(list.size() - 1);
 			
-			item.setStdClockInTime(sdf_0.parse(sdf_1.format(date) + " " + sdf_2.format(list.get(0).getFromTime())));  //pattern's first start time
-			item.setStdClockOutTime(sdf_0.parse(sdf_1.format(date) + " " + sdf_2.format(list.get(list.size() - 1).getToTime()))); //pattern's last end time
+			stdClockInCal.setTime(sdf_0.parse(sdf_1.format(date) + " " + dFirst.getStartTime()));
+//			stdClockInCal.add(Calendar.MINUTE, dFirst.getDurationTime());
+			stdClockOutCal.setTime(sdf_0.parse(sdf_1.format(date) + " " + dLast.getStartTime()));
+			stdClockOutCal.add(Calendar.MINUTE, dLast.getDurationTime()); //this is clock out time, last DetailDayWorkTime plus duration, may cross day ****!!!important
+			
+			item.setStdClockInTime(stdClockInCal.getTime());  //pattern's first start time
+			item.setStdClockOutTime(stdClockOutCal.getTime()); //pattern's last end time
 		}
 		item.setCircleDay(cd); //set to that circle day
 		item.setDayDate(calDate.getTime());
@@ -209,7 +215,7 @@ public class AttendanceCalculator {
 				Calendar calOut = Calendar.getInstance();
 				calOut.setTime(item.getStdClockOutTime());
 				
-				if(datetimeCompare(calAppFrom.getTime(), calAppEnd.getTime(), "dd") == 0){
+				if(datetimeCompare(calAppFrom.getTime(), calAppEnd.getTime(), "dd") == 0){ //
 					if((datetimeCompare(calAppFrom.getTime(), calIn.getTime(), "mm") == 0 && datetimeCompare(calAppEnd.getTime(), calOut.getTime(), "mm") == 0) ||
 							(datetimeCompare(calAppFrom.getTime(), calIn.getTime(), "mm") < 0 && datetimeCompare(calAppEnd.getTime(), calOut.getTime(), "mm") > 0) ||
 							(datetimeCompare(calAppFrom.getTime(), calIn.getTime(), "mm") == 0 && datetimeCompare(calAppEnd.getTime(), calOut.getTime(), "mm") > 0) ||
@@ -222,11 +228,26 @@ public class AttendanceCalculator {
 						EachCircleDay cd = item.getCircleDay();
 						List<DetailDayWorkTime> dList = new ArrayList(cd.getDetailWorkTimeItems());
 						
+						//tell Application's end time locate in which period
 						if(2 == dList.size()){
-							if(datetimeCompare(calAppEnd.getTime(), dList.get(0).getToTime(), "mm") > 0 && 
-									datetimeCompare(calAppEnd.getTime(), dList.get(1).getFromTime(), "mm") < 0){
-//								calOut.setTime(dList.get(0).getToTime());
-								calIn.setTime(dList.get(1).getFromTime());
+							Calendar tmpCal = Calendar.getInstance();
+							
+							Date timePieceStart_0= sdf_0.parse(sdf_1.format(date) + " " + dList.get(0).getStartTime());
+							Date timePieceEnd_0 = null;
+							tmpCal.setTime(timePieceEnd_0);
+							tmpCal.add(Calendar.MINUTE, dList.get(0).getDurationTime());
+							timePieceEnd_0 = tmpCal.getTime();
+							
+							Date timePieceStart_1= sdf_0.parse(sdf_1.format(date) + " " + dList.get(1).getStartTime());
+							Date timePieceEnd_1 = null;
+							tmpCal.setTime(timePieceEnd_1);
+							tmpCal.add(Calendar.MINUTE, dList.get(1).getDurationTime());
+							timePieceEnd_1 = tmpCal.getTime();
+							
+							if(datetimeCompare(calAppEnd.getTime(), timePieceEnd_0, "mm") > 0 && 
+									datetimeCompare(calAppEnd.getTime(), timePieceStart_1, "mm") < 0){
+//								calIn.setTime(dList.get(1).getFromTime());
+								calIn.setTime(timePieceStart_1);
 							}
 							else{
 //								calOut.setTime(calAppEnd.getTime());
@@ -234,15 +255,38 @@ public class AttendanceCalculator {
 							}
 						}
 						else if(3 == dList.size()){ //only support 3 work piece time
-							if(datetimeCompare(calAppEnd.getTime(), dList.get(0).getToTime(), "mm") > 0 && 
-									datetimeCompare(calAppEnd.getTime(), dList.get(1).getFromTime(), "mm") < 0){
+							Calendar tmpCal = Calendar.getInstance();
+							
+							Date timePieceStart_0= sdf_0.parse(sdf_1.format(date) + " " + dList.get(0).getStartTime());
+							Date timePieceEnd_0 = null;
+							tmpCal.setTime(timePieceEnd_0);
+							tmpCal.add(Calendar.MINUTE, dList.get(0).getDurationTime());
+							timePieceEnd_0 = tmpCal.getTime();
+							
+							Date timePieceStart_1= sdf_0.parse(sdf_1.format(date) + " " + dList.get(1).getStartTime());
+							Date timePieceEnd_1 = null;
+							tmpCal.setTime(timePieceEnd_1);
+							tmpCal.add(Calendar.MINUTE, dList.get(1).getDurationTime());
+							timePieceEnd_1 = tmpCal.getTime();
+							
+							Date timePieceStart_2 = sdf_0.parse(sdf_1.format(date) + " " + dList.get(2).getStartTime());
+							Date timePieceEnd_2 = null;
+							tmpCal.setTime(timePieceEnd_2);
+							tmpCal.add(Calendar.MINUTE, dList.get(2).getDurationTime());
+							timePieceEnd_2 = tmpCal.getTime();
+							
+							
+							if(datetimeCompare(calAppEnd.getTime(), timePieceEnd_0, "mm") > 0 && 
+									datetimeCompare(calAppEnd.getTime(), timePieceStart_1, "mm") < 0){
 //								calOut.setTime(dList.get(0).getToTime());
-								calIn.setTime(dList.get(1).getFromTime());
+//								calIn.setTime(dList.get(1).getFromTime());
+								calIn.setTime(timePieceStart_1);
 							}
-							else if(datetimeCompare(calAppEnd.getTime(), dList.get(1).getToTime(), "mm") > 0 && 
-									datetimeCompare(calAppEnd.getTime(), dList.get(2).getFromTime(), "mm") < 0){
+							else if(datetimeCompare(calAppEnd.getTime(), timePieceEnd_1, "mm") > 0 && 
+									datetimeCompare(calAppEnd.getTime(), timePieceStart_2, "mm") < 0){
 //								calOut.setTime(dList.get(1).getToTime());
-								calIn.setTime(dList.get(2).getFromTime());
+//								calIn.setTime(dList.get(2).getFromTime());
+								calIn.setTime(timePieceStart_2);
 							}
 							else{
 //								calOut.setTime(calAppEnd.getTime());
@@ -260,10 +304,24 @@ public class AttendanceCalculator {
 						EachCircleDay cd = item.getCircleDay();
 						List<DetailDayWorkTime> dList = new ArrayList(cd.getDetailWorkTimeItems());
 						if(2 == dList.size()){
-							if(datetimeCompare(calAppFrom.getTime(), dList.get(0).getToTime(), "mm") > 0 && 
-									datetimeCompare(calAppFrom.getTime(), dList.get(1).getToTime(), "mm") < 0){
+							Calendar tmpCal = Calendar.getInstance();
+							
+							Date timePieceStart_0= sdf_0.parse(sdf_1.format(date) + " " + dList.get(0).getStartTime());
+							Date timePieceEnd_0 = null;
+							tmpCal.setTime(timePieceEnd_0);
+							tmpCal.add(Calendar.MINUTE, dList.get(0).getDurationTime());
+							timePieceEnd_0 = tmpCal.getTime();
+							
+							Date timePieceStart_1= sdf_0.parse(sdf_1.format(date) + " " + dList.get(1).getStartTime());
+							Date timePieceEnd_1 = null;
+							tmpCal.setTime(timePieceEnd_1);
+							tmpCal.add(Calendar.MINUTE, dList.get(1).getDurationTime());
+							timePieceEnd_1 = tmpCal.getTime();
+							
+							if(datetimeCompare(calAppFrom.getTime(), timePieceEnd_0, "mm") > 0 && 
+									datetimeCompare(calAppFrom.getTime(), timePieceStart_1, "mm") < 0){
 //								calIn.setTime(dList.get(1).getFromTime());
-								calOut.setTime(dList.get(0).getToTime());
+								calOut.setTime(timePieceEnd_0);
 							}
 							else{
 //								calIn.setTime(calAppFrom.getTime());
@@ -272,15 +330,37 @@ public class AttendanceCalculator {
 							
 						}
 						else if(3 == dList.size()){ //only support 3 work piece time
-							if(datetimeCompare(calAppFrom.getTime(), dList.get(0).getToTime(), "mm") > 0 && 
-									datetimeCompare(calAppFrom.getTime(), dList.get(1).getToTime(), "mm") < 0){
+							Calendar tmpCal = Calendar.getInstance();
+							
+							Date timePieceStart_0= sdf_0.parse(sdf_1.format(date) + " " + dList.get(0).getStartTime());
+							Date timePieceEnd_0 = null;
+							tmpCal.setTime(timePieceEnd_0);
+							tmpCal.add(Calendar.MINUTE, dList.get(0).getDurationTime());
+							timePieceEnd_0 = tmpCal.getTime();
+							
+							Date timePieceStart_1= sdf_0.parse(sdf_1.format(date) + " " + dList.get(1).getStartTime());
+							Date timePieceEnd_1 = null;
+							tmpCal.setTime(timePieceEnd_1);
+							tmpCal.add(Calendar.MINUTE, dList.get(1).getDurationTime());
+							timePieceEnd_1 = tmpCal.getTime();
+							
+							Date timePieceStart_2 = sdf_0.parse(sdf_1.format(date) + " " + dList.get(2).getStartTime());
+							Date timePieceEnd_2 = null;
+							tmpCal.setTime(timePieceEnd_2);
+							tmpCal.add(Calendar.MINUTE, dList.get(2).getDurationTime());
+							timePieceEnd_2 = tmpCal.getTime();
+							
+							if(datetimeCompare(calAppFrom.getTime(), timePieceEnd_0, "mm") > 0 && 
+									datetimeCompare(calAppFrom.getTime(), timePieceStart_1, "mm") < 0){
 //								calIn.setTime(dList.get(1).getFromTime());
-								calOut.setTime(dList.get(0).getToTime());
+//								calOut.setTime(dList.get(0).getToTime());
+								calOut.setTime(timePieceEnd_0);
 							}
-							else if(datetimeCompare(calAppFrom.getTime(), dList.get(1).getToTime(), "mm") > 0 && 
-									datetimeCompare(calAppFrom.getTime(), dList.get(2).getToTime(), "mm") < 0){
+							else if(datetimeCompare(calAppFrom.getTime(), timePieceEnd_1, "mm") > 0 && 
+									datetimeCompare(calAppFrom.getTime(), timePieceStart_2, "mm") < 0){
 //								calIn.setTime(dList.get(2).getFromTime());
-								calOut.setTime(dList.get(1).getToTime());
+//								calOut.setTime(dList.get(1).getToTime());
+								calOut.setTime(timePieceEnd_1);
 							}
 							else{
 //								calIn.setTime(calAppFrom.getTime());
@@ -288,7 +368,6 @@ public class AttendanceCalculator {
 							}
 						}
 						else{
-//							calIn.setTime(calAppFrom.getTime());
 							calOut.setTime(calAppFrom.getTime());
 						}
 					}
@@ -300,7 +379,7 @@ public class AttendanceCalculator {
 							calAppFrom.get(Calendar.DAY_OF_MONTH) == calDate.get(Calendar.DAY_OF_MONTH)){ //first day of leave application equals this day  
 //						if(calAppFrom.after(calIn)){ //if fist day after standard clock in time, then change to the leave from time
 						if(datetimeCompare(calAppFrom.getTime(), calIn.getTime(), "mm") > 0){
-//							calIn.setTime(calAppFrom.getTime());
+							//actually here should tell which period it belong to
 							calOut.setTime(calAppFrom.getTime());
 						}
 						else{
@@ -313,7 +392,7 @@ public class AttendanceCalculator {
 							calAppEnd.get(Calendar.DAY_OF_MONTH) == calDate.get(Calendar.DAY_OF_MONTH)){ //last day of leave application equals this day  
 //						if(calAppEnd.before(calOut)){
 						if(datetimeCompare(calAppEnd.getTime(), calOut.getTime(), "mm") < 0){
-//							calOut.setTime(calAppEnd.getTime());
+							//here should tell which period calAppEnd.getTime() belong to 
 							calIn.setTime(calAppEnd.getTime());
 						}
 						else{
@@ -653,6 +732,9 @@ public class AttendanceCalculator {
 //				sb.append(" /"); //later will sb.delete(0,3)
 //			}
 //			else {
+
+
+
 				if(0 == size){//and no records
 					if(!hasItStartedWorking(stdItem)){
 						sb.append(" ");
@@ -835,6 +917,8 @@ public class AttendanceCalculator {
 			serviceEWTP_R.save(ew_r);
 		}
 	}
+	
+	
 	
 	//according to standardWorkTime to pick up record, do not get data through records list
 	public CHECKINOUT pickUpClockInRecord(StandardWorkTime stdItem, List<CHECKINOUT> recordsList) throws ParseException {

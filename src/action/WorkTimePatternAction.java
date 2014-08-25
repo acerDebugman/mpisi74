@@ -174,56 +174,64 @@ public class WorkTimePatternAction extends ActionSupport {
 
 			//Monday
 			DetailDayWorkTime dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setStartTime(Constant.officeStartWorkTime_0);
+			dt.setDurationTime(300);
 			dt.setName("Monday AM");
 			dt.setCircleDay(cd); //Monday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setStartTime(Constant.officeStartWorkTime_1);
+			dt.setDurationTime(150);
 			dt.setName("Monday PM");
 			dt.setCircleDay(cd); //Monday
 			serviceDetailDayWorkTime.save(dt);
 			
 			//Tursday
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setStartTime(Constant.officeStartWorkTime_0);
+			dt.setDurationTime(300);
 			dt.setName("Tursday AM");
 			dt.setCircleDay(cd1); //Tursday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setStartTime(Constant.officeStartWorkTime_1);
+			dt.setDurationTime(150);
 			dt.setName("Tursday PM");
 			dt.setCircleDay(cd1); //Tursday
 			serviceDetailDayWorkTime.save(dt);
 
 			//Wensday
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setStartTime(Constant.officeStartWorkTime_0);
+			dt.setDurationTime(300);
 			dt.setName("Wensday AM");
 			dt.setCircleDay(cd2); //Wensday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setStartTime(Constant.officeStartWorkTime_1);
+			dt.setDurationTime(150);
 			dt.setName("Wensday PM");
 			dt.setCircleDay(cd2); //Wensday
 			serviceDetailDayWorkTime.save(dt);
 			
 			//Thursday
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setStartTime(Constant.officeStartWorkTime_0);
+			dt.setDurationTime(300);
 			dt.setName("Thursday AM");
 			dt.setCircleDay(cd3); //Thursday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setStartTime(Constant.officeStartWorkTime_1);
+			dt.setDurationTime(150);
 			dt.setName("Thursday PM");
 			dt.setCircleDay(cd3); //Thursday
 			serviceDetailDayWorkTime.save(dt);
@@ -231,14 +239,14 @@ public class WorkTimePatternAction extends ActionSupport {
 
 			//Friday
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setStartTime(Constant.officeStartWorkTime_0);
+			dt.setDurationTime(300);
 			dt.setName("Friday AM");
 			dt.setCircleDay(cd4); //Friday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_1));
+			dt.setStartTime(Constant.officeStartWorkTime_1);
+			dt.setDurationTime(150);
 			dt.setName("Friday PM");
 			dt.setCircleDay(cd4); //Friday
 			serviceDetailDayWorkTime.save(dt);
@@ -361,56 +369,56 @@ public class WorkTimePatternAction extends ActionSupport {
 
 			//Monday
 			DetailDayWorkTime dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_0));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_0);
+			dt.setDurationTime(330);
 			dt.setName("Monday AM");
 			dt.setCircleDay(cd); //Monday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_1));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_1);
+			dt.setDurationTime(120);
 			dt.setName("Monday PM");
 			dt.setCircleDay(cd); //Monday
 			serviceDetailDayWorkTime.save(dt);
 			
 			//Tursday
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_0));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_0);
+			dt.setDurationTime(330);
 			dt.setName("Tursday AM");
 			dt.setCircleDay(cd1); //Tursday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_1));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_1);
+			dt.setDurationTime(120);
 			dt.setName("Tursday PM");
 			dt.setCircleDay(cd1); //Tursday
 			serviceDetailDayWorkTime.save(dt);
 
 			//Wensday
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_0));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_0);
+			dt.setDurationTime(330);
 			dt.setName("Wensday AM");
 			dt.setCircleDay(cd2); //Wensday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_1));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_1);
+			dt.setDurationTime(120);
 			dt.setName("Wensday PM");
 			dt.setCircleDay(cd2); //Wensday
 			serviceDetailDayWorkTime.save(dt);
 			
 			//Thursday
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_0));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_0);
+			dt.setDurationTime(330);
 			dt.setName("Thursday AM");
 			dt.setCircleDay(cd3); //Thursday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_1));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_1);
+			dt.setDurationTime(120);
 			dt.setName("Thursday PM");
 			dt.setCircleDay(cd3); //Thursday
 			serviceDetailDayWorkTime.save(dt);
@@ -418,14 +426,14 @@ public class WorkTimePatternAction extends ActionSupport {
 
 			//Friday
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_0));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_0));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_0);
+			dt.setDurationTime(330);
 			dt.setName("Friday AM");
 			dt.setCircleDay(cd4); //Friday
 			serviceDetailDayWorkTime.save(dt);
 			dt = new DetailDayWorkTime();
-			dt.setFromTime(sdf.parse(Constant.cleanLadyStartWorkTime_1));
-			dt.setToTime(sdf.parse(Constant.cleanLadyEndWorkTime_1));
+			dt.setStartTime(Constant.cleanLadyStartWorkTime_1);
+			dt.setDurationTime(120);
 			dt.setName("Friday PM");
 			dt.setCircleDay(cd4); //Friday
 			serviceDetailDayWorkTime.save(dt);

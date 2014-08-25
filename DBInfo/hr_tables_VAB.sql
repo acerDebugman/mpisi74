@@ -725,8 +725,8 @@ CREATE TABLE [dbo].[JE0202](
 create table DetailDayWorkTime (
         id int identity not null,
         name varchar(40),
-        fromTime datetime,
-        toTime datetime,
+        startTime varchar(10),
+		durationTime int,
         eachCircleDayId int,
         primary key (id)
 );

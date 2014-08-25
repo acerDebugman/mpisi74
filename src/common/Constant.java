@@ -813,6 +813,10 @@ public class Constant {
 	public static String officeStartWorkTime_1 = "14:00:00";
 	public static String officeEndWorkTime_1 = "16:30:00";
 	
+	//shift work time
+	public static String shiftDayStartWorkTime = "06:00:00";
+	public static String shiftNightStartWorkTime = "18:00:00";
+	
 	//for clean lady time
 	public static String cleanLadyStartWorkTime_0 = "07:30:59";
 	public static String cleanLadyEndWorkTime_0 = "13:00:00"; //lunch time between 13:00:00 -- 14:00:00

@@ -42,8 +42,12 @@
 	<s:submit value="transport work time pattern" />
 </s:form>
 
-<s:form action="transportWorkTimePatter" method="post" theme="simple">
-	<s:submit value="transport work time pattern" />
+<s:form action="addDefaultShiftWorkerWTP" method="post" theme="simple">
+	<s:submit value="add default shift worker time pattern" />
+</s:form>
+
+<s:form action="transportShiftWorkTimePattern" method="post" theme="simple">
+	<s:submit value="transport shift worker time pattern" />
 </s:form>
 </body>
 </html>

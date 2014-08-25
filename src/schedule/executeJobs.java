@@ -121,6 +121,9 @@ public class executeJobs {
 			executeJob11(); //execute shift worker calcuale here (temporary)
 			
 //			serviceExecuteJob.
+			
+			//tell is it public holiday or not ? first
+			
 			Date today = new Date();
 			serviceExecuteJob.sendAbnormalEmailToEmployee(today);
 			CommonJobMethod.sendAbnormalEmailsToManager();
@@ -932,6 +935,8 @@ public class executeJobs {
 	public void executeJob17(){
 		List<CHECKINOUT> lst = serviceExecuteJob.getManagerCheckInRcds();
 		String str = serviceExecuteJob.produceMngMeetingMailContent(lst);
+		
+		//tell if holiday or not
 		
 		Mail mail = new Mail();
 //		mail.setTo(Constant.managerMeetingGroupEmailList);

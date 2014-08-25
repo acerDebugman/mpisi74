@@ -231,7 +231,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 		<property name="cronExpression">
 		  <!-- <value>0 0 6-22 * * ?</value> -->
-		  <value>0 0 6-22 * * ?</value>
+		  <!-- <value>0 0 6-22 * * ?</value> -->
+		  <value>0 0/5 6-22 * * ?</value>
 		</property>
 	</bean>
 <!--===== Schedule =====-->
@@ -1586,6 +1587,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 		<property name="serviceMP1001">
 			<ref bean="MP1001Service" />
+		</property>
+		<property name="serviceWorkTimePattern">
+			<ref bean="WorkTimePatternService" />
+		</property>
+		<property name="serviceEachCircleDay">
+			<ref bean="EachCircleDayService" />
+		</property>
+		<property name="serviceDetailDayWorkTime">
+			<ref bean="DetailDayWorkTimeService" />
 		</property>
 	</bean>
 	

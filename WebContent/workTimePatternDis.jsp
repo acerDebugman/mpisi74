@@ -82,9 +82,10 @@ response.setDateHeader("Expires", 0);
 	                    			<li>&nbsp;&nbsp;<span><s:property value="#eachDay.name"/></span></li>
 	                    			<ol>
 	                    				<s:iterator value="#eachDay.detailWorkTimeItems" var="dt">
-	                    					<li>&nbsp;&nbsp;<span><s:property value="#dt.description"/></span>&nbsp;&nbsp;
-	                    						<span>Start Time:</span><span><s:date name="#dt.fromTime" format="HH:mm:ss"/></span>&nbsp;&nbsp;
-	                    						<span>End Time:</span><span><s:date name="#dt.toTime" format="HH:mm:ss"/></span>
+	                    					<li>&nbsp;&nbsp;
+	                    						<span><s:property value="#dt.name"/></span>&nbsp;&nbsp;
+	                    						<span>Start Time:</span><span><s:property value="#dt.startTime" /></span>&nbsp;&nbsp;
+	                    						<span>Duration:</span><span><s:property value="#dt.durationTime" /></span>
 	                    					</li>
 	                    				</s:iterator>
 	                    			</ol>

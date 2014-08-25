@@ -11,9 +11,12 @@ public class DetailDayWorkTime implements Serializable {
 	private static final long serialVersionUID = -4424839531001520836L;
 		private int id;
         private String name;
-        private Date fromTime;
-        private Date toTime;
+//        private Date fromTime;
+//        private Date toTime;
 //        private int eachCircleDayId;
+        
+        private String startTime;
+        private int durationTime; //in minutes
         
         //extended
         private EachCircleDay circleDay;
@@ -23,18 +26,6 @@ public class DetailDayWorkTime implements Serializable {
 		}
 		public void setId(int id) {
 			this.id = id;
-		}
-		public Date getFromTime() {
-			return fromTime;
-		}
-		public void setFromTime(Date fromTime) {
-			this.fromTime = fromTime;
-		}
-		public Date getToTime() {
-			return toTime;
-		}
-		public void setToTime(Date toTime) {
-			this.toTime = toTime;
 		}
 		/*public int getEachCircleDayId() {
 			return eachCircleDayId;
@@ -53,5 +44,17 @@ public class DetailDayWorkTime implements Serializable {
 		}
 		public void setName(String name) {
 			this.name = name;
+		}
+		public String getStartTime() {
+			return startTime;
+		}
+		public void setStartTime(String startTime) {
+			this.startTime = startTime;
+		}
+		public int getDurationTime() {
+			return durationTime;
+		}
+		public void setDurationTime(int durationTime) {
+			this.durationTime = durationTime;
 		}
 }

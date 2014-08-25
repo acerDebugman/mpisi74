@@ -227,11 +227,11 @@ function showAddDocument(){
                              </td>
                          </tr>
                          
-                         <!-- <tr>
+                         <tr>
                              <td class="table_none" onclick="javascript:NowShow('M_222','joeTools.action');" onmousemove="javascript:TDOverORIn('M_222');" onmouseout="javascript:TDOverOROut('M_222');" id="M_222">
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">test tools
                              </td>
-                         </tr> -->
+                         </tr>
 
                      </tbody>
                  </table>

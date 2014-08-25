@@ -1526,6 +1526,15 @@
 			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		<action name="transportShiftWorkTimePattern" class="itServiceBean" method="transportShiftWorkTimePattern">
+			<result name="success">pages/itService/main.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		
+		<action name="addDefaultShiftWorkerWTP" class="itServiceBean" method="addDefaultShiftWorkerWTP">
+			<result name="success">pages/itService/main.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
 		<!-- <action name="lateAndEarlyExcel" class="itServiceBean" method="lateAndEarlyExcel">
 			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>

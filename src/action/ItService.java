@@ -31,8 +31,10 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.struts2.ServletActionContext;
 
 import schedule.ExecuteJobsService;
-import schedule.executeJobs;
+import service.DetailDayWorkTimeService;
+import service.EachCircleDayService;
 import service.MP1001Service;
+import service.WorkTimePatternService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.Rectangle;
@@ -44,11 +46,15 @@ import com.itextpdf.text.pdf.parser.RenderFilter;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import common.Constant;
 import common.ExcelUtil;
 
 import dto.LateEarlyDto;
 import dto.MP1001Dto;
+import entity.DetailDayWorkTime;
+import entity.EachCircleDay;
 import entity.MP1001;
+import entity.WorkTimePattern;
 
 public class ItService extends ActionSupport {
 	private static final Log log = LogFactory.getLog(LoginAction.class);
@@ -65,6 +71,10 @@ public class ItService extends ActionSupport {
 	public String empCode;
 	
 	private List<LateEarlyDto> lateEarlyList = new ArrayList<LateEarlyDto>();
+	
+	private WorkTimePatternService serviceWorkTimePattern;
+	private EachCircleDayService serviceEachCircleDay;
+	private DetailDayWorkTimeService serviceDetailDayWorkTime;
 	
 	public String itServiceMngInit(){
 		try{
@@ -585,6 +595,164 @@ public class ItService extends ActionSupport {
 	}
 	
 	
+	public String addDefaultShiftWorkerWTP(){
+		try{
+			WorkTimePattern wtp = new WorkTimePattern();
+			wtp.setName("Shift Worker Time");
+			wtp.setDescription("For security shift workers");
+			wtp.setCircleDays(9);
+			wtp.setCalPubHolidayFlag(false);
+			wtp.setCalSpecialDayFlag(false);
+			wtp.setApplyLeaveIgnorePublicHolidayFlag(false);
+			wtp.setInitialAnnualLeaveDays(0.0);
+			wtp.setAddAnnualHoursPM(1.75);
+			wtp.setInitialSickLeaveDays(36.0);
+			wtp.setAddSickHoursPM(0.0);
+			wtp.setDayWorkHours(12.0);
+			serviceWorkTimePattern.save(wtp);
+			
+			EachCircleDay cd = new EachCircleDay();
+			cd.setDaySeq(1);
+			cd.setName("First Day Shift");
+			cd.setWorkTimePattern(wtp);
+			cd.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd);
+			
+			EachCircleDay cd1 = new EachCircleDay();
+			cd1.setDaySeq(2);
+			cd1.setName("Second Day Shift");
+			cd1.setWorkTimePattern(wtp);
+			cd1.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd1);
+			
+			EachCircleDay cd2 = new EachCircleDay();
+			cd2.setDaySeq(3);
+			cd2.setName("Third Day Shift");
+			cd2.setWorkTimePattern(wtp);
+			cd2.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd2);
+			
+			EachCircleDay cd3 = new EachCircleDay();
+			cd3.setDaySeq(4);
+			cd3.setName("First Night Shift");
+			cd3.setWorkTimePattern(wtp);
+			cd3.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd3);
+			
+			EachCircleDay cd4 = new EachCircleDay();
+			cd4.setDaySeq(5);
+			cd4.setName("Second Night Shift");
+			cd4.setWorkTimePattern(wtp);
+			cd4.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd4);
+			
+			EachCircleDay cd5 = new EachCircleDay();
+			cd5.setDaySeq(6);
+			cd5.setName("Third Night Shift");
+			cd5.setWorkTimePattern(wtp);
+			cd5.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd5);
+			
+			EachCircleDay cd6 = new EachCircleDay();
+			cd6.setDaySeq(7);
+			cd6.setName("First Rest Shift");
+			cd6.setWorkTimePattern(wtp);
+			cd6.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd6);
+			
+			EachCircleDay cd7 = new EachCircleDay();
+			cd7.setDaySeq(8);
+			cd7.setName("Second Rest Shift");
+			cd7.setWorkTimePattern(wtp);
+			cd7.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd7);
+			
+			EachCircleDay cd8 = new EachCircleDay();
+			cd8.setDaySeq(9);
+			cd8.setName("Third Rest Shift");
+			cd8.setWorkTimePattern(wtp);
+			cd8.setOverTimeRate(1.5);
+			serviceEachCircleDay.save(cd8);
+
+			//set detail work time
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss"); //format date
+			SimpleDateFormat sdf_0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //format date
+
+			//first day shift
+			DetailDayWorkTime dt = new DetailDayWorkTime();
+//			dt.setFromTime(sdf.parse(Constant.shiftDayStartWorkTime_0));
+//			dt.setToTime(sdf.parse(Constant.shiftDayEndWorkTime_0));
+			dt.setStartTime(Constant.shiftDayStartWorkTime);
+			dt.setDurationTime(720);
+			dt.setName("First Day Shift");
+			dt.setCircleDay(cd);
+			serviceDetailDayWorkTime.save(dt);
+			
+			//second day shift
+			dt = new DetailDayWorkTime();
+//			dt.setFromTime(sdf.parse(Constant.officeStartWorkTime_0));
+//			dt.setToTime(sdf.parse(Constant.officeEndWorkTime_0));
+			dt.setStartTime(Constant.shiftDayStartWorkTime);
+			dt.setDurationTime(720);
+			dt.setName("Second Day Shift");
+			dt.setCircleDay(cd1);
+			serviceDetailDayWorkTime.save(dt);
+			
+			//third day shift
+			dt = new DetailDayWorkTime();
+			dt.setStartTime(Constant.shiftDayStartWorkTime);
+			dt.setDurationTime(720);
+			dt.setName("Third Day Shift");
+			dt.setCircleDay(cd2); //Wensday
+			serviceDetailDayWorkTime.save(dt);
+			
+			//first night shift
+			dt = new DetailDayWorkTime();
+			dt.setStartTime(Constant.shiftNightStartWorkTime);
+			dt.setDurationTime(720);
+			dt.setName("First Night shift");
+			dt.setCircleDay(cd3); //Thursday
+			serviceDetailDayWorkTime.save(dt);
+
+			//second night shift
+			dt = new DetailDayWorkTime();
+			dt.setStartTime(Constant.shiftNightStartWorkTime);
+			dt.setDurationTime(720);
+			dt.setName("second night shift");
+			dt.setCircleDay(cd4); //Friday
+			serviceDetailDayWorkTime.save(dt);
+			
+			//third night shift
+			dt = new DetailDayWorkTime();
+			dt.setStartTime(Constant.shiftNightStartWorkTime);
+			dt.setDurationTime(720);
+			dt.setName("Third night shift");
+			dt.setCircleDay(cd5); //Friday
+			serviceDetailDayWorkTime.save(dt);
+			
+			//firt rest shift
+//			dt = new DetailDayWorkTime();
+//			dt.setStartTime(Constant.shiftNightStartWorkTime);
+//			dt.setDurationTime(720);
+//			dt.setName("Third night shift");
+//			dt.setCircleDay(cd4); //Friday
+//			serviceDetailDayWorkTime.save(dt);
+			
+
+			
+		} catch(Exception ex){
+			System.out.println(ex.getMessage());
+		}
+		
+		return NONE;
+	}
+	
+	public String transportShiftWorkTimePattern(){
+		
+		
+		
+		return NONE;
+	}
 	
 	public String fetchAttendanceRcd() throws Exception {
 		serviceExecuteJobs.fetchAttendanceRecords();
@@ -669,5 +837,30 @@ public class ItService extends ActionSupport {
 	public void setEmpCode(String empCode) {
 		this.empCode = empCode;
 	}
-	
+
+	public WorkTimePatternService getServiceWorkTimePattern() {
+		return serviceWorkTimePattern;
+	}
+
+	public void setServiceWorkTimePattern(
+			WorkTimePatternService serviceWorkTimePattern) {
+		this.serviceWorkTimePattern = serviceWorkTimePattern;
+	}
+
+	public EachCircleDayService getServiceEachCircleDay() {
+		return serviceEachCircleDay;
+	}
+
+	public void setServiceEachCircleDay(EachCircleDayService serviceEachCircleDay) {
+		this.serviceEachCircleDay = serviceEachCircleDay;
+	}
+
+	public DetailDayWorkTimeService getServiceDetailDayWorkTime() {
+		return serviceDetailDayWorkTime;
+	}
+
+	public void setServiceDetailDayWorkTime(
+			DetailDayWorkTimeService serviceDetailDayWorkTime) {
+		this.serviceDetailDayWorkTime = serviceDetailDayWorkTime;
+	}
 }

@@ -9,11 +9,11 @@
         <property name="name" type="java.lang.String">
             <column name="name" length="255" not-null="false" />
         </property>
-        <property name="fromTime" type="java.util.Date">
-            <column name="fromTime" not-null="false" />
+        <property name="startTime" type="java.lang.String">
+            <column name="startTime" not-null="false" />
         </property>
-        <property name="toTime" type="java.util.Date">
-            <column name="toTime" not-null="false" />
+        <property name="durationTime" type="java.lang.Integer">
+            <column name="durationTime" not-null="false" />
         </property>
         <!-- <property name="eachCircleDayId" type="java.lang.Integer">
             <column name="eachCircleDayId" not-null="false" />

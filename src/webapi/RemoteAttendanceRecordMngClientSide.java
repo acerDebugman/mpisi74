@@ -56,8 +56,10 @@ public class RemoteAttendanceRecordMngClientSide {
 					MP0011 tmp = new MP0011();
 					tmp.setMP0011_SEQ(Constant.generateSeq());
 					tmp.setMP0011_SYS_CODE("joeTest");
+					tmp.setMP0011_LOGIN_TIME(sdf_0.format(new Date()));
 					tmp.setMP0011_MEMO("remoteRd : " + dto.getUSERID() + "|" + dto.getCHECKTIME() + "|" + dto.getSENSORID());
 					
+					serviceMP0011.save(tmp);
 					
 					inoutList.add(converter.convertToEntity(dto));
 					
