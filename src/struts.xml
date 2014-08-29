@@ -1490,6 +1490,23 @@
 			<result name="success">workTimePatternCircleDays.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
+		<action name="initializeEmployeeWorkTimePattern" class="workTimePatternBean" method="initializeEmployeeWorkTimePattern">
+			<result name="success">employeeWorkTimePattern_R_search.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeWorkTimePattern_R_Search" class="workTimePatternBean" method="employeeWorkTimePattern_R_Search">
+			<result name="success">employeeWorkTimePattern_R_list.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeWorkTimePattern_R_edit" class="workTimePatternBean" method="employeeWorkTimePattern_R_edit">
+			<result name="success">employeeWorkTimePattern_R_edit.jsp</result>
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		<action name="employeeWorkTimePattern_R_save" class="workTimePatternBean" method="employeeWorkTimePattern_R_save">
+			<!-- <result name="success">employeeWorkTimePattern_R_edit.jsp</result> -->
+		    <interceptor-ref name="sessioncheck"/>
+		</action>
+		
 		
 		<!--  mannual calcualte date part, in AttendanceDataLoadBean -->
 		<action name="manuallyCalculateAttendance" class="AttendanceDataLoadBean" method="manuallyCalculateAttendance">
@@ -1526,7 +1543,7 @@
 			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>
-		<action name="transportShiftWorkTimePattern" class="itServiceBean" method="transportShiftWorkTimePattern">
+		<action name="transportShiftWorkerToTimePattern" class="itServiceBean" method="transportShiftWorkerToTimePattern">
 			<result name="success">pages/itService/main.jsp</result>
 		    <interceptor-ref name="sessioncheck"/>
 		</action>

@@ -110,4 +110,12 @@ public class MP1001Service implements IMP1001Service {
 	public List<MP1001> findByEmployeeStringList(String strEmplyeeList){
 		return dao.findByEmployeeStringList(strEmplyeeList);
 	}
+
+	@Override
+	public void merge(MP1001 mp11) {
+		// TODO Auto-generated method stub
+		dao.merge(mp11);
+	}
+	
+	
 }

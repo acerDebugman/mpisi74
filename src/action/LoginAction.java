@@ -189,7 +189,24 @@ public class LoginAction extends ActionSupport {
 			// 判断用户名是否存在
 			MP1001 employeeData = new MP1001();
 			MP1010 employeeData2 = new MP1010();
-			if(employeeNum.indexOf("M") >= 0){
+			if(employeeNum.compareToIgnoreCase("admin") == 0){
+				// 权限检查
+				boolean ret = serviceAC0006.systemAccessCheck(mp1001.getMP1001_EMPLOYEE_NUM(),Constant.SYSTEM_NUM_HR);
+				if(ret == false){
+					addFieldError("mp1001.MP1001_PASSWORD","you do not have permission to access the system.\r\n Please contact administrator to request access.");
+					return INPUT;
+				}
+				
+				// 判断是否有查看试用期员工的权限
+				HashMap<String,String> funcMap = serviceAC0006.functionAccessCheck(mp1001.getMP1001_EMPLOYEE_NUM(),Constant.SYSTEM_NUM_HR);
+				//试用期员工
+				if(funcMap.containsKey(Constant.F0001002)){
+					func0001002 = "1";
+				}
+				
+				employeeData =serviceMP1001.findById(employeeNum);
+			}
+			else if(employeeNum.indexOf("M") >= 0){
 				// 权限检查
 				boolean ret = serviceAC0006.systemAccessCheck(mp1001.getMP1001_EMPLOYEE_NUM(),Constant.SYSTEM_NUM_HR);
 				if(ret == false){

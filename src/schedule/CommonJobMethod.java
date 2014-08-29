@@ -2243,7 +2243,7 @@ public class CommonJobMethod {
 		Connection conn = getDBConnection();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-//		cal.add(Calendar.DAY_OF_MONTH, -1); //yesterday, right now the date have changed to today 23:30
+		cal.add(Calendar.DAY_OF_MONTH, -1); //yesterday, right now the date have changed to today 23:30
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		boolean abnormalFlag = false;

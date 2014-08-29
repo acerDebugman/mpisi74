@@ -747,9 +747,9 @@ public class ItService extends ActionSupport {
 		return NONE;
 	}
 	
-	public String transportShiftWorkTimePattern(){
+	public String transportShiftWorkerToTimePattern(){
 		
-		
+		serviceExecuteJobs.transportShiftWorkerToTimePattern();
 		
 		return NONE;
 	}

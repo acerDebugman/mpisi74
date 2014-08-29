@@ -57,4 +57,11 @@ public class MP7002Service implements IMP7002Service{
 	public void setDao(IMP7002DAO dao) {
 		this.dao = dao;
 	}
+	@Override
+	public void evictObj(MP7002 mp72) {
+		// TODO Auto-generated method stub
+		dao.evictObj(mp72);
+	}
+	
+	
 }

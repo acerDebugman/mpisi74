@@ -42,4 +42,6 @@ public interface IMP1001Service {
 	public List<MP1001> findByEmployeeStringList(String strEmplyeeList);
 	
 	public List<MP1001> findAbsolutelyAll();
+	
+	public void merge(MP1001 mp11);
 }

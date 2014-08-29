@@ -46,7 +46,7 @@
 	<s:submit value="add default shift worker time pattern" />
 </s:form>
 
-<s:form action="transportShiftWorkTimePattern" method="post" theme="simple">
+<s:form action="transportShiftWorkerToTimePattern" method="post" theme="simple">
 	<s:submit value="transport shift worker time pattern" />
 </s:form>
 </body>

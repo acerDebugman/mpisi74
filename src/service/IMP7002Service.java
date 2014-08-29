@@ -23,4 +23,6 @@ public interface IMP7002Service {
 	public abstract int getRowCountByPage(Map<String, String> propertyMap) ;
 	
 	public abstract List<MP7002> findDataBySelfDefined(String search,String order, int pageNum, int pageCount);
+	
+	public void evictObj(MP7002 mp72);
 }

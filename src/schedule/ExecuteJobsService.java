@@ -513,6 +513,11 @@ public class ExecuteJobsService {
 		
 	}
 	
+	public void transportShiftWorkerToTimePattern(){
+		
+	}
+
+	
 //-------------------------------------------------------------------	
 	public ICHECKINOUTService getServiceCheckInOut() {
 		return serviceCheckInOut;

@@ -123,14 +123,23 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <value>executeJob20</value>
 		</property>
 	</bean>
+	
+	<bean id="quartzDetail14" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+		  <ref bean="executeJobs"/>
+		</property>
+		<property name="targetMethod">
+		  <value>executeJob14</value>
+		</property>
+	</bean>
 <!--===== Trigger =====-->
 	<bean id="quartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail">
 		  <ref bean="quartzDetail1"/>
 		</property>
 		<property name="cronExpression">
-			<!-- <value>0 0 1 * * ?</value> -->
-			<value>0 30 23 * * ?</value>  <!-- change to 23:30 every night -->
+			<value>0 30 1 * * ?</value> <!-- time after data download from finger machine -->
+			<!-- <value>0 30 23 * * ?</value>  change to 23:30 every night -->
 			 <!-- <value>0 0/5 * * * ?</value> -->
 		</property>
 	</bean>
@@ -221,7 +230,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <ref bean="quartzDetail12"/>
 		</property>
 		<property name="cronExpression">
-		  <value>0 5/7 4-23 * * ?</value> <!-- every day 11:00 am -->
+		  <value>0 5/7 1-23 * * ?</value> <!-- every day 11:00 am -->
 		</property>
 	</bean>
 	
@@ -233,6 +242,17 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		  <!-- <value>0 0 6-22 * * ?</value> -->
 		  <!-- <value>0 0 6-22 * * ?</value> -->
 		  <value>0 0/5 6-22 * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="quartzTrigger14" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+		  <ref bean="quartzDetail14"/>
+		</property>
+		<property name="cronExpression">
+		  <!-- <value>0 0 6-22 * * ?</value> -->
+		  <!-- <value>0 0 6-22 * * ?</value> -->
+		  <value>0 30 22 * * ?</value>
 		</property>
 	</bean>
 <!--===== Schedule =====-->
@@ -250,8 +270,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			    <ref local="quartzTrigger9"/>
 			    <ref local="quartzTrigger10"/>
 			    <ref local="quartzTrigger11"/>
-			    <ref local="quartzTrigger12"/>
-			    <ref local="quartzTrigger13"/>
+			    <!-- <ref local="quartzTrigger12"/>
+			    <ref local="quartzTrigger13"/> -->
+			    <ref local="quartzTrigger14"/>
 			</list>
 		</property>
 	</bean>
@@ -284,6 +305,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/mpisiHr"></property> --> 
  		<property name="url" value="jdbc:jtds:sqlserver://192.168.50.80:1433/mpisiHr"></property>
  		<!-- <property name="url" value="jdbc:jtds:sqlserver://MPC050141:1433/mpisiHrVAB;instance=JOE"></property> -->
+ 		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.80:1433/HRSystem"></property> -->
 	</bean>
 	<bean id="dataSourceFinger" parent="parentDataSource">
 		<!-- <property name="url" value="jdbc:jtds:sqlserver://192.168.50.172:1433/oldFinger"></property> -->

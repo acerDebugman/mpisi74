@@ -201,4 +201,10 @@ public class MP7002DAO  implements IMP7002DAO{
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
+	@Override
+	public void evictObj(MP7002 mp72) {
+		// TODO Auto-generated method stub
+		sessionFactory.getCurrentSession().evict(mp72);
+	}	
+	
 }

@@ -567,7 +567,6 @@ public class WorkTimePatternAction extends ActionSupport {
 			//initialize part
 			workTimePatternList = serviceWorkTimePattern.findAll();
 			
-			
 			//find result
 			Map<String, String> map = new HashMap<String, String>();
 			if(employeeCode != null && !employeeCode.equalsIgnoreCase("")){
@@ -593,7 +592,6 @@ public class WorkTimePatternAction extends ActionSupport {
 	public String employeeWorkTimePattern_R_edit(){
 		try{
 			workTimePatternList = serviceWorkTimePattern.findAll();
-			
 
 			ewtp_R = serviceEmpWTP.findById(empWorkTimePattern_RId);
 			workTimePattern = ewtp_R.getWorkTimePattern();

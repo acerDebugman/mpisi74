@@ -21,7 +21,7 @@
         </property>
         
         <many-to-one name="employee" class="entity.MP1001" column="employeeCode" unique="true"></many-to-one>
-        <many-to-one name="workTimePattern" class="entity.WorkTimePattern" column="workTimePatterId" lazy="false" unique="true"></many-to-one>
+        <many-to-one name="workTimePattern" class="entity.WorkTimePattern" column="workTimePatternId" lazy="false" unique="true"></many-to-one>
         
     </class>
 </hibernate-mapping>

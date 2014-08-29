@@ -512,4 +512,9 @@ public class MP1001DAO  implements IMP1001DAO {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
+	@Override
+	public void merge(MP1001 mp11) {
+		// TODO Auto-generated method stub
+		sessionFactory.getCurrentSession().merge(mp11);
+	}
 }

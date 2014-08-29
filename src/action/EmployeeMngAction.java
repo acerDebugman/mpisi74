@@ -2020,7 +2020,8 @@ public class EmployeeMngAction extends ActionSupport implements ServletResponseA
 			}
 			
 			// 保存员工基本信息
-			service.update(mp1001);
+//			service.update(mp1001);
+			service.merge(mp1001);
 			
 			// 如果换部门，则需要往部门经历表中插入一条记录
 			if(!mp1Data.getMP1001_DEPARTMENT_ID().equals(mp1001.getMP1001_DEPARTMENT_ID())){

@@ -344,6 +344,11 @@ function showAddDocument(){
                                  <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Work Time Pattern
                              </td>
                          </tr>
+                         <tr>
+                             <td class="table_none" onclick="javascript:NowShow('M_111','initializeEmployeeWorkTimePattern.action');" onmousemove="javascript:TDOverORIn('M_111');" onmouseout="javascript:TDOverOROut('M_111');" id="M_111">
+                                 <img height='7' hspace='5' src='images/menu/arrow.gif' width='5' align="bottom">Change Employee Worktime Pattern
+                             </td>
+                         </tr>
 
                      </tbody>
                  </table>

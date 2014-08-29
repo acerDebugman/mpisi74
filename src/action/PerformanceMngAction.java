@@ -1049,6 +1049,7 @@ public class PerformanceMngAction extends ActionSupport {
 		try{			
 			if(commonSeq != null && !commonSeq.equals("")){
 				MP7002 mp72 = serviceMP7002.findById(commonSeq);
+				serviceMP7002.evictObj(mp72);
 
 				if(mp72 != null){
 					mp72.setMP7002_SEQ(Constant.generateSeq());
