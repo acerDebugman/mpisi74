@@ -31,7 +31,8 @@ public class AC0003DAO implements IAC0003DAO {
 
 	@SuppressWarnings("unchecked")
 	public List<AC0003> findAll() {
-		return sessionFactory.getCurrentSession().find("from AC0003");
+//		return sessionFactory.getCurrentSession().find("from AC0003");
+		return sessionFactory.getCurrentSession().createQuery("from AC0003").list();
 	}
 
 	public void update(AC0003 ac0003) {
